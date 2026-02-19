@@ -10,14 +10,15 @@
 
     <style>
         :root {
-            --bg-dark: #050508;
-            --bg-card: rgba(15, 15, 25, 0.7);
+            --bg-dark: #020205;
+            --bg-card: rgba(10, 10, 20, 0.6);
             --accent: #ff4fd8;
             --accent-glow: rgba(255, 79, 216, 0.4);
             --accent-grad: linear-gradient(135deg, #ff4fd8 0%, #9d50bb 100%);
             --text-main: #ffffff;
             --text-dim: #94a3b8;
-            --border: rgba(255, 79, 216, 0.2);
+            --border: rgba(255, 79, 216, 0.15);
+            --green: #22c55e;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
@@ -35,91 +36,147 @@
         .grid {
             position: absolute; inset: 0;
             background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 50px 50px;
-            mask-image: radial-gradient(circle at center, black, transparent 80%);
-            animation: gridMove 20s linear infinite;
+            background-size: 60px 60px;
+            mask-image: radial-gradient(circle at center, black, transparent 90%);
         }
-        @keyframes gridMove { from { transform: translateY(0); } to { transform: translateY(50px); } }
 
         /* --- NAVIGATION --- */
         nav {
             position: fixed; top: 0; width: 100%; z-index: 1000;
-            background: rgba(5, 5, 8, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(2, 2, 5, 0.8);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
         }
         .nav-content {
-            max-width: 1200px; margin: auto; padding: 1rem 1.5rem;
+            max-width: 1200px; margin: auto; padding: 1.2rem 1.5rem;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-weight: 900; font-size: 1.4rem; letter-spacing: 2px; }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; }
         .logo img { width: 35px; filter: drop-shadow(0 0 8px var(--accent-glow)); }
-        .nav-links { display: flex; gap: 2rem; list-style: none; }
-        .nav-links a { text-decoration: none; color: var(--text-dim); font-weight: 700; transition: 0.3s; font-size: 0.9rem; text-transform: uppercase; }
-        .nav-links a:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--text-dim); font-weight: 700; transition: 0.3s; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-links a:hover { color: var(--accent); }
 
         /* --- HERO --- */
         .hero {
-            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center; padding: 0 1rem;
-            background: radial-gradient(circle at center, rgba(255, 79, 216, 0.08) 0%, transparent 60%);
         }
-        .hero h1 { font-size: clamp(3.5rem, 10vw, 6rem); font-weight: 900; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 0.9; margin-bottom: 1rem; }
-        .hero p { max-width: 600px; color: var(--text-dim); font-size: 1.2rem; margin-bottom: 2rem; }
-        .cta-btn { padding: 1rem 2.5rem; background: var(--accent-grad); color: #fff; text-decoration: none; font-weight: 800; border-radius: 50px; transition: 0.3s; box-shadow: 0 0 20px var(--accent-glow); text-transform: uppercase; }
-        .cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 35px var(--accent-glow); }
+        .hero h1 { font-size: clamp(3.5rem, 10vw, 6rem); font-weight: 900; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 0.9; margin-bottom: 1.5rem; text-transform: uppercase; }
+        .hero p { max-width: 650px; color: var(--text-dim); font-size: 1.3rem; margin-bottom: 2.5rem; font-weight: 500; }
+        .cta-btn { padding: 1.1rem 3rem; background: var(--accent-grad); color: #fff; text-decoration: none; font-weight: 800; border-radius: 4px; transition: 0.3s; box-shadow: 0 10px 30px rgba(255, 79, 216, 0.2); text-transform: uppercase; letter-spacing: 1px; }
+        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px var(--accent-glow); }
 
-        /* --- MAP & INFRASTRUCTURE --- */
-        section { padding: 6rem 1.5rem; max-width: 1200px; margin: auto; }
-        .section-header { text-align: center; margin-bottom: 4rem; }
-        .section-header h2 { font-size: 3rem; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
-        
-        .infra-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem; align-items: center; }
-        @media (max-width: 900px) { .infra-grid { grid-template-columns: 1fr; } }
-
-        .map-box {
-            position: relative; background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 20px; padding: 2rem; overflow: hidden;
+        /* --- GLOBAL NETWORK SECTION (THE LILYPAD LOOK) --- */
+        .network-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            padding: 8rem 2rem;
+            max-width: 1200px;
+            margin: auto;
         }
-        .world-map { width: 100%; opacity: 0.2; filter: invert(1); }
-        
-        /* Flashing Nodes */
-        .node { position: absolute; width: 12px; height: 12px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 15px #22c55e; }
-        .node::after { content: ""; position: absolute; inset: -4px; border: 2px solid #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3.5); opacity: 0; } }
-        
-        .miami { top: 72%; left: 24%; }
-        .new-york { top: 58%; left: 26%; }
-        .node-label { position: absolute; left: 20px; top: -5px; font-size: 0.7rem; font-weight: 800; background: rgba(0,0,0,0.7); padding: 2px 8px; border-radius: 4px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.1); }
 
-        .specs-card { background: var(--bg-card); border: 1px solid var(--border); padding: 2rem; border-radius: 20px; }
-        .spec-item { display: flex; align-items: center; gap: 15px; margin-bottom: 1.5rem; }
-        .spec-item i { font-size: 1.5rem; color: var(--accent); width: 30px; }
-        .spec-item h4 { font-size: 1.2rem; font-weight: 800; }
-        .spec-item p { color: var(--text-dim); font-size: 0.9rem; }
+        @media (max-width: 900px) {
+            .network-section { grid-template-columns: 1fr; text-align: center; }
+            .ping-grid { justify-content: center; }
+        }
 
-        /* --- PACKAGES / DONATIONS --- */
+        .globe-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+            cursor: grab;
+        }
+
+        .network-info h2 {
+            font-size: 0.9rem;
+            color: var(--green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .network-info h3 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .network-info p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Ping Grid */
+        .ping-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .ping-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .location {
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ping-val {
+            font-size: 0.85rem;
+            color: var(--green);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ping-val::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--green);
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .far-ping { color: #f87171; }
+        .far-ping::before { background: #f87171; }
+
+        /* --- PACKAGES --- */
         .package-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
         .card {
-            background: var(--bg-card); border: 1px solid var(--border); padding: 3rem 2rem; border-radius: 24px;
+            background: var(--bg-card); border: 1px solid var(--border); padding: 3rem 2rem; border-radius: 12px;
             text-align: center; position: relative; transition: 0.4s; backdrop-filter: blur(10px);
         }
-        .card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .featured { border-color: var(--accent); background: rgba(255, 79, 216, 0.05); }
-        .badge { position: absolute; top: 15px; right: -25px; background: var(--accent-grad); padding: 5px 30px; transform: rotate(45deg); font-size: 0.7rem; font-weight: 900; }
-
+        .card:hover { transform: translateY(-10px); border-color: var(--accent); }
         .price { font-size: 3.5rem; font-weight: 900; margin: 1rem 0; }
         .price span { font-size: 1.5rem; color: var(--accent); vertical-align: top; }
+        .feature-list { list-style: none; text-align: left; margin: 2rem 0; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 1.5rem;}
+        .feature-list li { margin-bottom: 12px; display: flex; gap: 10px; align-items: center; font-weight: 600; }
+        .feature-list i { color: var(--green); }
 
-        .feature-list { list-style: none; text-align: left; margin: 2rem 0; color: var(--text-dim); }
-        .feature-list li { margin-bottom: 12px; display: flex; gap: 10px; align-items: center; }
-        .feature-list i { color: #22c55e; }
-
-        .btn-buy { display: block; width: 100%; padding: 1rem; border-radius: 12px; background: var(--accent-grad); color: #fff; text-decoration: none; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; }
-        .btn-alt { display: block; width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid var(--border); color: #fff; text-decoration: none; font-weight: 700; transition: 0.3s; }
-        .btn-alt:hover { background: rgba(255,255,255,0.05); }
-
-        footer { text-align: center; padding: 4rem; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 0.9rem; }
+        footer { text-align: center; padding: 4rem; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 0.8rem; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -133,118 +190,140 @@
                 ZEROPOINT
             </a>
             <ul class="nav-links">
-                <li><a href="#infra">Infrastructure</a></li>
-                <li><a href="#ark">ARK Cluster</a></li>
-                <li><a href="#hytale">Hytale</a></li>
+                <li><a href="#network">Network</a></li>
+                <li><a href="#vip">VIP Perks</a></li>
+                <li><a href="#">Discord</a></li>
             </ul>
-            <a href="https://discord.gg/yourlink" class="logo" style="font-size: 1.2rem;"><i class="fab fa-discord"></i></a>
+            <a href="#" class="cta-btn" style="padding: 0.6rem 1.5rem; font-size: 0.7rem;">Play Now</a>
         </div>
     </nav>
 
     <section class="hero">
-        <h1>THE CLUSTER<br>EVOLVED</h1>
-        <p>A private, high-performance gaming ecosystem. We host our own bare-metal hardware to ensure zero lag and 100% uptime for our community.</p>
-        <a href="#ark" class="cta-btn">View VIP Perks</a>
+        <h1>Private Cluster<br>Maximum Power</h1>
+        <p>Ultra-low latency gaming on self-hosted enterprise hardware. No compromises. No lag. Just pure Zeropoint performance.</p>
+        <a href="#vip" class="cta-btn">Support the Cluster</a>
     </section>
 
-    <section id="infra">
-        <div class="section-header">
-            <h2>Our Backbone</h2>
-            <p>Self-hosted. Proprietary. Protected.</p>
+    <section class="network-section" id="network">
+        <div class="globe-container">
+            <canvas id="cobe"></canvas>
         </div>
 
-        <div class="infra-grid">
-            <div class="map-box">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg" class="world-map" alt="Network">
-                <div class="node miami"><span class="node-label">Miami Node // Active</span></div>
-                <div class="node new-york"><span class="node-label">New York Node // Active</span></div>
-            </div>
-
-            <div class="specs-card">
-                <div class="spec-item">
-                    <i class="fas fa-microchip"></i>
-                    <div>
-                        <h4>Enterprise Hardware</h4>
-                        <p>Ryzen 9 7950X @ 5.7GHz OC</p>
-                    </div>
+        <div class="network-info">
+            <h2><i class="fas fa-shield-halved"></i> Premium DDoS Protection Included</h2>
+            <h3>Powered by a private network optimized for low latency.</h3>
+            <p>We've strategically located our self-hosted hardware nodes to ensure the best possible routing and ping for our players across North America.</p>
+            
+            <div class="ping-grid">
+                <div class="ping-item">
+                    <span class="location">🇺🇸 Florida, US</span>
+                    <span class="ping-val"><span class="dynamic-ping" data-min="25" data-max="32">28</span>ms</span>
                 </div>
-                <div class="spec-item">
-                    <i class="fas fa-memory"></i>
-                    <div>
-                        <h4>DDR5 Performance</h4>
-                        <p>128GB High-Speed ECC Memory</p>
-                    </div>
+                <div class="ping-item">
+                    <span class="location">🇺🇸 New York, US</span>
+                    <span class="ping-val"><span class="dynamic-ping" data-min="35" data-max="42">38</span>ms</span>
                 </div>
-                <div class="spec-item">
-                    <i class="fas fa-shield-virus"></i>
-                    <div>
-                        <h4>DDoS Immunity</h4>
-                        <p>12Tbps Mitigation at the Edge</p>
-                    </div>
+                <div class="ping-item">
+                    <span class="location">🇬🇧 London, UK</span>
+                    <span class="ping-val far-ping">114ms</span>
                 </div>
-                <div class="spec-item">
-                    <i class="fas fa-bolt"></i>
-                    <div>
-                        <h4>NVMe Storage</h4>
-                        <p>Gen4 Raid-0 for Instant Loading</p>
-                    </div>
+                <div class="ping-item">
+                    <span class="location">🇦🇺 Sydney, AU</span>
+                    <span class="ping-val far-ping">312ms</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="ark">
-        <div class="section-header">
-            <h2>Support the Project</h2>
-            <p>Donations directly fund our server hardware and power costs.</p>
+    <section id="vip" style="max-width: 1200px; margin: auto; padding-bottom: 8rem;">
+        <div style="text-align: center; margin-bottom: 4rem;">
+            <h2 style="font-size: 3rem; font-weight: 900; text-transform: uppercase;">VIP Tiers</h2>
+            <p style="color: var(--text-dim);">All proceeds go 100% into server hardware and electricity.</p>
         </div>
 
         <div class="package-row">
             <div class="card">
-                <h4 style="color:var(--accent)">BASIC SUPPORT</h4>
+                <h4 style="color:var(--accent); letter-spacing: 2px;">BRONZE TIER</h4>
                 <div class="price"><span>$</span>5</div>
                 <ul class="feature-list">
-                    <li><i class="fas fa-check"></i> VIP Discord Badge</li>
-                    <li><i class="fas fa-check"></i> Priority Queue Access</li>
-                    <li><i class="fas fa-check"></i> Starter Kit (One-time)</li>
+                    <li><i class="fas fa-check-circle"></i> Priority Queue</li>
+                    <li><i class="fas fa-check-circle"></i> VIP Discord Role</li>
+                    <li><i class="fas fa-check-circle"></i> Basic Starter Kit</li>
                 </ul>
-                <a href="#" class="btn-buy">Donate via PayPal</a>
-                <a href="dinos.html" class="btn-alt">View Dino List</a>
+                <a href="#" class="cta-btn" style="display:block; width: 100%;">Donate</a>
             </div>
 
-            <div class="card featured">
-                <div class="badge">POPULAR</div>
-                <h4 style="color:var(--accent)">ELITE SUPPORT</h4>
+            <div class="card" style="border-color: var(--accent); background: rgba(255, 79, 216, 0.05);">
+                <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 0.7rem; font-weight: 900; color: var(--accent);">MOST POPULAR</div>
+                <h4 style="color:var(--accent); letter-spacing: 2px;">GOLD TIER</h4>
                 <div class="price"><span>$</span>15</div>
                 <ul class="feature-list">
-                    <li><i class="fas fa-check"></i> All Basic Perks</li>
-                    <li><i class="fas fa-check"></i> 1x Custom Painted Dino</li>
-                    <li><i class="fas fa-check"></i> 5,000 Shop Points</li>
-                    <li><i class="fas fa-check"></i> Base Decor Pack</li>
+                    <li><i class="fas fa-check-circle"></i> Everything in Bronze</li>
+                    <li><i class="fas fa-check-circle"></i> 1x Custom Painted Dino</li>
+                    <li><i class="fas fa-check-circle"></i> 5,000 Hexagons</li>
                 </ul>
-                <a href="#" class="btn-buy">Donate via PayPal</a>
-                <a href="dinos.html" class="btn-alt">Claim Custom Dino</a>
+                <a href="#" class="cta-btn" style="display:block; width: 100%;">Donate</a>
             </div>
 
             <div class="card">
-                <h4 style="color:var(--accent)">ULTIMATE SUPPORT</h4>
+                <h4 style="color:var(--accent); letter-spacing: 2px;">PLATINUM TIER</h4>
                 <div class="price"><span>$</span>25</div>
                 <ul class="feature-list">
-                    <li><i class="fas fa-check"></i> All Elite Perks</li>
-                    <li><i class="fas fa-check"></i> 3x Custom Painted Dinos</li>
-                    <li><i class="fas fa-check"></i> Infinite Respawn Kits</li>
-                    <li><i class="fas fa-check"></i> Private Support Chat</li>
+                    <li><i class="fas fa-check-circle"></i> Everything in Gold</li>
+                    <li><i class="fas fa-check-circle"></i> 3x Custom Painted Dinos</li>
+                    <li><i class="fas fa-check-circle"></i> Alpha Kit Access</li>
                 </ul>
-                <a href="#" class="btn-buy">Donate via PayPal</a>
-                <a href="dinos.html" class="btn-alt">Configure Dinos</a>
+                <a href="#" class="cta-btn" style="display:block; width: 100%;">Donate</a>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2026 ZEROPOINT CLUSTER. All hardware is self-managed by Zeropoint Hosting.<br>
-        Not affiliated with Studio Wildcard or Hypixel Studios.</p>
+        <p>&copy; 2026 ZEROPOINT CLUSTER. Self-Hosted Infrastructure. Not affiliated with Studio Wildcard.</p>
     </footer>
+
+    <script type="module">
+        import createGlobe from 'https://cdn.skypack.dev/cobe'
+
+        let phi = 0
+        const canvas = document.getElementById("cobe")
+
+        const globe = createGlobe(canvas, {
+            devicePixelRatio: 2,
+            width: 1000,
+            height: 1000,
+            phi: 0,
+            theta: 0.4, // Tilt to show North America better
+            dark: 1,
+            diffuse: 1.2,
+            mapSamples: 16000,
+            mapBrightness: 6,
+            baseColor: [0.05, 0.05, 0.1], // Dark navy base
+            markerColor: [0.13, 0.77, 0.36], // Green dots (#22c55e)
+            glowColor: [1, 0.31, 0.85], // Purple/Pink glow (#ff4fd8)
+            markers: [
+                { location: [25.7617, -80.1918], size: 0.1 }, // Miami
+                { location: [40.7128, -74.0060], size: 0.1 }, // New York
+                { location: [34.0522, -118.2437], size: 0.05 }, // LA
+                { location: [51.5074, -0.1278], size: 0.05 }, // London
+                { location: [35.6762, 139.6503], size: 0.05 }, // Tokyo
+            ],
+            onRender: (state) => {
+                state.phi = phi
+                phi += 0.005 // Rotation speed
+            },
+        })
+
+        // Dynamic Ping Logic
+        setInterval(() => {
+            document.querySelectorAll('.dynamic-ping').forEach(el => {
+                const min = parseInt(el.dataset.min);
+                const max = parseInt(el.dataset.max);
+                const newVal = Math.floor(Math.random() * (max - min + 1)) + min;
+                el.innerText = newVal;
+            });
+        }, 2000);
+    </script>
 
 </body>
 </html>
