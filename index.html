@@ -3,244 +3,428 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zeropoint Hosting | Dino & Color Order</title>
+<title>Zeropoint Hosting | Server Packages</title>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
+/* ===== THEME ===== */
 :root{
 --bg-primary:#0b0b10;
+--bg-secondary:#141420;
 --bg-card:#1c1c2a;
+
 --accent-pink:#ff4fd8;
+--accent-soft-pink:#ff9de6;
 --accent-green:#22c55e;
+
 --text-primary:#ffffff;
 --text-secondary:#cbd5e1;
+
+--glow-pink:rgba(255,79,216,.55);
 }
 
 body{
 font-family:'Rajdhani',sans-serif;
 background:var(--bg-primary);
 color:var(--text-primary);
-padding:4rem 1.5rem;
+overflow-x:hidden;
 }
 
-.container{
-max-width:1000px;
-margin:0 auto;
+/* ===== BACKGROUND ===== */
+.animated-bg{
+position:fixed;
+inset:0;
+z-index:0;
+overflow:hidden;
 }
 
-h1{
-text-align:center;
-color:var(--accent-pink);
-margin-bottom:.5rem;
+.grid-lines{
+position:absolute;
+width:100%;
+height:100%;
+background-image:
+linear-gradient(rgba(255,79,216,.06) 1px,transparent 1px),
+linear-gradient(90deg,rgba(255,79,216,.06) 1px,transparent 1px);
+background-size:50px 50px;
+animation:gridMove 25s linear infinite;
 }
 
-p{
-text-align:center;
+@keyframes gridMove{
+0%{transform:translate(0,0)}
+100%{transform:translate(50px,50px)}
+}
+
+.floating-particles{
+position:absolute;
+width:100%;
+height:100%;
+pointer-events:none;
+}
+
+.particle{
+position:absolute;
+width:5px;
+height:5px;
+background:var(--accent-pink);
+border-radius:50%;
+opacity:.7;
+box-shadow:0 0 12px var(--glow-pink);
+animation:float 20s infinite linear;
+}
+
+@keyframes float{
+0%{transform:translate(0,0)}
+50%{transform:translate(-40px,-200px)}
+100%{transform:translate(0,0)}
+}
+
+/* ===== NAV ===== */
+nav{
+position:fixed;
+top:0;width:100%;
+z-index:1000;
+background:rgba(10,10,15,.95);
+border-bottom:1px solid rgba(255,79,216,.3);
+}
+
+nav ul{
+display:flex;
+justify-content:center;
+gap:2rem;
+list-style:none;
+padding:1rem;
+}
+
+nav a{
 color:var(--text-secondary);
-margin-bottom:3rem;
+text-decoration:none;
+font-weight:600;
 }
 
-.grid{
+nav a:hover{color:var(--accent-pink)}
+
+/* ===== HERO ===== */
+.hero{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:6rem 2rem;
+position:relative;
+z-index:5;
+}
+
+.hero h1{
+font-size:clamp(2.5rem,6vw,4.8rem);
+color:var(--accent-pink);
+text-shadow:0 0 35px var(--glow-pink);
+}
+
+.hero p{
+max-width:720px;
+margin:1rem auto 2rem;
+color:var(--text-secondary);
+font-size:1.25rem;
+}
+
+.btn{
+display:inline-block;
+padding:1rem 2.5rem;
+border-radius:50px;
+font-weight:700;
+text-decoration:none;
+background:linear-gradient(135deg,var(--accent-pink),#c026a3);
+color:white;
+}
+
+/* ===== SECTIONS ===== */
+section{
+padding:6rem 2rem;
+position:relative;
+z-index:5;
+}
+
+.container{max-width:1200px;margin:0 auto}
+
+.section-title{
+text-align:center;
+font-size:2.6rem;
+margin-bottom:3rem;
+color:var(--accent-pink);
+}
+
+/* ===== LIVE SERVERS (MINIMAL) ===== */
+.live-servers{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
 gap:2rem;
 }
 
-.card{
+.server-card{
 background:var(--bg-card);
+border:2px solid rgba(255,79,216,.25);
 border-radius:20px;
 padding:2rem;
-border:2px solid rgba(255,79,216,.25);
+position:relative;
 }
 
-label{
+.server-name{
+font-size:1.3rem;
 font-weight:700;
-display:block;
-margin-bottom:.5rem;
 }
 
-input,select{
-width:100%;
-padding:.7rem;
-border-radius:10px;
-border:none;
-font-size:1rem;
-margin-bottom:1.2rem;
+.server-status{
+position:absolute;
+top:14px;
+right:14px;
+display:flex;
+align-items:center;
+gap:.4rem;
+font-size:.85rem;
+font-weight:700;
+padding:.35rem .75rem;
+border-radius:20px;
+background:rgba(34,197,94,.15);
+color:#22c55e;
+border:1px solid rgba(34,197,94,.5);
 }
 
-.colors{
+.status-dot{
+width:8px;
+height:8px;
+background:#22c55e;
+border-radius:50%;
+}
+
+/* ===== PACKAGES ===== */
+.packages{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(60px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:2.5rem;
+}
+
+.package-card{
+background:var(--bg-card);
+border:2px solid rgba(255,79,216,.25);
+border-radius:22px;
+padding:2.6rem 2rem;
+text-align:center;
+position:relative;
+}
+
+.package-card.popular{
+border-color:var(--accent-soft-pink);
+box-shadow:0 0 35px rgba(255,157,230,.4);
+}
+
+.popular-badge{
+position:absolute;
+top:18px;
+right:-45px;
+background:var(--accent-pink);
+color:white;
+padding:.5rem 3.5rem;
+font-weight:700;
+font-size:.9rem;
+transform:rotate(45deg);
+}
+
+.price{
+font-size:2.4rem;
+color:var(--accent-pink);
+margin:1rem 0;
+}
+
+.package-card ul{
+list-style:none;
+margin:1.5rem 0;
+color:var(--text-secondary);
+}
+
+.buy-buttons{
+display:flex;
 gap:1rem;
+justify-content:center;
+flex-wrap:wrap;
 }
 
-.color{
-height:60px;
-border-radius:10px;
-cursor:pointer;
-border:3px solid transparent;
-}
-
-.color.selected{
-border-color:var(--accent-green);
-}
-
-.summary{
-margin-top:2rem;
-background:rgba(255,255,255,.05);
-padding:1.5rem;
-border-radius:15px;
-font-size:1.05rem;
-}
-
-button{
-margin-top:1.5rem;
-width:100%;
-padding:1rem;
+.buy{
+padding:.8rem 1.8rem;
 border-radius:40px;
 font-weight:700;
-font-size:1.1rem;
-border:none;
-cursor:pointer;
-background:linear-gradient(135deg,var(--accent-pink),#c026a3);
-color:white;
-transition:.3s;
+text-decoration:none;
 }
 
-button:hover{transform:scale(1.05)}
+.paypal{background:#ffc439;color:#111}
+.stripe{background:#635bff;color:white}
 
-.note{
-margin-top:1rem;
-font-size:.95rem;
-color:var(--text-secondary);
+/* ===== FOOTER ===== */
+footer{
+background:var(--bg-secondary);
+padding:2rem;
 text-align:center;
+color:var(--text-secondary);
+border-top:1px solid rgba(255,79,216,.3);
 }
 </style>
 </head>
 
 <body>
+
+<div class="animated-bg">
+  <div class="grid-lines"></div>
+  <div class="floating-particles" id="particles"></div>
+</div>
+
+<nav>
+<ul>
+<li><a href="#home">Home</a></li>
+<li><a href="#live">Live</a></li>
+<li><a href="#ark">ARK</a></li>
+<li><a href="#hytale">Hytale</a></li>
+</ul>
+</nav>
+
+<section class="hero" id="home">
+<div>
+<h1>Zeropoint Hosting</h1>
+<p>Official package hub for our ARK & Hytale servers.</p>
+<a href="#ark" class="btn">View Packages</a>
+</div>
+</section>
+
+<!-- LIVE SERVERS -->
+<section id="live">
 <div class="container">
+<h2 class="section-title">🟢 Live Servers</h2>
+<div class="live-servers">
 
-<h1>🦖 Dino & Color Order</h1>
-<p>Select your options below.  
-Your order will be emailed directly to Zeropoint Hosting.</p>
-
-<div class="grid">
-
-<!-- LEFT -->
-<div class="card">
-<label>Discord Username (required)</label>
-<input id="discord" placeholder="username#1234">
-
-<label>Package</label>
-<select id="package">
-<option>VIP Bronze</option>
-<option>VIP Gold</option>
-<option>VIP Alpha</option>
-</select>
-
-<label>Dino</label>
-<select id="dino">
-<option>Rex</option>
-<option>Giga</option>
-<option>Wyvern</option>
-<option>Shadowmane</option>
-<option>Managarmr</option>
-<option>Custom (Admin Approved)</option>
-</select>
-
-<label>Map</label>
-<select id="map">
-<option>Ragnarok</option>
-<option>Fjordur</option>
-<option>Crystal Isles</option>
-</select>
+<div class="server-card">
+  <div class="server-status"><span class="status-dot"></span> ONLINE</div>
+  <div class="server-name">ARK – Ragnarok</div>
 </div>
 
-<!-- RIGHT -->
-<div class="card">
-<label>Choose Color(s)</label>
-<div class="colors">
-<div class="color" style="background:#ff4fd8"></div>
-<div class="color" style="background:#22c55e"></div>
-<div class="color" style="background:#3b82f6"></div>
-<div class="color" style="background:#facc15"></div>
-<div class="color" style="background:#ef4444"></div>
-<div class="color" style="background:#a855f7"></div>
+<div class="server-card">
+  <div class="server-status"><span class="status-dot"></span> ONLINE</div>
+  <div class="server-name">ARK – Fjordur</div>
 </div>
+
+<div class="server-card">
+  <div class="server-status"><span class="status-dot"></span> ONLINE</div>
+  <div class="server-name">Hytale SMP</div>
 </div>
 
 </div>
+</div>
+</section>
 
-<div class="summary" id="summary"></div>
+<!-- ARK PACKAGES -->
+<section id="ark">
+<div class="container">
+<h2 class="section-title">🦖 ARK Packages</h2>
+<div class="packages">
 
-<button onclick="sendOrder()">📧 Email Order</button>
-<div class="note">Orders are reviewed manually. Please allow time for delivery.</div>
-
+<div class="package-card">
+<h3>VIP Bronze</h3>
+<div class="price">$5</div>
+<ul>
+<li>Starter kit</li>
+<li>VIP Discord role</li>
+</ul>
+<div class="buy-buttons">
+<a class="buy paypal" href="https://www.paypal.me/ZeropointHosting" target="_blank">PayPal</a>
+<a class="buy stripe" href="dinos.html">Choose Dino</a>
+</div>
 </div>
 
-<!-- EMAILJS -->
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<div class="package-card popular">
+<div class="popular-badge">POPULAR</div>
+<h3>VIP Gold</h3>
+<div class="price">$15</div>
+<ul>
+<li>Extra BBS</li>
+<li>Custom Dino Color</li>
+<li>Priority Support</li>
+</ul>
+<div class="buy-buttons">
+<a class="buy paypal" href="https://www.paypal.me/ZeropointHosting" target="_blank">PayPal</a>
+<a class="buy stripe" href="dinos.html">Choose Dino</a>
+</div>
+</div>
+
+<div class="package-card">
+<h3>VIP Alpha</h3>
+<div class="price">$25</div>
+<ul>
+<li>Monthly rewards</li>
+<li>Admin-approved tame</li>
+</ul>
+<div class="buy-buttons">
+<a class="buy paypal" href="https://www.paypal.me/ZeropointHosting" target="_blank">PayPal</a>
+<a class="buy stripe" href="dinos.html">Choose Dino</a>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- HYTALE PACKAGES -->
+<section id="hytale">
+<div class="container">
+<h2 class="section-title">🧱 Hytale Packages</h2>
+<div class="packages">
+
+<div class="package-card popular">
+<div class="popular-badge">POPULAR</div>
+<h3>Champion</h3>
+<div class="price">$15</div>
+<ul>
+<li>Cosmetics</li>
+<li>Early access</li>
+</ul>
+</div>
+
+<div class="package-card">
+<h3>Supporter</h3>
+<div class="price">$5</div>
+<ul>
+<li>Supporter role</li>
+</ul>
+</div>
+
+<div class="package-card">
+<h3>Elite</h3>
+<div class="price">$25</div>
+<ul>
+<li>Exclusive cosmetics</li>
+</ul>
+</div>
+
+</div>
+</div>
+</section>
+
+<footer>
+<p>© <span id="year"></span> Zeropoint Hosting</p>
+</footer>
+
 <script>
-emailjs.init("YOUR_PUBLIC_KEY");
-
-let selectedColors=[];
-
-document.querySelectorAll('.color').forEach(c=>{
-  c.addEventListener('click',()=>{
-    c.classList.toggle('selected');
-    updateSummary();
-  });
-});
-
-document.querySelectorAll('input,select').forEach(e=>{
-  e.addEventListener('change',updateSummary);
-});
-
-function updateSummary(){
-  const discord=document.getElementById('discord').value || "Not Provided";
-  const pkg=document.getElementById('package').value;
-  const dino=document.getElementById('dino').value;
-  const map=document.getElementById('map').value;
-
-  const colors=[...document.querySelectorAll('.color.selected')]
-    .map(c=>c.style.backgroundColor)
-    .join(', ') || "Default";
-
-  document.getElementById('summary').innerHTML=
-`<strong>Order Preview:</strong><br><br>
-Discord: ${discord}<br>
-Package: ${pkg}<br>
-Dino: ${dino}<br>
-Map: ${map}<br>
-Colors: ${colors}`;
+const p=document.getElementById("particles");
+for(let i=0;i<40;i++){
+  const d=document.createElement("div");
+  d.className="particle";
+  d.style.left=Math.random()*100+"%";
+  d.style.top=Math.random()*100+"%";
+  d.style.animationDelay=Math.random()*20+"s";
+  p.appendChild(d);
 }
-
-function sendOrder(){
-  const discord=document.getElementById('discord').value.trim();
-  if(!discord){
-    alert("Please enter your Discord username.");
-    return;
-  }
-
-  const message=document.getElementById('summary').innerText;
-
-  emailjs.send(
-    "YOUR_SERVICE_ID",
-    "YOUR_TEMPLATE_ID",
-    { message }
-  ).then(()=>{
-    alert("✅ Order sent successfully!");
-  },err=>{
-    alert("❌ Failed to send order. Please try again.");
-    console.error(err);
-  });
-}
-
-updateSummary();
+document.getElementById("year").textContent=new Date().getFullYear();
 </script>
 
 </body>
