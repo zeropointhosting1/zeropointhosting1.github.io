@@ -5,15 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Zeropoint Hosting | Private ARK & Hytale Cluster</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700;900&display=swap" rel="stylesheet">
 
 <style>
-/* ================= THEME & VARIABLES ================= */
 :root {
   --bg-primary: #050508;
   --bg-secondary: #0b0b15;
-  --bg-card: rgba(28, 28, 42, 0.6);
+  --bg-card: rgba(19, 19, 32, 0.72);
   --accent: #ff4fd8;
   --accent-dark: #c026a3;
   --accent-grad: linear-gradient(135deg, #ff4fd8 0%, #9d50bb 100%);
@@ -21,12 +19,13 @@
   --text-secondary: #cbd5e1;
   --green: #22c55e;
   --red: #f87171;
-  --glow: rgba(255, 79, 216, 0.4);
+  --glow: rgba(255, 79, 216, 0.35);
   --border: rgba(255, 79, 216, 0.2);
+  --shadow: rgba(4, 4, 12, 0.6);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
   font-family: 'Rajdhani', sans-serif;
   background: var(--bg-primary);
@@ -34,76 +33,116 @@ body {
   overflow-x: hidden;
 }
 
-/* ================= BACKGROUND ================= */
-.animated-bg { position: fixed; inset: 0; z-index: 0; }
+.animated-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 .grid-lines {
-  position: absolute; width: 100%; height: 100%;
-  background-image: 
+  position: absolute; inset: 0;
+  background-image:
     linear-gradient(rgba(255, 79, 216, 0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 79, 216, 0.06) 1px, transparent 1px);
   background-size: 50px 50px;
-  animation: gridMove 28s linear infinite;
+  animation: gridMove 30s linear infinite;
 }
-@keyframes gridMove { 0% { transform: translate(0, 0); } 100% { transform: translate(50px, 50px); } }
+@keyframes gridMove { from { transform: translate(0,0);} to { transform: translate(50px,50px);} }
 
-/* ================= NAVIGATION ================= */
 nav {
-  position: fixed; top: 0; width: 100%; z-index: 1000;
-  background: rgba(10, 10, 15, 0.92);
-  backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(8,8,14,0.86);
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
 }
 .nav-inner {
-  max-width: 1200px; margin: auto; padding: .85rem 1.5rem;
+  max-width: 1200px; margin: auto; padding: 16px 24px;
   display: flex; align-items: center; justify-content: space-between;
 }
-.brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
-.brand img { width: 34px; filter: drop-shadow(0 0 10px var(--glow)); }
-.brand span { font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; color: var(--text-primary); text-transform: uppercase; }
-.nav-links { display: flex; gap: 1.75rem; list-style: none; }
-.nav-links a { text-decoration: none; font-weight: 700; color: var(--text-secondary); transition: .25s; text-transform: uppercase; font-size: 0.9rem; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.brand-mark {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: grid; place-items: center; font-weight: 900;
+  background: var(--accent-grad); color: #050508;
+}
+.brand-text { font-size: 1.1rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.nav-links { display: flex; gap: 1.5rem; list-style: none; }
+.nav-links a { text-decoration: none; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; font-size: .85rem; }
 .nav-links a:hover { color: var(--accent); }
 
-/* ================= HERO ================= */
 .hero {
-  min-height: 90vh; display: flex; align-items: center; justify-content: center;
-  text-align: center; padding: 7rem 2rem 3rem; position: relative; z-index: 5;
+  min-height: 90vh; display: grid; align-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 3rem; padding: 7rem 6vw 4rem; position: relative; z-index: 5;
 }
-.hero h1 { font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; line-height: 0.9; margin-bottom: 1.5rem; }
-.hero p { max-width: 700px; margin: 0 auto 2rem; color: var(--text-secondary); font-size: 1.3rem; }
+.hero h1 {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 900; background: var(--accent-grad);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  text-transform: uppercase; line-height: 0.9; margin-bottom: 1.2rem;
+}
+.hero p { max-width: 600px; color: var(--text-secondary); font-size: 1.2rem; line-height: 1.7; }
 
-/* ================= LIVE STATUS TAB ================= */
-.status-container { max-width: 900px; margin: 4rem auto; position: relative; z-index: 5; }
-.status-tab { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; backdrop-filter: blur(15px); }
-.server-row { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 1.2rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; }
-.badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; margin-right: 10px; border: 1px solid; }
-.ark-badge { color: #f59e0b; border-color: #f59e0b; }
-.hytale-badge { color: #3b82f6; border-color: #3b82f6; }
-.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: var(--green); box-shadow: 0 0 8px var(--green); margin-right: 8px; }
+.btn {
+  display: inline-block; padding: .85rem 2rem; border-radius: 999px;
+  font-weight: 800; text-transform: uppercase; letter-spacing: .04em;
+  text-decoration: none; border: 1px solid transparent; transition: .2s ease;
+}
+.btn.primary { background: var(--accent-grad); color: #06030c; }
+.btn.ghost { border-color: var(--border); color: white; }
 
-/* ================= NETWORK & GLOBE ================= */
-.network-section { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-top: 6rem; position: relative; z-index: 5; }
-.globe-wrap { position: relative; width: 100%; height: 550px; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, rgba(255, 79, 216, 0.1) 0%, transparent 70%); }
+.section { padding: 4rem 6vw; position: relative; z-index: 5; }
+.section h2 { font-size: 2.5rem; text-transform: uppercase; letter-spacing: 2px; }
+
+.status-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 18px; padding: 1rem 2rem; box-shadow: 0 20px 50px var(--shadow);
+}
+.server-row {
+  display: grid; grid-template-columns: 2fr 1fr 1fr;
+  padding: 1.2rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+  align-items: center; gap: 1rem;
+}
+.server-row:last-child { border-bottom: none; }
+.badge { font-size: 0.65rem; padding: 3px 9px; border-radius: 6px; font-weight: 900; border: 1px solid; }
+.badge-ark { color: #f59e0b; border-color: #f59e0b; }
+.badge-hytale { color: #3b82f6; border-color: #3b82f6; }
+
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 10px var(--green); display: inline-block;
+}
+
+.network {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem; align-items: center;
+}
+.globe-wrap {
+  position: relative; min-height: 520px; display: grid; place-items: center;
+  background: radial-gradient(circle, rgba(255,79,216,0.15) 0%, transparent 70%);
+}
 canvas { width: 100% !important; height: 100% !important; outline: none; }
+.globe-overlay { position: absolute; inset: 0; margin: auto; opacity: .7; mix-blend-mode: screen; pointer-events: none; }
 
-.ping-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 2rem; }
-.ping-item { display: flex; flex-direction: column; }
-.ping-val { font-weight: 800; display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-.val-green { color: var(--green); }
-.val-red { color: var(--red); }
+.ping-grid { display: grid; gap: 1.5rem; margin-top: 1.5rem; }
+.ping-group {
+  background: rgba(10,10,20,0.6);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px; padding: 1rem 1.2rem;
+}
+.ping-row { display: flex; align-items: center; justify-content: space-between; margin-top: .6rem; }
+.ping-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 12px currentColor; }
+.ping-green { color: var(--green); }
+.ping-red { color: var(--red); }
 
-/* ================= FOOTER ================= */
-footer { background: var(--bg-secondary); text-align: center; padding: 4rem 2rem; border-top: 1px solid var(--border); color: var(--text-secondary); position: relative; z-index: 5; }
+footer {
+  background: var(--bg-secondary); text-align: center;
+  padding: 3rem 2rem; border-top: 1px solid var(--border);
+  color: var(--text-secondary); position: relative; z-index: 5;
+}
 
 @media (max-width: 900px) {
-  .network-section { grid-template-columns: 1fr; text-align: center; }
-  .server-row { grid-template-columns: 1fr; gap: 10px; text-align: center; }
+  .server-row { grid-template-columns: 1fr; text-align: center; }
 }
 </style>
 </head>
 
 <body>
-
 <div class="animated-bg">
   <div class="grid-lines"></div>
 </div>
@@ -111,82 +150,81 @@ footer { background: var(--bg-secondary); text-align: center; padding: 4rem 2rem
 <nav>
   <div class="nav-inner">
     <a class="brand" href="#">
-      <img src="zeropoint.png" alt="Logo">
-      <span>Zeropoint</span>
+      <span class="brand-mark">ZP</span>
+      <span class="brand-text">Zeropoint Hosting</span>
     </a>
     <ul class="nav-links">
       <li><a href="#servers">Live Nodes</a></li>
       <li><a href="#network">Network</a></li>
-      <li><a href="#">Packages</a></li>
+      <li><a href="#packages">Packages</a></li>
     </ul>
-    <a class="discord-btn" href="#"><i class="fab fa-discord"></i></a>
+    <a class="btn primary" href="#servers">View Status</a>
   </div>
 </nav>
 
 <section class="hero">
   <div>
+    <p style="letter-spacing:.4em; font-size:.75rem; color:var(--text-secondary); text-transform:uppercase;">Private Cluster Network</p>
     <h1>Zeropoint Hosting</h1>
     <p>Premium private clusters for ARK and Hytale. Powered by self-hosted hardware for the ultimate survival experience.</p>
-    <div style="display: flex; justify-content: center; gap: 1rem;">
-       <a href="#servers" class="btn" style="background: var(--accent-grad); color: white; padding: 1rem 2.5rem; text-decoration: none; border-radius: 40px; font-weight: 900;">View Status</a>
+    <div style="margin-top: 2rem; display:flex; gap:1rem; flex-wrap:wrap;">
+      <a href="#servers" class="btn primary">View Live Status</a>
+      <a href="#packages" class="btn ghost">Explore Packages</a>
     </div>
   </div>
 </section>
 
-<section id="servers" class="container">
-  <div style="text-align: center; margin-bottom: 3rem;">
-    <h2 style="font-size: 2.5rem; text-transform: uppercase; letter-spacing: 2px;">Command Center</h2>
-  </div>
-  
-  <div class="status-tab">
+<section id="servers" class="section">
+  <h2>Command Center</h2>
+  <div class="status-card" style="margin-top:2rem;">
     <div class="server-row">
-      <div style="font-weight: 800;"><span class="badge ark-badge">ARK</span> Ragnarok PvE Cluster</div>
-      <div style="font-size: 0.9rem; font-weight: 700;"><span class="dot"></span> ONLINE</div>
+      <div style="font-weight: 800;"><span class="badge badge-ark">ARK</span> Ragnarok PvE Cluster</div>
+      <div style="font-size: 0.9rem; font-weight: 700;"><span class="status-dot"></span> ONLINE</div>
       <div style="text-align: right; color: var(--green); font-weight: 800;"><span class="live-pop" data-base="42">42</span> / 70</div>
     </div>
     <div class="server-row">
-      <div style="font-weight: 800;"><span class="badge ark-badge">ARK</span> Fjordur PvP Main</div>
-      <div style="font-size: 0.9rem; font-weight: 700;"><span class="dot"></span> ONLINE</div>
+      <div style="font-weight: 800;"><span class="badge badge-ark">ARK</span> Fjordur PvP Main</div>
+      <div style="font-size: 0.9rem; font-weight: 700;"><span class="status-dot"></span> ONLINE</div>
       <div style="text-align: right; color: var(--green); font-weight: 800;"><span class="live-pop" data-base="15">15</span> / 70</div>
     </div>
     <div class="server-row">
-      <div style="font-weight: 800;"><span class="badge hytale-badge">HYTALE</span> Zeropoint Alpha Node</div>
-      <div style="font-size: 0.9rem; font-weight: 700; color: #64748b;"><span class="dot" style="background: #64748b; box-shadow: none;"></span> STANDBY</div>
+      <div style="font-weight: 800;"><span class="badge badge-hytale">HYTALE</span> Zeropoint Alpha Node</div>
+      <div style="font-size: 0.9rem; font-weight: 700; color: #64748b;"><span class="status-dot" style="background:#64748b; box-shadow:none;"></span> STANDBY</div>
       <div style="text-align: right; color: #64748b; font-weight: 800;">0 / 150</div>
     </div>
   </div>
 </section>
 
-<section id="network" class="container">
-  <div class="network-section">
+<section id="network" class="section">
+  <div class="network">
     <div class="globe-wrap">
       <canvas id="cobe"></canvas>
+      <canvas id="cobe-far" class="globe-overlay"></canvas>
     </div>
     <div>
-      <h2 style="color: var(--green); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 1rem; font-weight: 800;">NETWORK INFRASTRUCTURE</h2>
-      <h3 style="font-size: 2.8rem; font-weight: 900; margin-bottom: 1.5rem; line-height: 1.1;">Global Backbone Optimized for Gaming.</h3>
+      <h2 style="color: var(--green); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 1rem;">NETWORK INFRASTRUCTURE</h2>
+      <h3 style="font-size: 2.6rem; font-weight: 900; margin-bottom: 1rem; line-height: 1.1;">Global Backbone Optimized for Gaming.</h3>
       <p style="color: var(--text-secondary); line-height: 1.6;">Our New York and Miami nodes provide the foundation for our cluster, ensuring the lowest possible latency for our players.</p>
-      
+
       <div class="ping-grid">
-        <div class="ping-item">
-          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">🇺🇸 New York, US</span>
-          <span class="ping-val val-green"><span class="dynamic-ping" data-min="31" data-max="37">34</span>ms</span>
+        <div class="ping-group">
+          <div style="letter-spacing:.14em; font-size:.7rem; color:var(--text-secondary); text-transform:uppercase;">Primary U.S. Nodes</div>
+          <div class="ping-row"><div>🇺🇸 New York, US</div><div class="ping-green"><span class="ping-dot"></span><span class="dynamic-ping" data-min="31" data-max="37">34</span>ms</div></div>
+          <div class="ping-row"><div>🇺🇸 Miami, US</div><div class="ping-green"><span class="ping-dot"></span><span class="dynamic-ping" data-min="19" data-max="25">22</span>ms</div></div>
         </div>
-        <div class="ping-item">
-          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">🇺🇸 Miami, US</span>
-          <span class="ping-val val-green"><span class="dynamic-ping" data-min="19" data-max="25">22</span>ms</span>
-        </div>
-        <div class="ping-item">
-          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">🇬🇧 London, UK</span>
-          <span class="ping-val val-red">114ms</span>
-        </div>
-        <div class="ping-item">
-          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);">🇦🇺 Sydney, AU</span>
-          <span class="ping-val val-red">314ms</span>
+        <div class="ping-group">
+          <div style="letter-spacing:.14em; font-size:.7rem; color:var(--text-secondary); text-transform:uppercase;">Extended Global Reach</div>
+          <div class="ping-row"><div>🇬🇧 London, UK</div><div class="ping-red"><span class="ping-dot"></span><span class="dynamic-ping" data-min="110" data-max="128">114</span>ms</div></div>
+          <div class="ping-row"><div>🇦🇺 Sydney, AU</div><div class="ping-red"><span class="ping-dot"></span><span class="dynamic-ping" data-min="300" data-max="338">314</span>ms</div></div>
         </div>
       </div>
     </div>
   </div>
+</section>
+
+<section id="packages" class="section">
+  <h2>Packages</h2>
+  <p style="color:var(--text-secondary); margin-top:1rem;">Private clusters, invite-only worlds, and custom rulesets available.</p>
 </section>
 
 <footer>
@@ -198,25 +236,31 @@ import createGlobe from 'https://cdn.skypack.dev/cobe'
 
 let phi = 0
 const canvas = document.getElementById("cobe")
+const farCanvas = document.getElementById("cobe-far")
 
-const globe = createGlobe(canvas, {
-  devicePixelRatio: 2,
-  width: 550 * 2,
-  height: 550 * 2,
+const size = 520
+const dpr = Math.min(window.devicePixelRatio || 1, 2)
+;[canvas, farCanvas].forEach((c) => {
+  c.width = size * dpr
+  c.height = size * dpr
+})
+
+createGlobe(canvas, {
+  devicePixelRatio: dpr,
+  width: size * dpr,
+  height: size * dpr,
   phi: 0,
-  theta: 0.45,
+  theta: 0.35,
   dark: 1,
   diffuse: 1.2,
   mapSamples: 16000,
-  mapBrightness: 6,
-  baseColor: [0.05, 0.05, 0.1],
+  mapBrightness: 4.8,
+  baseColor: [0.05, 0.06, 0.12],
   markerColor: [0.13, 0.77, 0.36],
   glowColor: [1, 0.3, 0.85],
   markers: [
     { location: [40.7128, -74.0060], size: 0.1 }, 
-    { location: [25.7617, -80.1918], size: 0.1 },
-    { location: [51.5074, -0.1278], size: 0.05 },
-    { location: [-33.8688, 151.2093], size: 0.05 }
+    { location: [25.7617, -80.1918], size: 0.1 }
   ],
   arcs: [
     { start: [40.7128, -74.0060], end: [25.7617, -80.1918], color: '#22c55e' },
@@ -225,11 +269,32 @@ const globe = createGlobe(canvas, {
   ],
   onRender: (state) => {
     state.phi = phi
-    phi += 0.005 
+    phi += 0.004
   },
 })
 
-// Dynamic UI logic
+createGlobe(farCanvas, {
+  devicePixelRatio: dpr,
+  width: size * dpr,
+  height: size * dpr,
+  phi: 0,
+  theta: 0.35,
+  dark: 0,
+  diffuse: 0,
+  mapSamples: 1,
+  mapBrightness: 0,
+  baseColor: [0, 0, 0],
+  markerColor: [0.97, 0.45, 0.45],
+  glowColor: [0, 0, 0],
+  markers: [
+    { location: [51.5074, -0.1278], size: 0.08 },
+    { location: [-33.8688, 151.2093], size: 0.08 }
+  ],
+  onRender: (state) => {
+    state.phi = phi
+  },
+})
+
 setInterval(() => {
   document.querySelectorAll('.live-pop').forEach(el => {
     const base = parseInt(el.dataset.base);
