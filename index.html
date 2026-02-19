@@ -1,140 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zeropoint Hosting | ARK & Hytale Hosting</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zeropoint | ARK & Hytale Hosting</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
-:root{
+:root {
   --bg:#050508;
   --bg2:#0b0b15;
-  --card:rgba(28,28,42,.65);
+  --card:rgba(28,28,42,.6);
   --pink:#ff4fd8;
   --muted:#cbd5e1;
   --green:#22c55e;
   --red:#f87171;
   --border:rgba(255,79,216,.25);
-  --nav-bg: rgba(10,10,18,.72);
-  --nav-pill: rgba(255,255,255,.06);
+  --glow:rgba(255,79,216,.45);
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{overflow-x:hidden}
 body{
   font-family:'Rajdhani',sans-serif;
   background:var(--bg);
   color:white;
+  overflow-x:hidden;
 }
 
-/* GRID */
+/* ===== BACKGROUND GRID ===== */
+.animated-bg{
+  position:fixed;
+  inset:0;
+  z-index:0;
+}
 .grid{
-  position:fixed;inset:0;z-index:0;
+  position:absolute;
+  inset:0;
   background-image:
-    linear-gradient(rgba(255,79,216,.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,79,216,.06) 1px, transparent 1px);
+    linear-gradient(rgba(255,79,216,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,79,216,.05) 1px, transparent 1px);
   background-size:50px 50px;
-  animation:move 30s linear infinite;
+  animation:gridMove 30s linear infinite;
 }
-@keyframes move{to{transform:translate(50px,50px)}}
+@keyframes gridMove{to{transform:translate(50px,50px)}}
 
-/* NAV (cleaner on PC, mobile stays stacked) */
+/* ===== FLOATING PARTICLES ===== */
+.particles span{
+  position:absolute;
+  width:4px;
+  height:4px;
+  background:var(--pink);
+  border-radius:50%;
+  opacity:.4;
+  animation:float 18s infinite linear;
+}
+@keyframes float{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-120vh)}
+}
+
+/* ===== NAV ===== */
 nav{
   position:fixed;
   top:0;
   width:100%;
   z-index:10;
-  padding:.65rem 1rem;
-}
-.nav-shell{
-  max-width:1200px;
-  margin:auto;
-  background:var(--nav-bg);
-  border:1px solid var(--border);
-  border-radius:18px;
-  backdrop-filter:blur(14px);
-  box-shadow: 0 12px 40px rgba(0,0,0,.35);
+  background:rgba(10,10,18,.9);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
 }
 .nav-inner{
-  padding:.8rem 1.1rem;
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  align-items:center;
-  gap:1rem;
-}
-
-.brand{
+  max-width:1200px;
+  margin:auto;
+  padding:.85rem 1.5rem;
   display:flex;
   align-items:center;
-  gap:.65rem;
-  text-decoration:none;
+  justify-content:space-between;
 }
-.brand img{width:34px;filter: drop-shadow(0 0 10px rgba(255,79,216,.25));}
-.brand span{
-  font-weight:900;
-  letter-spacing:1px;
-  color:white;
+.brand img{
+  width:34px;
+  filter:drop-shadow(0 0 10px var(--glow));
 }
-
-/* PC nav pill */
 .nav-links{
   display:flex;
-  justify-content:center;
-  gap:.4rem;
+  gap:1.8rem;
   list-style:none;
-  padding:.35rem;
-  background: rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:999px;
 }
 .nav-links a{
-  display:inline-flex;
-  align-items:center;
-  gap:.5rem;
+  color:var(--muted);
   text-decoration:none;
   font-weight:900;
-  color:var(--muted);
   text-transform:uppercase;
-  font-size:.8rem;
+  font-size:.85rem;
   letter-spacing:1px;
-  padding:.55rem .9rem;
-  border-radius:999px;
-  transition: .2s ease;
 }
-.nav-links a:hover{
-  color:white;
-  background: var(--nav-pill);
-}
-.nav-links a:active{ transform: translateY(1px); }
-
-.discord{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:40px;height:40px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.04);
+.nav-links a:hover{color:var(--pink)}
+.discord-btn{
   color:var(--pink);
-  font-size:1.2rem;
-  transition:.2s ease;
-}
-.discord:hover{
-  background: rgba(255,79,216,.12);
-  border-color: rgba(255,79,216,.35);
+  font-size:1.3rem;
 }
 
-/* HERO */
+/* ===== HERO ===== */
 .hero{
   min-height:90vh;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-  padding:8.2rem 2rem 3rem; /* extra for nav shell */
+  padding:7.5rem 2rem 3rem;
   position:relative;
   z-index:2;
 }
@@ -144,16 +119,15 @@ nav{
   background:linear-gradient(135deg,var(--pink),#9d50bb);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
-  margin-bottom:1rem;
 }
 .hero p{
-  max-width:740px;
-  margin:auto;
+  max-width:720px;
+  margin:1rem auto 0;
   color:var(--muted);
   font-size:1.25rem;
 }
 
-/* SECTIONS */
+/* ===== CONTAINERS ===== */
 .container{
   max-width:1100px;
   margin:auto;
@@ -164,11 +138,10 @@ nav{
 h2{
   text-transform:uppercase;
   letter-spacing:2px;
-  font-size:2.2rem;
   margin-bottom:2rem;
 }
 
-/* SERVERS */
+/* ===== SERVERS ===== */
 .server-box{
   background:var(--card);
   border:1px solid var(--border);
@@ -193,13 +166,9 @@ h2{
   background:var(--green);
   box-shadow:0 0 8px var(--green);
 }
-.right{
-  text-align:right;
-  color:var(--green);
-  font-weight:900;
-}
+.right{text-align:right;color:var(--green);font-weight:900}
 
-/* NETWORK */
+/* ===== NETWORK ===== */
 .network{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -207,52 +176,34 @@ h2{
   align-items:center;
 }
 .globe-wrap{
-  width:100%;
   max-width:420px;
-  margin:0 auto;
+  margin:auto;
 }
-canvas{
-  width:100%;
-  height:auto;
-  display:block;
-}
+canvas{width:100%;height:auto}
 
-/* PING */
+/* ===== PING ===== */
 .ping{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:1.2rem;
-  margin-top:1.5rem;
 }
-.ping div{font-weight:800;color:var(--muted)}
-.ping .green{color:var(--green);font-weight:900}
-.ping .red{color:var(--red);font-weight:900}
+.green{color:var(--green);font-weight:900}
+.red{color:var(--red);font-weight:900}
 
-/* FOOTER */
+/* ===== FOOTER ===== */
 footer{
+  background:var(--bg2);
   text-align:center;
   padding:3rem 2rem;
-  color:var(--muted);
   border-top:1px solid var(--border);
-  background:var(--bg2);
+  color:var(--muted);
 }
 
-/* MOBILE (keep behavior you liked) */
+/* ===== MOBILE ===== */
 @media(max-width:768px){
-  nav{ padding:.55rem .75rem; }
-  .nav-inner{
-    grid-template-columns:1fr;
-    gap:.75rem;
-    text-align:center;
-  }
-  .nav-links{
-    flex-wrap:wrap;
-    justify-content:center;
-    border-radius:16px; /* looks better when wrapping */
-    background: rgba(255,255,255,.03);
-  }
+  .nav-links{gap:1rem;font-size:.75rem}
   .network{grid-template-columns:1fr;text-align:center}
-  .server{grid-template-columns:1fr;text-align:center;gap:.5rem}
+  .server{grid-template-columns:1fr;gap:.5rem;text-align:center}
   .right{text-align:center}
   .status{justify-content:center}
   .ping{grid-template-columns:1fr}
@@ -262,26 +213,31 @@ footer{
 
 <body>
 
-<div class="grid"></div>
+<div class="animated-bg">
+  <div class="grid"></div>
+  <div class="particles">
+    <span style="left:10%"></span>
+    <span style="left:25%"></span>
+    <span style="left:40%"></span>
+    <span style="left:60%"></span>
+    <span style="left:75%"></span>
+    <span style="left:90%"></span>
+  </div>
+</div>
 
 <nav>
-  <div class="nav-shell">
-    <div class="nav-inner">
-      <a class="brand" href="#">
-        <img src="zeropoint.png" alt="Zeropoint">
-        <span>Zeropoint</span>
-      </a>
-
-      <ul class="nav-links">
-        <li><a href="#ark"><i class="fa-solid fa-dragon"></i> ARK Hosting</a></li>
-        <li><a href="#hytale"><i class="fa-solid fa-cubes"></i> Hytale Hosting</a></li>
-        <li><a href="#servers"><i class="fa-solid fa-signal"></i> Live Nodes</a></li>
-      </ul>
-
-      <a class="discord" href="YOUR_DISCORD_INVITE" target="_blank" aria-label="Join Discord">
-        <i class="fab fa-discord"></i>
-      </a>
-    </div>
+  <div class="nav-inner">
+    <a class="brand" href="#"><img src="zeropoint.png" alt="Zeropoint"></a>
+    <ul class="nav-links">
+      <li><a href="#ark">ARK Hosting</a></li>
+      <li><a href="#hytale">Hytale Hosting</a></li>
+      <li><a href="#servers">Live Nodes</a></li>
+      <li><a href="#about">About Us</a></li>
+      <li><a href="#admins">Current Admins</a></li>
+    </ul>
+    <a class="discord-btn" href="YOUR_DISCORD_INVITE" target="_blank">
+      <i class="fab fa-discord"></i>
+    </a>
   </div>
 </nav>
 
@@ -296,17 +252,17 @@ footer{
   <h2>Command Center</h2>
   <div class="server-box">
     <div class="server">
-      <div><strong>ARK</strong> Crystal Isles (PvE)</div>
+      <div>ARK – Crystal Isles</div>
       <div class="status"><span class="dot"></span>ONLINE</div>
       <div class="right">0 / 16</div>
     </div>
     <div class="server">
-      <div><strong>ARK</strong> Fjordur (PvE)</div>
+      <div>ARK – Fjordur</div>
       <div class="status"><span class="dot"></span>ONLINE</div>
       <div class="right">1 / 16</div>
     </div>
     <div class="server">
-      <div><strong>ARK</strong> Ragnarok (PvE)</div>
+      <div>ARK – Ragnarok</div>
       <div class="status"><span class="dot"></span>ONLINE</div>
       <div class="right">22 / 26</div>
     </div>
@@ -330,6 +286,20 @@ footer{
   </div>
 </section>
 
+<section id="about" class="container">
+  <h2>About Us</h2>
+  <p>Zeropoint is a community-driven ARK and Hytale hosting platform focused on long-term progression, fair administration, and stable environments.</p>
+</section>
+
+<section id="admins" class="container">
+  <h2>Current Admins</h2>
+  <ul>
+    <li>Owner – Zeropoint</li>
+    <li>Admin – TBD</li>
+    <li>Moderator – TBD</li>
+  </ul>
+</section>
+
 <footer>
   © <span id="year"></span> Zeropoint Hosting
 </footer>
@@ -340,14 +310,10 @@ import createGlobe from 'https://cdn.skypack.dev/cobe'
 const canvas = document.getElementById("cobe")
 let phi = 0
 
-// Helper: make tiny arcs that LOOK like red "dots" (COBe markers are one global color)
-function tinyDotArcs(lat, lon) {
-  // very small offsets to create a tiny “x” / “spark” that reads as a dot
-  const dLat = 0.35
-  const dLon = 0.55
+function redDot(lat,lon){
   return [
-    { start: [lat - dLat, lon - dLon], end: [lat + dLat, lon + dLon], color: '#f87171' },
-    { start: [lat - dLat, lon + dLon], end: [lat + dLat, lon - dLon], color: '#f87171' },
+    {start:[lat-.4,lon-.6],end:[lat+.4,lon+.6],color:'#f87171'},
+    {start:[lat-.4,lon+.6],end:[lat+.4,lon-.6],color:'#f87171'}
   ]
 }
 
@@ -355,7 +321,6 @@ createGlobe(canvas,{
   devicePixelRatio:2,
   width:800,
   height:800,
-  phi:0,
   theta:.45,
   dark:1,
   diffuse:1.2,
@@ -363,27 +328,19 @@ createGlobe(canvas,{
   mapBrightness:6,
   baseColor:[.05,.05,.1],
   glowColor:[1,.3,.85],
-
-  // Green markers (low ping)
   markerColor:[.13,.77,.36],
   markers:[
-    { location:[40.73,-73.93], size:.07 }, // New York (green)
-    { location:[25.78,-80.22], size:.07 }, // Miami (green)
+    {location:[40.73,-73.93],size:.07},
+    {location:[25.78,-80.22],size:.07}
   ],
-
-  // Red “ping dots” (high ping) using tiny arcs so they can be red
-  arcs: [
-    ...tinyDotArcs(51.50, -0.12),       // London (red)
-    ...tinyDotArcs(-33.86, 151.21),     // Sydney (red)
+  arcs:[
+    ...redDot(51.5,-.12),
+    ...redDot(-33.86,151.21)
   ],
-
-  onRender:(s)=>{
-    s.phi = phi
-    phi += .004
-  }
+  onRender:(s)=>{s.phi=phi;phi+=.004}
 })
 
-document.getElementById("year").textContent = new Date().getFullYear()
+document.getElementById("year").textContent=new Date().getFullYear()
 </script>
 
 </body>
