@@ -9,52 +9,76 @@
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
-:root{
+/* ================= VARIABLES ================= */
+:root {
   --bg:#050508;
   --bg2:#0b0b15;
   --card:rgba(28,28,42,.6);
   --pink:#ff4fd8;
-  --pink-dark:#c026a3;
-  --text:#fff;
   --muted:#cbd5e1;
   --green:#22c55e;
   --border:rgba(255,79,216,.25);
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:hidden}
 body{
   font-family:'Rajdhani',sans-serif;
   background:var(--bg);
-  color:var(--text);
+  color:white;
 }
 
-/* BACKGROUND */
+/* ================= BACKGROUND GRID ================= */
 .grid{
-  position:fixed;inset:0;z-index:0;
+  position:fixed;
+  inset:0;
+  z-index:0;
   background-image:
     linear-gradient(rgba(255,79,216,.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,79,216,.06) 1px, transparent 1px);
   background-size:50px 50px;
   animation:move 30s linear infinite;
 }
-@keyframes move{to{transform:translate(50px,50px)}}
+@keyframes move{
+  to{transform:translate(50px,50px)}
+}
 
-/* NAV */
+/* ================= NAV ================= */
 nav{
-  position:fixed;top:0;width:100%;z-index:10;
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:10;
   backdrop-filter:blur(12px);
-  background:rgba(5,5,10,.9);
+  background:rgba(5,5,10,.92);
   border-bottom:1px solid var(--border);
 }
 .nav-inner{
-  max-width:1200px;margin:auto;
-  display:flex;align-items:center;justify-content:space-between;
+  max-width:1200px;
+  margin:auto;
   padding:.8rem 1.5rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
 }
-.brand{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  text-decoration:none;
+}
 .brand img{width:34px}
-.brand span{font-weight:900;letter-spacing:1px}
-.nav-links{display:flex;gap:1.5rem;list-style:none}
+.brand span{
+  font-weight:900;
+  letter-spacing:1px;
+  color:white;
+}
+.nav-links{
+  display:flex;
+  gap:1.5rem;
+  list-style:none;
+}
 .nav-links a{
   text-decoration:none;
   font-weight:700;
@@ -68,7 +92,7 @@ nav{
   font-size:1.3rem;
 }
 
-/* HERO */
+/* ================= HERO ================= */
 .hero{
   min-height:90vh;
   display:flex;
@@ -94,7 +118,7 @@ nav{
   font-size:1.25rem;
 }
 
-/* SECTIONS */
+/* ================= CONTAINERS ================= */
 .container{
   max-width:1100px;
   margin:auto;
@@ -109,7 +133,7 @@ h2{
   margin-bottom:2rem;
 }
 
-/* SERVER LIST */
+/* ================= SERVER LIST ================= */
 .server-box{
   background:var(--card);
   border:1px solid var(--border);
@@ -124,33 +148,52 @@ h2{
 }
 .server:last-child{border-bottom:none}
 .status{
-  display:flex;align-items:center;gap:.5rem;font-weight:700
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  font-weight:700;
 }
 .dot{
-  width:8px;height:8px;border-radius:50%;
+  width:8px;
+  height:8px;
+  border-radius:50%;
   background:var(--green);
   box-shadow:0 0 8px var(--green);
 }
-.right{text-align:right;color:var(--green);font-weight:800}
+.right{
+  text-align:right;
+  color:var(--green);
+  font-weight:800;
+}
 
-/* NETWORK */
+/* ================= NETWORK ================= */
 .network{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:3rem;
   align-items:center;
 }
-canvas{width:100%!important;height:500px!important}
+canvas{
+  width:100%!important;
+  max-width:100%;
+  height:500px!important;
+}
 .ping{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:1.2rem;
   margin-top:1.5rem;
 }
-.ping div{font-weight:700;color:var(--muted)}
-.ping span{color:var(--green);font-weight:900}
+.ping div{
+  font-weight:700;
+  color:var(--muted);
+}
+.ping span{
+  color:var(--green);
+  font-weight:900;
+}
 
-/* FOOTER */
+/* ================= FOOTER ================= */
 footer{
   text-align:center;
   padding:3rem 2rem;
@@ -159,9 +202,55 @@ footer{
   background:var(--bg2);
 }
 
-@media(max-width:900px){
-  .network{grid-template-columns:1fr}
-  .server{grid-template-columns:1fr;text-align:center;gap:.5rem}
+/* ================= MOBILE FIXES ================= */
+@media(max-width:768px){
+
+  .nav-inner{
+    justify-content:center;
+    gap:.75rem;
+  }
+
+  .nav-links{
+    width:100%;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:1rem;
+  }
+
+  .hero{
+    padding-top:6rem;
+  }
+
+  .hero p{
+    font-size:1.1rem;
+  }
+
+  .server{
+    grid-template-columns:1fr;
+    text-align:center;
+    gap:.5rem;
+  }
+
+  .right{
+    text-align:center;
+  }
+
+  .status{
+    justify-content:center;
+  }
+
+  .network{
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+
+  canvas{
+    height:320px!important;
+  }
+
+  .ping{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 </head>
@@ -173,15 +262,17 @@ footer{
 <nav>
   <div class="nav-inner">
     <a class="brand" href="#">
-      <img src="zeropoint.png">
+      <img src="zeropoint.png" alt="Zeropoint Logo">
       <span>Zeropoint</span>
     </a>
+
     <ul class="nav-links">
       <li><a href="#ark">ARK Donation</a></li>
       <li><a href="#hytale">Hytale Packages</a></li>
       <li><a href="#servers">Live Nodes</a></li>
     </ul>
-    <a class="discord" href="YOUR_DISCORD_LINK" target="_blank">
+
+    <a class="discord" href="YOUR_DISCORD_INVITE" target="_blank">
       <i class="fab fa-discord"></i>
     </a>
   </div>
@@ -190,23 +281,26 @@ footer{
 <section class="hero">
   <div>
     <h1>Zeropoint Hosting</h1>
-    <p>Private ARK and Hytale clusters built for stability, progression, and long-term play.</p>
+    <p>Private ARK and Hytale clusters focused on stability, progression, and long-term play.</p>
   </div>
 </section>
 
 <section id="servers" class="container">
   <h2>Command Center</h2>
+
   <div class="server-box">
     <div class="server">
       <div><strong>ARK</strong> Crystal Isles (PvE)</div>
       <div class="status"><span class="dot"></span>ONLINE</div>
       <div class="right">0 / 16</div>
     </div>
+
     <div class="server">
       <div><strong>ARK</strong> Fjordur (PvE)</div>
       <div class="status"><span class="dot"></span>ONLINE</div>
       <div class="right">1 / 16</div>
     </div>
+
     <div class="server">
       <div><strong>ARK</strong> Ragnarok (PvE)</div>
       <div class="status"><span class="dot"></span>ONLINE</div>
@@ -218,11 +312,13 @@ footer{
 <section class="container">
   <div class="network">
     <canvas id="cobe"></canvas>
+
     <div>
       <h2>Network</h2>
       <p style="color:var(--muted)">
-        Nodes positioned for low latency across the US and international reach.
+        Optimized routing for low-latency gameplay across regions.
       </p>
+
       <div class="ping">
         <div>🇺🇸 New York <span>34ms</span></div>
         <div>🇺🇸 Miami <span>22ms</span></div>
@@ -239,8 +335,9 @@ footer{
 
 <script type="module">
 import createGlobe from 'https://cdn.skypack.dev/cobe'
+
 let phi=0
-const globe=createGlobe(document.getElementById("cobe"),{
+createGlobe(document.getElementById("cobe"),{
   devicePixelRatio:2,
   width:1000,
   height:1000,
@@ -259,6 +356,7 @@ const globe=createGlobe(document.getElementById("cobe"),{
   ],
   onRender:(s)=>{s.phi=phi+=.004}
 })
+
 document.getElementById("year").textContent=new Date().getFullYear()
 </script>
 
