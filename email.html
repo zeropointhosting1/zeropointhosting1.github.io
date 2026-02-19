@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zeropoint Hosting | Dino & Color Order</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+--bg-primary:#0b0b10;
+--bg-card:#1c1c2a;
+--accent-pink:#ff4fd8;
+--accent-green:#22c55e;
+--text-primary:#ffffff;
+--text-secondary:#cbd5e1;
+}
+
+body{
+font-family:'Rajdhani',sans-serif;
+background:var(--bg-primary);
+color:var(--text-primary);
+padding:4rem 1.5rem;
+}
+
+.container{
+max-width:1000px;
+margin:0 auto;
+}
+
+h1{
+text-align:center;
+color:var(--accent-pink);
+margin-bottom:.5rem;
+}
+
+p{
+text-align:center;
+color:var(--text-secondary);
+margin-bottom:3rem;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:2rem;
+}
+
+.card{
+background:var(--bg-card);
+border-radius:20px;
+padding:2rem;
+border:2px solid rgba(255,79,216,.25);
+}
+
+label{
+font-weight:700;
+display:block;
+margin-bottom:.5rem;
+}
+
+input,select{
+width:100%;
+padding:.7rem;
+border-radius:10px;
+border:none;
+font-size:1rem;
+margin-bottom:1.2rem;
+}
+
+.colors{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(60px,1fr));
+gap:1rem;
+}
+
+.color{
+height:60px;
+border-radius:10px;
+cursor:pointer;
+border:3px solid transparent;
+}
+
+.color.selected{
+border-color:var(--accent-green);
+}
+
+.summary{
+margin-top:2rem;
+background:rgba(255,255,255,.05);
+padding:1.5rem;
+border-radius:15px;
+font-size:1.05rem;
+}
+
+button{
+margin-top:1.5rem;
+width:100%;
+padding:1rem;
+border-radius:40px;
+font-weight:700;
+font-size:1.1rem;
+border:none;
+cursor:pointer;
+background:linear-gradient(135deg,var(--accent-pink),#c026a3);
+color:white;
+transition:.3s;
+}
+
+button:hover{transform:scale(1.05)}
+
+.note{
+margin-top:1rem;
+font-size:.95rem;
+color:var(--text-secondary);
+text-align:center;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>🦖 Dino & Color Order</h1>
+<p>Select your options below.  
+Your order will be emailed directly to Zeropoint Hosting.</p>
+
+<div class="grid">
+
+<!-- LEFT -->
+<div class="card">
+<label>Discord Username (required)</label>
+<input id="discord" placeholder="username#1234">
+
+<label>Package</label>
+<select id="package">
+<option>VIP Bronze</option>
+<option>VIP Gold</option>
+<option>VIP Alpha</option>
+</select>
+
+<label>Dino</label>
+<select id="dino">
+<option>Rex</option>
+<option>Giga</option>
+<option>Wyvern</option>
+<option>Shadowmane</option>
+<option>Managarmr</option>
+<option>Custom (Admin Approved)</option>
+</select>
+
+<label>Map</label>
+<select id="map">
+<option>Ragnarok</option>
+<option>Fjordur</option>
+<option>Crystal Isles</option>
+</select>
+</div>
+
+<!-- RIGHT -->
+<div class="card">
+<label>Choose Color(s)</label>
+<div class="colors">
+<div class="color" style="background:#ff4fd8"></div>
+<div class="color" style="background:#22c55e"></div>
+<div class="color" style="background:#3b82f6"></div>
+<div class="color" style="background:#facc15"></div>
+<div class="color" style="background:#ef4444"></div>
+<div class="color" style="background:#a855f7"></div>
+</div>
+</div>
+
+</div>
+
+<div class="summary" id="summary"></div>
+
+<button onclick="sendOrder()">📧 Email Order</button>
+<div class="note">Orders are reviewed manually. Please allow time for delivery.</div>
+
+</div>
+
+<!-- EMAILJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+emailjs.init("YOUR_PUBLIC_KEY");
+
+let selectedColors=[];
+
+document.querySelectorAll('.color').forEach(c=>{
+  c.addEventListener('click',()=>{
+    c.classList.toggle('selected');
+    updateSummary();
+  });
+});
+
+document.querySelectorAll('input,select').forEach(e=>{
+  e.addEventListener('change',updateSummary);
+});
+
+function updateSummary(){
+  const discord=document.getElementById('discord').value || "Not Provided";
+  const pkg=document.getElementById('package').value;
+  const dino=document.getElementById('dino').value;
+  const map=document.getElementById('map').value;
+
+  const colors=[...document.querySelectorAll('.color.selected')]
+    .map(c=>c.style.backgroundColor)
+    .join(', ') || "Default";
+
+  document.getElementById('summary').innerHTML=
+`<strong>Order Preview:</strong><br><br>
+Discord: ${discord}<br>
+Package: ${pkg}<br>
+Dino: ${dino}<br>
+Map: ${map}<br>
+Colors: ${colors}`;
+}
+
+function sendOrder(){
+  const discord=document.getElementById('discord').value.trim();
+  if(!discord){
+    alert("Please enter your Discord username.");
+    return;
+  }
+
+  const message=document.getElementById('summary').innerText;
+
+  emailjs.send(
+    "YOUR_SERVICE_ID",
+    "YOUR_TEMPLATE_ID",
+    { message }
+  ).then(()=>{
+    alert("✅ Order sent successfully!");
+  },err=>{
+    alert("❌ Failed to send order. Please try again.");
+    console.error(err);
+  });
+}
+
+updateSummary();
+</script>
+
+</body>
+</html>
