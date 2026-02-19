@@ -1,469 +1,248 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Zeropoint Hosting</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700;900&display=swap" rel="stylesheet">
-
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-
-/* ================= THEME ================= */
-:root{
-  --bg-primary:#0b0b10;
-  --bg-secondary:#141420;
-  --bg-card:#1c1c2a;
-
-  --accent:#ff4fd8;
-  --accent-dark:#c026a3;
-  --accent-soft:#ff9de6;
-
-  --text-primary:#ffffff;
-  --text-secondary:#cbd5e1;
-
-  --glow:rgba(255,79,216,.55);
+/* ================= IMPROVED THEME & VARIABLES ================= */
+:root {
+  --bg-primary: #050508;
+  --bg-secondary: #0a0a12;
+  --bg-card: rgba(28, 28, 42, 0.6);
+  --accent: #ff4fd8;
+  --accent-gradient: linear-gradient(135deg, #ff4fd8 0%, #9d50bb 100%);
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --border: rgba(255, 79, 216, 0.2);
+  --glow: rgba(255, 79, 216, 0.4);
 }
 
-body{
-  font-family:'Rajdhani',sans-serif;
-  background:var(--bg-primary);
-  color:var(--text-primary);
-  overflow-x:hidden;
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
 }
 
-/* ================= BACKGROUND ================= */
-.animated-bg{
-  position:fixed;
-  inset:0;
-  z-index:0;
+/* ================= ENHANCED HERO ================= */
+.hero {
+  background: radial-gradient(circle at center, rgba(255, 79, 216, 0.15) 0%, transparent 70%);
 }
 
-.grid-lines{
-  position:absolute;
-  width:100%;
-  height:100%;
-  background-image:
-    linear-gradient(rgba(255,79,216,.06) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,79,216,.06) 1px,transparent 1px);
-  background-size:50px 50px;
-  animation:gridMove 28s linear infinite;
+.hero h1 {
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 15px var(--glow));
 }
 
-@keyframes gridMove{
-  0%{transform:translate(0,0)}
-  100%{transform:translate(50px,50px)}
+/* ================= PROFESSIONAL PACKAGE DESIGN ================= */
+.packages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.5rem;
+  padding-top: 2rem;
 }
 
-.floating-particles{
-  position:absolute;
-  width:100%;
-  height:100%;
-  pointer-events:none;
+.package-card {
+  position: relative;
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
 }
 
-.particle{
-  position:absolute;
-  width:5px;
-  height:5px;
-  background:var(--accent);
-  border-radius:50%;
-  opacity:.75;
-  box-shadow:0 0 14px var(--glow);
-  animation:float 18s infinite linear;
+.package-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 4px;
+  background: var(--accent-gradient);
+  opacity: 0;
+  transition: 0.3s;
 }
 
-@keyframes float{
-  0%{transform:translate(0,0)}
-  25%{transform:translate(60px,-120px)}
-  50%{transform:translate(-40px,-260px)}
-  75%{transform:translate(90px,-180px)}
-  100%{transform:translate(0,0)}
+.package-card:hover {
+  transform: translateY(-12px);
+  border-color: var(--accent);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255,79,216,0.1);
 }
 
-/* ================= NAV (CLEAN FIXED BAR) ================= */
-nav{
-  position:fixed;
-  top:0;
-  width:100%;
-  z-index:1000;
-  background:rgba(10,10,15,.92);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(255,79,216,.25);
+.package-card:hover::before {
+  opacity: 1;
 }
 
-.nav-inner{
-  max-width:1200px;
-  margin:auto;
-  padding:.85rem 1.5rem;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+/* Tier Labels */
+.tier-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: block;
 }
 
-/* brand */
-.brand{
-  display:flex;
-  align-items:center;
-  gap:.6rem;
-  text-decoration:none;
+.package-card h3 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
 }
 
-.brand img{
-  width:34px;
-  height:34px;
-  object-fit:contain;
-  filter:drop-shadow(0 0 10px var(--glow));
+.price-container {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 2rem;
 }
 
-.brand span{
-  font-size:1.2rem;
-  font-weight:900;
-  letter-spacing:.4px;
-  color:var(--accent);
+.currency { font-size: 1.5rem; color: var(--accent); font-weight: 700; }
+.amount { font-size: 3.5rem; font-weight: 900; }
+.duration { color: var(--text-secondary); font-size: 1rem; }
+
+/* Features List */
+.features-list {
+  text-align: left;
+  margin-bottom: 2.5rem;
+  list-style: none;
 }
 
-/* nav links */
-.nav-links{
-  display:flex;
-  gap:1.75rem;
-  list-style:none;
+.features-list li {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
-.nav-links a{
-  text-decoration:none;
-  font-weight:700;
-  color:var(--text-secondary);
-  transition:.25s;
+.features-list li i {
+  color: var(--accent);
+  font-size: 0.9rem;
 }
 
-.nav-links a:hover{
-  color:var(--accent);
+/* Redesigned Buttons */
+.buy-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-/* discord */
-.discord-btn{
-  width:40px;
-  height:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:12px;
-  background:linear-gradient(135deg,var(--accent),var(--accent-dark));
-  color:white;
-  box-shadow:0 8px 28px var(--glow);
-  transition:.25s;
-  text-decoration:none;
+.btn-primary {
+  background: var(--accent-gradient);
+  color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: 0.3s;
+  box-shadow: 0 4px 15px var(--glow);
 }
 
-.discord-btn:hover{
-  transform:translateY(-3px);
-  box-shadow:0 14px 40px var(--glow);
+.btn-secondary {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: 0.3s;
 }
 
-/* ================= HERO ================= */
-.hero{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:7rem 2rem 3rem;
-  position:relative;
-  z-index:5;
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.1);
 }
 
-.hero img{
-  width:90px;
-  margin-bottom:1rem;
-  filter:drop-shadow(0 0 20px var(--glow));
+/* Special Badge for Popular */
+.popular-card {
+  border: 1px solid var(--accent);
+  background: rgba(255, 79, 216, 0.05);
+  transform: scale(1.05);
 }
 
-.hero h1{
-  font-size:clamp(2.8rem,6vw,4.8rem);
-  font-weight:900;
-  color:var(--accent);
-  text-shadow:0 0 40px var(--glow);
-}
-
-.hero p{
-  max-width:720px;
-  margin:1rem auto 2rem;
-  color:var(--text-secondary);
-  font-size:1.2rem;
-}
-
-.btn{
-  display:inline-block;
-  padding:1rem 2.6rem;
-  border-radius:40px;
-  font-weight:900;
-  text-decoration:none;
-  background:linear-gradient(135deg,var(--accent),var(--accent-dark));
-  color:white;
-  transition:.25s;
-}
-
-.btn:hover{
-  transform:translateY(-4px);
-  box-shadow:0 14px 40px var(--glow);
-}
-
-/* ================= SECTIONS ================= */
-section{
-  padding:6rem 2rem;
-  position:relative;
-  z-index:5;
-}
-
-.container{max-width:1200px;margin:auto}
-
-.section-title{
-  text-align:center;
-  font-size:2.6rem;
-  margin-bottom:3rem;
-  color:var(--accent);
-  text-shadow:0 0 30px var(--glow);
-}
-
-/* ================= LIVE SERVERS ================= */
-.live-servers{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:2rem;
-}
-
-.server-card{
-  background:var(--bg-card);
-  border:2px solid rgba(255,79,216,.25);
-  border-radius:20px;
-  padding:2rem;
-  position:relative;
-  transition:.35s;
-}
-
-.server-card:hover{
-  transform:translateY(-10px);
-  box-shadow:0 25px 60px rgba(255,79,216,.25);
-}
-
-.server-status{
-  position:absolute;
-  top:14px;
-  right:14px;
-  display:flex;
-  align-items:center;
-  gap:.45rem;
-  font-size:.85rem;
-  font-weight:900;
-  padding:.35rem .75rem;
-  border-radius:20px;
-  background:rgba(34,197,94,.15);
-  color:#22c55e;
-  border:1px solid rgba(34,197,94,.5);
-}
-
-.status-dot{
-  width:8px;
-  height:8px;
-  background:#22c55e;
-  border-radius:50%;
-}
-
-.server-name{
-  font-size:1.35rem;
-  font-weight:900;
-}
-
-.server-sub{
-  color:var(--text-secondary);
-  margin-top:.25rem;
-}
-
-/* ================= PACKAGES ================= */
-.packages{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:2.5rem;
-}
-
-.package-card{
-  background:var(--bg-card);
-  border:2px solid rgba(255,79,216,.25);
-  border-radius:22px;
-  padding:2.7rem 2rem;
-  text-align:center;
-  position:relative;
-  transition:.35s;
-}
-
-.package-card:hover{
-  transform:translateY(-14px);
-  box-shadow:0 30px 70px rgba(255,79,216,.3);
-}
-
-.package-card.popular{
-  border-color:var(--accent-soft);
-  box-shadow:0 0 35px rgba(255,157,230,.35);
-}
-
-.popular-badge{
-  position:absolute;
-  top:18px;
-  right:-45px;
-  background:var(--accent);
-  color:white;
-  padding:.5rem 3.5rem;
-  font-weight:900;
-  transform:rotate(45deg);
-}
-
-.price{
-  font-size:2.5rem;
-  font-weight:900;
-  color:var(--accent);
-  margin:1rem 0;
-}
-
-.package-card ul{
-  list-style:none;
-  color:var(--text-secondary);
-  font-weight:600;
-}
-
-.package-card li{margin:.6rem 0}
-
-.buy-buttons{
-  margin-top:2rem;
-  display:flex;
-  justify-content:center;
-  gap:1rem;
-}
-
-.buy{
-  padding:.8rem 1.6rem;
-  border-radius:40px;
-  font-weight:900;
-  text-decoration:none;
-  transition:.25s;
-}
-
-.buy:hover{transform:scale(1.1)}
-
-.paypal{background:#ffc439;color:#111}
-.choose{background:#635bff;color:#fff}
-
-/* ================= FOOTER ================= */
-footer{
-  background:var(--bg-secondary);
-  text-align:center;
-  padding:2rem;
-  border-top:1px solid rgba(255,79,216,.25);
-  color:var(--text-secondary);
+.featured-tag {
+  position: absolute;
+  top: 20px;
+  right: -30px;
+  background: var(--accent-gradient);
+  padding: 5px 35px;
+  transform: rotate(45deg);
+  font-size: 0.7rem;
+  font-weight: 900;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 </style>
-</head>
-
-<body>
-
-<div class="animated-bg">
-  <div class="grid-lines"></div>
-  <div class="floating-particles" id="particles"></div>
-</div>
-
-<nav>
-  <div class="nav-inner">
-    <a class="brand" href="#home">
-      <img src="zeropoint.png" alt="Zeropoint Logo">
-      <span>Zeropoint</span>
-    </a>
-
-    <ul class="nav-links">
-      <li><a href="#live">Live</a></li>
-      <li><a href="#ark">ARK</a></li>
-      <li><a href="#hytale">Hytale</a></li>
-    </ul>
-
-    <a class="discord-btn" href="https://discord.gg/YOUR_INVITE" target="_blank">
-      <i class="fab fa-discord"></i>
-    </a>
-  </div>
-</nav>
-
-<section class="hero" id="home">
-  <div>
-    <img src="zeropoint.png" alt="Zeropoint Logo">
-    <h1>Zeropoint Hosting</h1>
-    <p>Support our ARK & Hytale servers. All donations go directly back into server costs.</p>
-    <a href="#ark" class="btn">View Packages</a>
-  </div>
-</section>
-
-<section id="live">
-  <div class="container">
-    <h2 class="section-title">Live Servers</h2>
-    <div class="live-servers">
-      <div class="server-card">
-        <div class="server-status"><span class="status-dot"></span>ONLINE</div>
-        <div class="server-name">ARK – Ragnarok</div>
-        <div class="server-sub">PvE • FiberCraft</div>
-      </div>
-      <div class="server-card">
-        <div class="server-status"><span class="status-dot"></span>ONLINE</div>
-        <div class="server-name">ARK – Fjordur</div>
-        <div class="server-sub">Cluster Map</div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section id="ark">
   <div class="container">
-    <h2 class="section-title">ARK Packages</h2>
+    <h2 class="section-title">Support the Cluster</h2>
     <div class="packages">
+      
       <div class="package-card">
+        <span class="tier-label">Starter Tier</span>
         <h3>VIP Bronze</h3>
-        <div class="price">$5</div>
-        <ul><li>Starter Kit</li><li>VIP Role</li></ul>
+        <div class="price-container">
+          <span class="currency">$</span>
+          <span class="amount">5</span>
+          <span class="duration">/mo</span>
+        </div>
+        <ul class="features-list">
+          <li><i class="fas fa-check-circle"></i> Instant Starter Kit</li>
+          <li><i class="fas fa-check-circle"></i> VIP Discord Role</li>
+          <li><i class="fas fa-check-circle"></i> Priority Queue Access</li>
+          <li><i class="fas fa-times-circle" style="color:#444"></i> Custom Dino Paint</li>
+        </ul>
         <div class="buy-buttons">
-          <a class="buy paypal" href="https://www.paypal.me/ZeropointHosting">PayPal</a>
-          <a class="buy choose" href="dinos.html">Choose Dino</a>
+          <a href="#" class="btn-primary">Get Started</a>
+          <a href="dinos.html" class="btn-secondary">Choose Dino</a>
         </div>
       </div>
 
-      <div class="package-card popular">
-        <div class="popular-badge">POPULAR</div>
+      <div class="package-card popular-card">
+        <div class="featured-tag">MOST POPULAR</div>
+        <span class="tier-label">Elite Tier</span>
         <h3>VIP Gold</h3>
-        <div class="price">$15</div>
-        <ul><li>All Bronze Perks</li><li>Custom Dino</li></ul>
+        <div class="price-container">
+          <span class="currency">$</span>
+          <span class="amount">15</span>
+          <span class="duration">/mo</span>
+        </div>
+        <ul class="features-list">
+          <li><i class="fas fa-check-circle"></i> Everything in Bronze</li>
+          <li><i class="fas fa-check-circle"></i> 1x Custom Dino Spawn</li>
+          <li><i class="fas fa-check-circle"></i> 5,000 Hexagons/Points</li>
+          <li><i class="fas fa-check-circle"></i> Base Decor Pack</li>
+        </ul>
         <div class="buy-buttons">
-          <a class="buy paypal" href="https://www.paypal.me/ZeropointHosting">PayPal</a>
-          <a class="buy choose" href="dinos.html">Choose Dino</a>
+          <a href="#" class="btn-primary">Buy Now</a>
+          <a href="dinos.html" class="btn-secondary">Choose Dino</a>
         </div>
       </div>
+
+      <div class="package-card">
+        <span class="tier-label">Ultimate Tier</span>
+        <h3>VIP Platinum</h3>
+        <div class="price-container">
+          <span class="currency">$</span>
+          <span class="amount">25</span>
+          <span class="duration">/mo</span>
+        </div>
+        <ul class="features-list">
+          <li><i class="fas fa-check-circle"></i> Everything in Gold</li>
+          <li><i class="fas fa-check-circle"></i> 3x Custom Dino Spawns</li>
+          <li><i class="fas fa-check-circle"></i> Exclusive Alpha Kit</li>
+          <li><i class="fas fa-check-circle"></i> Dedicated Support Channel</li>
+        </ul>
+        <div class="buy-buttons">
+          <a href="#" class="btn-primary">Go Ultimate</a>
+          <a href="dinos.html" class="btn-secondary">Choose Dino</a>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
-
-<footer>
-  © <span id="year"></span> Zeropoint Hosting
-</footer>
-
-<script>
-const p=document.getElementById("particles");
-for(let i=0;i<40;i++){
-  const d=document.createElement("div");
-  d.className="particle";
-  d.style.left=Math.random()*100+"%";
-  d.style.top=Math.random()*100+"%";
-  d.style.animationDelay=Math.random()*18+"s";
-  d.style.animationDuration=(18+Math.random()*10)+"s";
-  p.appendChild(d);
-}
-document.getElementById("year").textContent=new Date().getFullYear();
-</script>
-
-</body>
-</html>
