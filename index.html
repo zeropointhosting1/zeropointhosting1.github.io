@@ -91,7 +91,7 @@
         .ping-val { font-size: 1.1rem; color: var(--green); font-weight: 800; display: flex; align-items: center; gap: 8px; }
         .ping-val::before { content: ''; width: 8px; height: 8px; background: var(--green); border-radius: 50%; display: inline-block; box-shadow: 0 0 8px var(--green); }
 
-        /* --- VIP / DONATION CARDS --- */
+        /* --- VIP CARDS --- */
         .package-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; padding: 2rem; }
         .card { background: var(--bg-card); border: 1px solid var(--border); padding: 3rem 2rem; border-radius: 12px; text-align: center; position: relative; transition: 0.4s; backdrop-filter: blur(10px); }
         .card:hover { transform: translateY(-10px); border-color: var(--accent); }
@@ -125,7 +125,7 @@
 
     <section class="hero">
         <h1>Boutique Hosting<br>Zero Compromise</h1>
-        <p>A strictly private server cluster. We own and operate our own hardware nodes to ensure the highest tick-rates and lowest latency for our community.</p>
+        <p>Ultra-low latency gaming on self-hosted enterprise hardware. We operate our own bare-metal nodes to ensure 100% uptime for our private cluster.</p>
         <a href="#vip" class="cta-btn">Support the Hardware</a>
     </section>
 
@@ -136,8 +136,8 @@
 
         <div class="network-info">
             <h2><i class="fas fa-server"></i> Bare-Metal Infrastructure</h2>
-            <h3>Direct Network Routing</h3>
-            <p>Our cluster runs on dedicated enterprise nodes. We monitor these pings in real-time to ensure your connection remains stable 24/7.</p>
+            <h3>Direct Node Interconnect</h3>
+            <p>Our Miami and New York nodes are connected via high-speed transit routes. We monitor these backbones in real-time to maintain optimal routing for every player.</p>
             
             <div class="ping-grid">
                 <div class="ping-item">
@@ -153,8 +153,8 @@
                     <span class="ping-val"><span class="dynamic-ping" data-min="19" data-max="25">22</span>ms</span>
                 </div>
                 <div class="ping-item" style="opacity: 0.6;">
-                    <span class="location">🌍 International Relay</span>
-                    <span class="ping-val" style="color: var(--text-dim);"><span class="dynamic-ping" data-min="110" data-max="125">115</span>ms</span>
+                    <span class="location">🌍 Global Backbone</span>
+                    <span class="ping-val" style="color: var(--text-dim);"><span class="dynamic-ping" data-min="95" data-max="110">98</span>ms</span>
                 </div>
             </div>
         </div>
@@ -224,16 +224,28 @@
             mapBrightness: 6,
             baseColor: [0.05, 0.05, 0.1],
             markerColor: [0.13, 0.77, 0.36], // Green dots
-            glowColor: [1, 0.31, 0.85], // Brand glow
+            glowColor: [0.1, 0.1, 0.2], // Dark subtle glow
             markers: [
-                // Focused on your three server locations
-                { location: [40.7128, -74.0060], size: 0.1 }, // New York Node
-                { location: [25.7617, -80.1918], size: 0.1 }, // Miami Node 1
-                { location: [25.7617, -80.2018], size: 0.1 }, // Miami Node 2 (slightly offset for visibility)
+                { location: [40.7128, -74.0060], size: 0.1 }, // NY
+                { location: [25.7617, -80.1918], size: 0.1 }, // Miami 1
+                { location: [25.7617, -80.2018], size: 0.1 }, // Miami 2
+                { location: [51.5074, -0.1278], size: 0.04 }, // London Ref
+                { location: [34.0522, -118.2437], size: 0.04 }, // LA Ref
             ],
+            // This is the animated connection logic
             onRender: (state) => {
                 state.phi = phi
                 phi += 0.005 
+
+                // Add Bezier curves for animated lines
+                state.arcs = [
+                    // Connect NY to Miami
+                    { start: [40.7128, -74.0060], end: [25.7617, -80.1918] },
+                    // Connect Miami to LA
+                    { start: [25.7617, -80.1918], end: [34.0522, -118.2437] },
+                    // Connect NY to London
+                    { start: [40.7128, -74.0060], end: [51.5074, -0.1278] }
+                ]
             },
         })
 
