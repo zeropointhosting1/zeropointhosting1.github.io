@@ -1,377 +1,647 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zeropoint Hosting | Server Packages</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zeropoint Hosting | Packages</title>
+<meta name="description" content="Zeropoint Hosting packages and live server status for ARK and Hytale." />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet" />
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
-/* ================= THEME ================= */
+/* ================= THEME (PINK) ================= */
 :root{
---bg-primary:#0b0b10;
---bg-secondary:#141420;
---bg-card:#1c1c2a;
+  --bg-primary:#0b0b10;
+  --bg-secondary:#141420;
+  --bg-card:#1c1c2a;
 
---accent-pink:#ff4fd8;
---accent-soft-pink:#ff9de6;
---accent-green:#22c55e;
+  --accent-pink:#ff4fd8;
+  --accent-pink-dark:#c026a3;
+  --accent-soft-pink:#ff9de6;
 
---text-primary:#ffffff;
---text-secondary:#cbd5e1;
+  --text-primary:#ffffff;
+  --text-secondary:#cbd5e1;
 
---glow-pink:rgba(255,79,216,.55);
+  --glow-pink:rgba(255,79,216,.55);
 }
 
 body{
-font-family:'Rajdhani',sans-serif;
-background:var(--bg-primary);
-color:var(--text-primary);
-overflow-x:hidden;
+  font-family:'Rajdhani',sans-serif;
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  overflow-x:hidden;
+  line-height:1.6;
 }
 
 /* ================= ANIMATED BACKGROUND ================= */
 .animated-bg{
-position:fixed;
-inset:0;
-z-index:0;
-overflow:hidden;
+  position:fixed;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
 }
 
 .grid-lines{
-position:absolute;
-width:100%;
-height:100%;
-background-image:
-linear-gradient(rgba(255,79,216,.06) 1px,transparent 1px),
-linear-gradient(90deg,rgba(255,79,216,.06) 1px,transparent 1px);
-background-size:50px 50px;
-animation:gridMove 25s linear infinite;
+  position:absolute;
+  width:100%;
+  height:100%;
+  background-image:
+    linear-gradient(rgba(255,79,216,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,79,216,.06) 1px,transparent 1px);
+  background-size:50px 50px;
+  animation:gridMove 25s linear infinite;
 }
 
 @keyframes gridMove{
-0%{transform:translate(0,0)}
-100%{transform:translate(50px,50px)}
+  0%{transform:translate(0,0)}
+  100%{transform:translate(50px,50px)}
 }
 
 .floating-particles{
-position:absolute;
-width:100%;
-height:100%;
-pointer-events:none;
-z-index:2;
+  position:absolute;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:2;
 }
 
 .particle{
-position:absolute;
-width:5px;
-height:5px;
-background:var(--accent-pink);
-border-radius:50%;
-opacity:.75;
-box-shadow:0 0 14px var(--glow-pink);
-animation:float 18s infinite linear;
+  position:absolute;
+  width:5px;
+  height:5px;
+  background:var(--accent-pink);
+  border-radius:50%;
+  opacity:.75;
+  box-shadow:0 0 14px var(--glow-pink);
+  animation:float 18s infinite linear;
 }
 
 @keyframes float{
-0%{transform:translate(0,0)}
-25%{transform:translate(60px,-120px)}
-50%{transform:translate(-40px,-260px)}
-75%{transform:translate(90px,-180px)}
-100%{transform:translate(0,0)}
+  0%{transform:translate(0,0)}
+  25%{transform:translate(60px,-120px)}
+  50%{transform:translate(-40px,-260px)}
+  75%{transform:translate(90px,-180px)}
+  100%{transform:translate(0,0)}
 }
 
 /* ================= NAV ================= */
 nav{
-position:fixed;
-top:0;width:100%;
-z-index:1000;
-background:rgba(10,10,15,.95);
-backdrop-filter:blur(10px);
-border-bottom:1px solid rgba(255,79,216,.3);
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:1000;
+  background:rgba(10,10,15,.95);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,79,216,.3);
+}
+
+nav .nav-inner{
+  max-width:1200px;
+  margin:0 auto;
+  padding:0.9rem 1.25rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+  text-decoration:none;
+}
+
+.brand img{
+  width:36px;
+  height:36px;
+  object-fit:contain;
+  filter:drop-shadow(0 0 10px var(--glow-pink));
+}
+
+.brand span{
+  font-weight:800;
+  letter-spacing:.5px;
+  color:var(--accent-pink);
+  text-shadow:0 0 18px var(--glow-pink);
+  font-size:1.15rem;
+  white-space:nowrap;
 }
 
 nav ul{
-display:flex;
-justify-content:center;
-gap:2rem;
-list-style:none;
-padding:1rem;
+  display:flex;
+  align-items:center;
+  gap:1.5rem;
+  list-style:none;
+  flex-wrap:wrap;
+  justify-content:center;
 }
 
 nav a{
-color:var(--text-secondary);
-text-decoration:none;
-font-weight:600;
-transition:.3s;
+  color:var(--text-secondary);
+  text-decoration:none;
+  font-weight:600;
+  transition:.25s;
 }
 
 nav a:hover{color:var(--accent-pink)}
 
+.nav-actions{
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+}
+
+.discord-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  color:#fff;
+  background:linear-gradient(135deg,var(--accent-pink),var(--accent-pink-dark));
+  box-shadow:0 10px 30px rgba(255,79,216,.25);
+  text-decoration:none;
+  transition:.25s;
+}
+
+.discord-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 40px rgba(255,79,216,.4);
+}
+
 /* ================= HERO ================= */
 .hero{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
-padding:6rem 2rem;
-position:relative;
-z-index:5;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:7rem 2rem 3rem;
+  position:relative;
+  z-index:5;
+}
+
+.hero-card{
+  max-width:900px;
+  padding:2.5rem 2rem;
+}
+
+.hero-logo{
+  width:86px;
+  height:86px;
+  object-fit:contain;
+  margin:0 auto 1rem;
+  filter:drop-shadow(0 0 18px var(--glow-pink));
 }
 
 .hero h1{
-font-size:clamp(2.5rem,6vw,4.8rem);
-color:var(--accent-pink);
-text-shadow:0 0 35px var(--glow-pink);
-animation:pulseGlow 2s infinite alternate;
+  font-size:clamp(2.5rem,6vw,4.8rem);
+  color:var(--accent-pink);
+  text-shadow:0 0 35px var(--glow-pink);
+  animation:pulseGlow 2s infinite alternate;
 }
 
 @keyframes pulseGlow{
-from{text-shadow:0 0 20px var(--glow-pink)}
-to{text-shadow:0 0 45px var(--glow-pink)}
+  from{text-shadow:0 0 20px var(--glow-pink)}
+  to{text-shadow:0 0 45px var(--glow-pink)}
 }
 
 .hero p{
-max-width:720px;
-margin:1rem auto 2rem;
-color:var(--text-secondary);
-font-size:1.25rem;
+  max-width:720px;
+  margin:1rem auto 2rem;
+  color:var(--text-secondary);
+  font-size:1.2rem;
 }
 
 .btn{
-display:inline-block;
-padding:1rem 2.5rem;
-border-radius:50px;
-font-weight:700;
-text-decoration:none;
-background:linear-gradient(135deg,var(--accent-pink),#c026a3);
-color:white;
-transition:.3s;
+  display:inline-block;
+  padding:1rem 2.5rem;
+  border-radius:50px;
+  font-weight:800;
+  letter-spacing:.3px;
+  text-decoration:none;
+  background:linear-gradient(135deg,var(--accent-pink),var(--accent-pink-dark));
+  color:white;
+  transition:.25s;
 }
 
 .btn:hover{
-transform:translateY(-4px);
-box-shadow:0 12px 40px var(--glow-pink);
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px var(--glow-pink);
 }
 
 /* ================= SECTIONS ================= */
 section{
-padding:6rem 2rem;
-position:relative;
-z-index:5;
+  padding:6rem 2rem;
+  position:relative;
+  z-index:5;
 }
 
 .container{max-width:1200px;margin:0 auto}
 
 .section-title{
-text-align:center;
-font-size:2.6rem;
-margin-bottom:3rem;
-color:var(--accent-pink);
-text-shadow:0 0 25px var(--glow-pink);
+  text-align:center;
+  font-size:2.6rem;
+  margin-bottom:3rem;
+  color:var(--accent-pink);
+  text-shadow:0 0 25px var(--glow-pink);
 }
 
-/* ================= LIVE SERVERS (STATIC STATUS) ================= */
+/* ================= LIVE SERVERS (STATIC BADGE) ================= */
 .live-servers{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:2rem;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:2rem;
 }
 
 .server-card{
-background:var(--bg-card);
-border:2px solid rgba(255,79,216,.25);
-border-radius:20px;
-padding:2rem;
-position:relative;
-transition:.4s;
+  background:var(--bg-card);
+  border:2px solid rgba(255,79,216,.25);
+  border-radius:20px;
+  padding:2.2rem 2rem;
+  position:relative;
+  transition:.35s;
 }
 
 .server-card:hover{
-transform:translateY(-8px);
-box-shadow:0 20px 40px var(--glow-pink);
+  transform:translateY(-10px);
+  box-shadow:0 25px 60px rgba(255,79,216,.25);
+  border-color:rgba(255,79,216,.55);
 }
 
 .server-name{
-font-size:1.3rem;
-font-weight:700;
+  font-size:1.3rem;
+  font-weight:800;
+  margin-bottom:.3rem;
+}
+
+.server-sub{
+  color:var(--text-secondary);
+  font-weight:600;
+  opacity:.9;
 }
 
 .server-status{
-position:absolute;
-top:14px;
-right:14px;
-display:flex;
-align-items:center;
-gap:.4rem;
-font-size:.85rem;
-font-weight:700;
-padding:.35rem .75rem;
-border-radius:20px;
-background:rgba(34,197,94,.15);
-color:#22c55e;
-border:1px solid rgba(34,197,94,.5);
+  position:absolute;
+  top:14px;
+  right:14px;
+  display:flex;
+  align-items:center;
+  gap:.45rem;
+  font-size:.85rem;
+  font-weight:900;
+  padding:.35rem .75rem;
+  border-radius:20px;
+  background:rgba(34,197,94,.15);
+  color:#22c55e;
+  border:1px solid rgba(34,197,94,.5);
 }
 
+/* DOT IS STATIC (NO ANIMATION) */
 .status-dot{
-width:8px;
-height:8px;
-background:#22c55e;
-border-radius:50%;
+  width:8px;
+  height:8px;
+  background:#22c55e;
+  border-radius:50%;
 }
+
+/* offline style helper */
+.server-status.offline{
+  background:rgba(239,68,68,.12);
+  color:#ef4444;
+  border-color:rgba(239,68,68,.6);
+}
+.server-status.offline .status-dot{background:#ef4444}
 
 /* ================= PACKAGES ================= */
 .packages{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:2.5rem;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:2.5rem;
 }
 
 .package-card{
-background:var(--bg-card);
-border:2px solid rgba(255,79,216,.25);
-border-radius:22px;
-padding:2.6rem 2rem;
-text-align:center;
-position:relative;
-transition:.4s;
+  background:var(--bg-card);
+  border:2px solid rgba(255,79,216,.25);
+  border-radius:22px;
+  padding:2.7rem 2.1rem;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  transition:.35s;
 }
 
 .package-card:hover{
-transform:translateY(-12px);
-box-shadow:0 25px 60px var(--glow-pink);
+  transform:translateY(-14px);
+  box-shadow:0 30px 70px rgba(255,79,216,.28);
+  border-color:rgba(255,79,216,.55);
 }
 
 .package-card.popular{
-border-color:var(--accent-soft-pink);
-box-shadow:0 0 35px rgba(255,157,230,.4);
+  border-color:var(--accent-soft-pink);
+  box-shadow:0 0 35px rgba(255,157,230,.35);
 }
 
 .popular-badge{
-position:absolute;
-top:18px;
-right:-45px;
-background:var(--accent-pink);
-color:white;
-padding:.5rem 3.5rem;
-font-weight:700;
-font-size:.9rem;
-transform:rotate(45deg);
+  position:absolute;
+  top:18px;
+  right:-45px;
+  background:var(--accent-pink);
+  color:white;
+  padding:.5rem 3.5rem;
+  font-weight:900;
+  font-size:.9rem;
+  transform:rotate(45deg);
+  letter-spacing:.5px;
+}
+
+.package-card h3{
+  font-size:1.6rem;
+  font-weight:900;
 }
 
 .price{
-font-size:2.4rem;
-color:var(--accent-pink);
-margin:1rem 0;
+  font-size:2.5rem;
+  color:var(--accent-pink);
+  margin:1rem 0 .75rem;
+  font-weight:900;
+  text-shadow:0 0 18px rgba(255,79,216,.22);
 }
 
 .package-card ul{
-list-style:none;
-margin:1.5rem 0;
-color:var(--text-secondary);
+  list-style:none;
+  margin:1.6rem 0 2rem;
+  color:var(--text-secondary);
+  font-weight:600;
 }
 
+.package-card li{margin:.6rem 0}
+
 .buy-buttons{
-display:flex;
-gap:1rem;
-justify-content:center;
-flex-wrap:wrap;
+  display:flex;
+  gap:.9rem;
+  justify-content:center;
+  flex-wrap:wrap;
 }
 
 .buy{
-padding:.8rem 1.8rem;
-border-radius:40px;
-font-weight:700;
-text-decoration:none;
-transition:.3s;
+  padding:.85rem 1.7rem;
+  border-radius:40px;
+  font-weight:900;
+  text-decoration:none;
+  transition:.25s;
+  display:inline-flex;
+  align-items:center;
+  gap:.55rem;
 }
 
-.buy:hover{transform:scale(1.1)}
+.buy:hover{transform:scale(1.08)}
 
 .paypal{background:#ffc439;color:#111}
-.stripe{background:#635bff;color:white}
+.choose{background:#635bff;color:#fff}
 
 /* ================= FOOTER ================= */
 footer{
-background:var(--bg-secondary);
-padding:2rem;
-text-align:center;
-color:var(--text-secondary);
-border-top:1px solid rgba(255,79,216,.3);
+  background:var(--bg-secondary);
+  padding:2rem;
+  text-align:center;
+  color:var(--text-secondary);
+  border-top:1px solid rgba(255,79,216,.3);
+  position:relative;
+  z-index:5;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 820px){
+  nav .nav-inner{flex-wrap:wrap;justify-content:center}
+  .nav-actions{order:3}
+  nav ul{order:2}
+  .brand{order:1}
 }
 </style>
 </head>
 
 <body>
 
+<!-- Animated Background -->
 <div class="animated-bg">
   <div class="grid-lines"></div>
   <div class="floating-particles" id="particles"></div>
 </div>
 
+<!-- NAV -->
 <nav>
-<ul>
-<li><a href="#home">Home</a></li>
-<li><a href="#live">Live</a></li>
-<li><a href="#ark">ARK</a></li>
-<li><a href="#hytale">Hytale</a></li>
-</ul>
+  <div class="nav-inner">
+    <!-- Logo (put logo.png in your repo root) -->
+    <a class="brand" href="#home">
+      <img src="logo.png" alt="Zeropoint Hosting Logo" onerror="this.style.display='none'">
+      <span>Zeropoint Hosting</span>
+    </a>
+
+    <ul>
+      <li><a href="#live">Live</a></li>
+      <li><a href="#ark">ARK</a></li>
+      <li><a href="#hytale">Hytale</a></li>
+    </ul>
+
+    <!-- Discord Join -->
+    <div class="nav-actions">
+      <!-- Replace the href with your real invite link -->
+      <a class="discord-btn" href="https://discord.gg/YOUR_INVITE_CODE" target="_blank" rel="noopener" aria-label="Join our Discord">
+        <i class="fab fa-discord"></i>
+      </a>
+    </div>
+  </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero" id="home">
-<div>
-<h1>Zeropoint Hosting</h1>
-<p>Official package hub for our ARK & Hytale servers.</p>
-<a href="#ark" class="btn">View Packages</a>
-</div>
+  <div class="hero-card">
+    <img src="logo.png" alt="Zeropoint Hosting Logo" class="hero-logo" onerror="this.style.display='none'">
+    <h1>Zeropoint Hosting</h1>
+    <p>Official package hub for our ARK & Hytale servers. Support helps keep the servers running — thank you 🩷</p>
+    <a href="#ark" class="btn">View Packages</a>
+  </div>
 </section>
 
+<!-- LIVE SERVERS -->
 <section id="live">
-<div class="container">
-<h2 class="section-title">🟢 Live Servers</h2>
-<div class="live-servers">
+  <div class="container">
+    <h2 class="section-title">🟢 Live Servers</h2>
 
-<div class="server-card">
-<div class="server-status"><span class="status-dot"></span> ONLINE</div>
-<div class="server-name">ARK – Ragnarok</div>
-</div>
+    <div class="live-servers">
+      <div class="server-card">
+        <div class="server-status"><span class="status-dot"></span> ONLINE</div>
+        <div class="server-name">ARK – Ragnarok</div>
+        <div class="server-sub">PvE • FiberCraft • 50x</div>
+      </div>
 
-<div class="server-card">
-<div class="server-status"><span class="status-dot"></span> ONLINE</div>
-<div class="server-name">ARK – Fjordur</div>
-</div>
+      <div class="server-card">
+        <div class="server-status"><span class="status-dot"></span> ONLINE</div>
+        <div class="server-name">ARK – Fjordur</div>
+        <div class="server-sub">PvE • Cluster Map</div>
+      </div>
 
-<div class="server-card">
-<div class="server-status"><span class="status-dot"></span> ONLINE</div>
-<div class="server-name">Hytale SMP</div>
-</div>
+      <div class="server-card">
+        <div class="server-status"><span class="status-dot"></span> ONLINE</div>
+        <div class="server-name">Hytale SMP</div>
+        <div class="server-sub">Coming Soon / Testing</div>
+      </div>
 
-</div>
-</div>
+      <!-- Example offline card (optional)
+      <div class="server-card">
+        <div class="server-status offline"><span class="status-dot"></span> OFFLINE</div>
+        <div class="server-name">ARK – Crystal Isles</div>
+        <div class="server-sub">Maintenance</div>
+      </div>
+      -->
+    </div>
+  </div>
 </section>
 
-<!-- ARK & HYTALE PACKAGES (unchanged structure) -->
+<!-- ARK PACKAGES -->
+<section id="ark">
+  <div class="container">
+    <h2 class="section-title">🦖 ARK Packages</h2>
+
+    <div class="packages">
+      <div class="package-card">
+        <h3>VIP Bronze</h3>
+        <div class="price">$5</div>
+        <ul>
+          <li>Starter kit</li>
+          <li>VIP Discord role</li>
+          <li>Bonus BBS</li>
+        </ul>
+        <div class="buy-buttons">
+          <a class="buy paypal" href="https://www.paypal.me/ZeropointHosting" target="_blank" rel="noopener">
+            <i class="fa-brands fa-paypal"></i> PayPal
+          </a>
+          <a class="buy choose" href="dinos.html">
+            <i class="fa-solid fa-palette"></i> Choose Dino
+          </a>
+        </div>
+      </div>
+
+      <div class="package-card popular">
+        <div class="popular-badge">POPULAR</div>
+        <h3>VIP Gold</h3>
+        <div class="price">$15</div>
+        <ul>
+          <li>Everything in Bronze</li>
+          <li>Extra BBS</li>
+          <li>Custom Dino Color</li>
+          <li>Priority support</li>
+        </ul>
+        <div class="buy-buttons">
+          <a class="buy paypal" href="https://www.paypal.me/ZeropointHosting" target="_blank" rel="noopener">
+            <i class="fa-brands fa-paypal"></i> PayPal
+          </a>
+          <a class="buy choose" href="dinos.html">
+            <i class="fa-solid fa-palette"></i> Choose Dino
+          </a>
+        </div>
+      </div>
+
+      <div class="package-card">
+        <h3>VIP Alpha</h3>
+        <div class="price">$25</div>
+        <ul>
+          <li>All Gold perks</li>
+          <li>Monthly rewards</li>
+          <li>Admin-approved tame</li>
+          <li>Top priority support</li>
+        </ul>
+        <div class="buy-buttons">
+          <a class="buy paypal" href="https://www.paypal.me/ZeropointHosting" target="_blank" rel="noopener">
+            <i class="fa-brands fa-paypal"></i> PayPal
+          </a>
+          <a class="buy choose" href="dinos.html">
+            <i class="fa-solid fa-palette"></i> Choose Dino
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HYTALE PACKAGES -->
+<section id="hytale">
+  <div class="container">
+    <h2 class="section-title">🧱 Hytale Packages</h2>
+
+    <div class="packages">
+      <div class="package-card popular">
+        <div class="popular-badge">POPULAR</div>
+        <h3>Champion</h3>
+        <div class="price">$15</div>
+        <ul>
+          <li>Supporter perks</li>
+          <li>Cosmetics</li>
+          <li>Early feature access</li>
+        </ul>
+        <div class="buy-buttons">
+          <a class="buy paypal" href="https://www.paypal.me/ZeropointHosting" target="_blank" rel="noopener">
+            <i class="fa-brands fa-paypal"></i> PayPal
+          </a>
+        </div>
+      </div>
+
+      <div class="package-card">
+        <h3>Supporter</h3>
+        <div class="price">$5</div>
+        <ul>
+          <li>Supporter role</li>
+          <li>Chat badge</li>
+          <li>Cosmetic perks</li>
+        </ul>
+        <div class="buy-buttons">
+          <a class="buy paypal" href="https://www.paypal.me/ZeropointHosting" target="_blank" rel="noopener">
+            <i class="fa-brands fa-paypal"></i> PayPal
+          </a>
+        </div>
+      </div>
+
+      <div class="package-card">
+        <h3>Elite</h3>
+        <div class="price">$25</div>
+        <ul>
+          <li>All Champion perks</li>
+          <li>Exclusive cosmetics</li>
+          <li>Early content access</li>
+        </ul>
+        <div class="buy-buttons">
+          <a class="buy paypal" href="https://www.paypal.me/Zeropointhosting" target="_blank" rel="noopener">
+            <i class="fa-brands fa-paypal"></i> PayPal
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <footer>
-<p>© <span id="year"></span> Zeropoint Hosting</p>
+  <p>© <span id="year"></span> Zeropoint Hosting</p>
 </footer>
 
 <script>
-const p=document.getElementById("particles");
-for(let i=0;i<45;i++){
-  const d=document.createElement("div");
-  d.className="particle";
-  d.style.left=Math.random()*100+"%";
-  d.style.top=Math.random()*100+"%";
-  d.style.animationDelay=Math.random()*18+"s";
-  p.appendChild(d);
-}
-document.getElementById("year").textContent=new Date().getFullYear();
+  // particles
+  const p=document.getElementById("particles");
+  for(let i=0;i<45;i++){
+    const d=document.createElement("div");
+    d.className="particle";
+    d.style.left=Math.random()*100+"%";
+    d.style.top=Math.random()*100+"%";
+    d.style.animationDelay=Math.random()*18+"s";
+    d.style.animationDuration=(18+Math.random()*10)+"s";
+    p.appendChild(d);
+  }
+  document.getElementById("year").textContent=new Date().getFullYear();
 </script>
 
 </body>
