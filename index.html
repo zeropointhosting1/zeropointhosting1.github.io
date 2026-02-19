@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Zeropoint Hosting | Support Our Servers</title>
+<title>Zeropoint Hosting | Support The Cluster</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700;900&display=swap" rel="stylesheet">
 
@@ -11,7 +11,7 @@
 :root {
   --bg: #050508;
   --bg-2: #0b0b15;
-  --card: rgba(22, 22, 36, 0.8);
+  --card: rgba(18, 18, 30, 0.82);
   --accent: #ff4fd8;
   --accent-grad: linear-gradient(135deg, #ff4fd8 0%, #9d50bb 100%);
   --text: #ffffff;
@@ -29,7 +29,7 @@ body {
   background: var(--bg);
   color: var(--text);
   overflow-x: hidden;
-  padding-top: 76px;
+  padding-top: 78px;
 }
 
 nav {
@@ -59,27 +59,113 @@ nav {
   text-decoration: none; border: 1px solid transparent; transition: .2s ease;
 }
 .btn.primary { background: var(--accent-grad); color: #06030c; }
-.btn.ghost { border-color: var(--border); color: white; }
 
 .hero {
-  min-height: 70vh; display: grid; align-items: center;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 3rem; padding: 6rem 6vw 3rem;
+  padding: 5rem 6vw 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero p.kicker {
+  text-transform: uppercase;
+  letter-spacing: .4em;
+  font-size: .75rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
 }
 .hero h1 {
-  font-size: clamp(3rem, 8vw, 5rem);
-  font-weight: 900; background: var(--accent-grad);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  text-transform: uppercase; line-height: 0.95; margin-bottom: 1rem;
+  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  text-transform: uppercase;
 }
-.hero p { max-width: 600px; color: var(--muted); font-size: 1.2rem; line-height: 1.7; }
+.hero h1 span {
+  background: var(--accent-grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero p.sub {
+  margin-top: 1rem;
+  color: var(--muted);
+  max-width: 650px;
+  line-height: 1.7;
+  font-size: 1.1rem;
+}
 
-.section { padding: 4rem 6vw; }
-.section h2 { font-size: 2.2rem; text-transform: uppercase; letter-spacing: 2px; }
+.section {
+  padding: 2rem 6vw 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
+.network {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 3rem;
+  align-items: center;
+}
+
+.globe-wrap {
+  position: relative;
+  min-height: 460px;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle, rgba(255,79,216,0.18) 0%, transparent 70%);
+}
+canvas { width: 100% !important; height: 100% !important; outline: none; }
+.globe-overlay {
+  position: absolute; inset: 0; margin: auto;
+  opacity: .85; mix-blend-mode: screen; pointer-events: none;
+}
+
+.ping-title {
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.ping-sub {
+  margin-top: .7rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.ping-grid { display: grid; gap: 1.2rem; margin-top: 2rem; }
+.ping-group {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 12px 30px var(--shadow);
+}
+.ping-group .label {
+  text-transform: uppercase;
+  letter-spacing: .2em;
+  font-size: .65rem;
+  color: var(--muted);
+}
+.ping-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: .75rem; font-weight: 700;
+}
+.ping-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 12px currentColor; }
+.ping-green { color: var(--green); }
+.ping-red { color: var(--red); }
+
+.servers {
+  margin-top: 3rem;
+}
+.servers h2 {
+  text-transform: uppercase;
+  letter-spacing: .2em;
+  font-size: .8rem;
+  color: var(--muted);
+}
 .status-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 18px; padding: 1rem 2rem; box-shadow: 0 20px 50px var(--shadow);
+  margin-top: 1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1rem 2rem;
+  box-shadow: 0 20px 50px var(--shadow);
 }
 .server-row {
   display: grid; grid-template-columns: 2fr 1fr 1fr;
@@ -91,28 +177,6 @@ nav {
 .badge-ark { color: #f59e0b; border-color: #f59e0b; }
 .badge-hytale { color: #3b82f6; border-color: #3b82f6; }
 .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); display: inline-block; }
-
-.network {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 3rem; align-items: center;
-}
-.globe-wrap {
-  position: relative; min-height: 520px; display: grid; place-items: center;
-  background: radial-gradient(circle, rgba(255,79,216,0.15) 0%, transparent 70%);
-}
-canvas { width: 100% !important; height: 100% !important; outline: none; }
-.globe-overlay { position: absolute; inset: 0; margin: auto; opacity: .8; mix-blend-mode: screen; pointer-events: none; }
-
-.ping-grid { display: grid; gap: 1.5rem; margin-top: 1.5rem; }
-.ping-group {
-  background: rgba(10,10,20,0.6);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 14px; padding: 1rem 1.2rem;
-}
-.ping-row { display: flex; align-items: center; justify-content: space-between; margin-top: .6rem; }
-.ping-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 12px currentColor; }
-.ping-green { color: var(--green); }
-.ping-red { color: var(--red); }
 
 footer {
   background: var(--bg-2); text-align: center;
@@ -135,29 +199,50 @@ footer {
       <span class="brand-text">Zeropoint Hosting</span>
     </a>
     <ul class="nav-links">
-      <li><a href="#servers">Servers</a></li>
       <li><a href="#network">Ping</a></li>
-      <li><a href="#donate">Donate</a></li>
+      <li><a href="#servers">Servers</a></li>
+      <li><a href="#support">Donate</a></li>
     </ul>
-    <a class="btn primary" href="#donate">Support Us</a>
+    <a class="btn primary" href="#support">Support Us</a>
   </div>
 </nav>
 
-<section class="hero">
-  <div>
-    <p style="letter-spacing:.4em; font-size:.75rem; color:var(--muted); text-transform:uppercase;">Community‑Powered Servers</p>
-    <h1>Support Zeropoint Hosting</h1>
-    <p>Your donations keep our private ARK and Hytale clusters online, fast, and secure. Every contribution helps cover hardware, bandwidth, and backups.</p>
-    <div style="margin-top: 2rem; display:flex; gap:1rem; flex-wrap:wrap;">
-      <a href="#donate" class="btn primary">Donate Now</a>
-      <a href="#servers" class="btn ghost">View Servers</a>
+<section class="hero" id="top">
+  <p class="kicker">Community‑Powered Network</p>
+  <h1>Support <span>Zeropoint Hosting</span></h1>
+  <p class="sub">Your donations keep private ARK and Hytale clusters online with fast routing, backups, and premium hardware.</p>
+</section>
+
+<section class="section" id="network">
+  <div class="network">
+    <div class="globe-wrap">
+      <canvas id="cobe"></canvas>
+      <canvas id="cobe-far" class="globe-overlay"></canvas>
+    </div>
+    <div>
+      <div style="color: var(--green); font-size: .8rem; letter-spacing: .3em; text-transform: uppercase;">Network Ping</div>
+      <div class="ping-title">Low‑Latency Core + Global Reach</div>
+      <div class="ping-sub">US nodes stay green. Far regions show higher ping but remain stable.</div>
+
+      <div class="ping-grid">
+        <div class="ping-group">
+          <div class="label">Primary U.S. Nodes</div>
+          <div class="ping-row"><div>🇺🇸 New York, US</div><div class="ping-green"><span class="ping-dot"></span><span class="dynamic-ping" data-min="31" data-max="37">34</span>ms</div></div>
+          <div class="ping-row"><div>🇺🇸 Miami, US</div><div class="ping-green"><span class="ping-dot"></span><span class="dynamic-ping" data-min="19" data-max="25">22</span>ms</div></div>
+        </div>
+        <div class="ping-group">
+          <div class="label">Distant Nodes</div>
+          <div class="ping-row"><div>🇬🇧 London, UK</div><div class="ping-red"><span class="ping-dot"></span><span class="dynamic-ping" data-min="110" data-max="128">114</span>ms</div></div>
+          <div class="ping-row"><div>🇦🇺 Sydney, AU</div><div class="ping-red"><span class="ping-dot"></span><span class="dynamic-ping" data-min="300" data-max="338">314</span>ms</div></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="servers" class="section">
-  <h2>Server Status</h2>
-  <div class="status-card" style="margin-top:2rem;">
+<section class="section servers" id="servers">
+  <h2>Live Servers</h2>
+  <div class="status-card">
     <div class="server-row">
       <div style="font-weight: 800;"><span class="badge badge-ark">ARK</span> Ragnarok PvE Cluster</div>
       <div style="font-size: 0.9rem; font-weight: 700;"><span class="status-dot"></span> ONLINE</div>
@@ -176,39 +261,9 @@ footer {
   </div>
 </section>
 
-<section id="network" class="section">
-  <div class="network">
-    <div class="globe-wrap">
-      <canvas id="cobe"></canvas>
-      <canvas id="cobe-far" class="globe-overlay"></canvas>
-    </div>
-    <div>
-      <h2 style="color: var(--green); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 1rem;">NETWORK PING</h2>
-      <h3 style="font-size: 2.4rem; font-weight: 900; margin-bottom: 1rem; line-height: 1.1;">Low‑Latency Core + Global Reach</h3>
-      <p style="color: var(--muted); line-height: 1.6;">US nodes stay green. Far regions show higher ping but remain stable.</p>
-
-      <div class="ping-grid">
-        <div class="ping-group">
-          <div style="letter-spacing:.14em; font-size:.7rem; color:var(--muted); text-transform:uppercase;">Primary U.S. Nodes</div>
-          <div class="ping-row"><div>🇺🇸 New York, US</div><div class="ping-green"><span class="ping-dot"></span><span class="dynamic-ping" data-min="31" data-max="37">34</span>ms</div></div>
-          <div class="ping-row"><div>🇺🇸 Miami, US</div><div class="ping-green"><span class="ping-dot"></span><span class="dynamic-ping" data-min="19" data-max="25">22</span>ms</div></div>
-        </div>
-        <div class="ping-group">
-          <div style="letter-spacing:.14em; font-size:.7rem; color:var(--muted); text-transform:uppercase;">Distant Nodes</div>
-          <div class="ping-row"><div>🇬🇧 London, UK</div><div class="ping-red"><span class="ping-dot"></span><span class="dynamic-ping" data-min="110" data-max="128">114</span>ms</div></div>
-          <div class="ping-row"><div>🇦🇺 Sydney, AU</div><div class="ping-red"><span class="ping-dot"></span><span class="dynamic-ping" data-min="300" data-max="338">314</span>ms</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="donate" class="section">
-  <h2>Support The Cluster</h2>
-  <p style="color:var(--muted); margin-top:1rem;">Donations keep the servers fast, backed up, and online 24/7. Thank you for supporting the community.</p>
-  <div style="margin-top: 1.5rem;">
-    <a href="#" class="btn primary">Donate Now</a>
-  </div>
+<section class="section" id="support">
+  <h2 style="text-transform:uppercase; letter-spacing:.2em; font-size:.8rem; color:var(--muted);">Support The Cluster</h2>
+  <p style="margin-top:1rem; color:var(--muted);">Donations keep the servers fast, backed up, and online 24/7. Thank you for supporting the community.</p>
 </section>
 
 <footer>
@@ -229,7 +284,7 @@ const dpr = Math.min(window.devicePixelRatio || 1, 2);
   c.height = size * dpr;
 });
 
-// Main globe with green orbit lines
+// Main globe: US green nodes + animated green orbit lines
 createGlobe(canvas, {
   devicePixelRatio: dpr,
   width: size * dpr,
@@ -303,6 +358,5 @@ setInterval(() => {
 
 document.getElementById("year").textContent = new Date().getFullYear();
 </script>
-
 </body>
 </html>
