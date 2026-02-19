@@ -1,329 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zeropoint | ARK & Hytale Hosting</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zeropoint | ARK & Hytale Community Servers</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700;900&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --bg:#050508;
-  --bg2:#0b0b15;
-  --card:#141423;
-  --pink:#ff4fd8;
-  --muted:#cbd5e1;
-  --green:#22c55e;
-  --red:#f87171;
-  --border:rgba(255,79,216,.25);
+:root {
+  --bg: #050508;
+  --panel: rgba(28,28,42,.7);
+  --accent: #ff4fd8;
+  --accent-dark: #c026a3;
+  --text: #ffffff;
+  --muted: #cbd5e1;
+  --green: #22c55e;
+  --red: #ef4444;
+  --border: rgba(255,79,216,.25);
+  --glow: rgba(255,79,216,.45);
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family:'Rajdhani',sans-serif;
-  background:var(--bg);
-  color:#fff;
-  overflow-x:hidden;
+* { box-sizing: border-box; margin:0; padding:0; }
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
 }
 
-/* ===== BACKGROUND (SAFE) ===== */
-.bg{
-  position:fixed;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
+/* ===== BACKGROUND ===== */
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
 }
-.bg-grid{
+.grid {
   position:absolute;
   inset:0;
   background-image:
-    linear-gradient(rgba(255,79,216,.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,79,216,.05) 1px, transparent 1px);
-  background-size:50px 50px;
-  animation:gridMove 40s linear infinite;
+    linear-gradient(rgba(255,79,216,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,79,216,.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: gridMove 30s linear infinite;
 }
-@keyframes gridMove{
-  to{transform:translate(50px,50px)}
+@keyframes gridMove {
+  from { transform: translate(0,0); }
+  to { transform: translate(48px,48px); }
 }
-
-/* ===== FLOATING PARTICLES ===== */
-.bg span{
+.particles span {
   position:absolute;
-  width:4px;
-  height:4px;
-  background:var(--pink);
-  opacity:.35;
+  width:3px;height:3px;
+  background: var(--accent);
+  opacity:.4;
   border-radius:50%;
-  animation:float 22s linear infinite;
+  animation: float 14s infinite linear;
 }
-@keyframes float{
-  from{transform:translateY(120vh)}
-  to{transform:translateY(-120vh)}
+@keyframes float {
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-120vh)}
 }
 
 /* ===== NAV ===== */
-nav{
-  position:fixed;
+nav {
+  position: sticky;
   top:0;
-  width:100%;
   z-index:10;
-  background:#0a0a14;
+  background: rgba(5,5,8,.85);
   border-bottom:1px solid var(--border);
 }
-.nav-inner{
+.nav-inner {
   max-width:1200px;
   margin:auto;
-  padding:.9rem 1.5rem;
+  padding:1rem 1.5rem;
   display:flex;
   align-items:center;
   justify-content:space-between;
 }
-.brand img{width:34px}
-.nav-links{
+.brand img { width:34px; filter: drop-shadow(0 0 10px var(--glow)); }
+.nav-links {
   display:flex;
-  gap:1.6rem;
+  gap:1.5rem;
   list-style:none;
 }
-.nav-links a{
-  color:var(--muted);
+.nav-links a {
   text-decoration:none;
-  font-weight:900;
-  text-transform:uppercase;
-  font-size:.8rem;
-  letter-spacing:1px;
+  color:var(--muted);
+  font-weight:700;
+  font-size:.9rem;
 }
-.nav-links a:hover{color:var(--pink)}
-.discord{
-  color:var(--pink);
+.nav-links a:hover { color:var(--accent); }
+.discord-btn {
+  color:#5865F2;
   font-size:1.3rem;
 }
 
 /* ===== HERO ===== */
-.hero{
-  min-height:90vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:8rem 2rem 3rem;
+.hero {
   position:relative;
   z-index:2;
+  padding:7rem 1.5rem 4rem;
+  text-align:center;
 }
-.hero h1{
-  font-size:clamp(3rem,7vw,5.8rem);
+.hero h1 {
+  font-size:clamp(2.6rem,6vw,4.8rem);
   font-weight:900;
-  background:linear-gradient(135deg,var(--pink),#9d50bb);
+  background: linear-gradient(135deg,var(--accent),#9d50bb);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
-.hero p{
-  margin-top:1rem;
+.hero p {
+  max-width:720px;
+  margin:1.5rem auto 2.5rem;
   color:var(--muted);
-  font-size:1.25rem;
+  font-size:1.2rem;
+}
+.hero .cta {
+  display:flex;
+  justify-content:center;
+  gap:1rem;
+  flex-wrap:wrap;
+}
+.btn {
+  padding:.9rem 2.2rem;
+  border-radius:40px;
+  font-weight:900;
+  text-decoration:none;
+}
+.btn.primary {
+  background: linear-gradient(135deg,var(--accent),var(--accent-dark));
+  color:white;
+}
+.btn.secondary {
+  border:2px solid var(--accent);
+  color:var(--accent);
 }
 
 /* ===== SECTIONS ===== */
-.section{
-  max-width:1100px;
-  margin:auto;
-  padding:5rem 2rem;
+section {
   position:relative;
   z-index:2;
+  padding:4rem 1.5rem;
 }
-h2{
-  text-transform:uppercase;
-  letter-spacing:2px;
-  margin-bottom:2rem;
+.container {
+  max-width:1100px;
+  margin:auto;
 }
 
-/* ===== SERVERS ===== */
-.servers{
-  background:var(--card);
+/* ===== SERVER STATUS ===== */
+.status {
+  background: var(--panel);
   border:1px solid var(--border);
   border-radius:14px;
-  padding:1.6rem;
+  padding:2rem;
 }
-.server{
+.server {
   display:grid;
   grid-template-columns:2fr 1fr 1fr;
   padding:1rem 0;
-  border-bottom:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.05);
 }
-.server:last-child{border-bottom:none}
-.status{
-  display:flex;
-  align-items:center;
-  gap:.5rem;
-  font-weight:900;
-}
-.dot{
+.server:last-child { border-bottom:none; }
+.dot {
   width:8px;height:8px;border-radius:50%;
-  background:var(--green);
+  display:inline-block;margin-right:8px;
 }
-.right{
-  text-align:right;
-  color:var(--green);
-  font-weight:900;
-}
+.online { background:var(--green); box-shadow:0 0 6px var(--green); }
+.offline { background:#64748b; }
 
 /* ===== NETWORK ===== */
-.network{
+.network {
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:3rem;
   align-items:center;
 }
-.globe-wrap{
-  max-width:380px;
+.globe-wrap {
+  max-width:420px;
   margin:auto;
 }
-canvas{width:100%;height:auto}
-
-/* ===== PING ===== */
-.ping{
+canvas {
+  width:100%!important;
+  height:auto!important;
+}
+.pings {
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:1rem;
+  gap:1.5rem;
 }
-.green{color:var(--green);font-weight:900}
-.red{color:var(--red);font-weight:900}
-
-/* ===== FOOTER ===== */
-footer{
-  background:var(--bg2);
-  text-align:center;
-  padding:3rem 2rem;
-  border-top:1px solid var(--border);
-  color:var(--muted);
-}
+.ping strong { display:block; }
+.low { color:var(--green); }
+.high { color:var(--red); }
 
 /* ===== MOBILE ===== */
-@media(max-width:768px){
-  .nav-links{gap:.8rem;font-size:.7rem}
-  .network{grid-template-columns:1fr;text-align:center}
-  .server{grid-template-columns:1fr;gap:.5rem;text-align:center}
-  .right{text-align:center}
-  .status{justify-content:center}
-  .ping{grid-template-columns:1fr}
+@media(max-width:900px){
+  .network { grid-template-columns:1fr; }
+  .server { grid-template-columns:1fr; gap:.5rem; text-align:center; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- BACKGROUND -->
-<div class="bg">
-  <div class="bg-grid"></div>
-  <span style="left:10%"></span>
-  <span style="left:30%"></span>
-  <span style="left:50%"></span>
-  <span style="left:70%"></span>
-  <span style="left:90%"></span>
+<div class="background">
+  <div class="grid"></div>
+  <div class="particles" id="particles"></div>
 </div>
 
-<!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <a class="brand" href="index.html">
-      <img src="zeropoint.png" alt="Zeropoint">
-    </a>
+    <a class="brand" href="#"><img src="zeropoint.png" alt="Zeropoint"></a>
     <ul class="nav-links">
-      <li><a href="arkdonations.html">ARK Packages</a></li>
-      <li><a href="#">Hytale Packages</a></li>
-      <li><a href="#servers">Live Nodes</a></li>
-      <li><a href="aboutus.html">About Us</a></li>
-      <li><a href="admin.html">Current Admins</a></li>
+      <li><a href="arkdonations.html">ARK Donation Perks</a></li>
+      <li><a href="hytaledonations.html">Hytale Donation Perks</a></li>
+      <li><a href="#servers">Servers</a></li>
     </ul>
-    <a class="discord" href="YOUR_DISCORD_LINK" target="_blank">
-      <i class="fab fa-discord"></i>
-    </a>
+    <a class="discord-btn" href="YOUR_DISCORD_LINK"><i class="fab fa-discord"></i></a>
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-  <div>
-    <h1>Zeropoint Hosting</h1>
-    <p>ARK and Hytale hosting built for stability, progression, and community.</p>
+  <h1>Welcome to Zeropoint</h1>
+  <p>
+    A community-run ARK & Hytale server focused on long-term play, balanced rates,
+    and active admins. No wipes. No pay-to-win. Just good gameplay.
+  </p>
+  <div class="cta">
+    <a class="btn primary" href="arkdonations.html">View ARK Perks</a>
+    <a class="btn secondary" href="YOUR_DISCORD_LINK">Join Discord</a>
   </div>
 </section>
 
-<!-- SERVERS -->
-<section id="servers" class="section">
-  <h2>Command Center</h2>
-  <div class="servers">
-    <div class="server">
-      <div>ARK – Crystal Isles</div>
-      <div class="status"><span class="dot"></span>ONLINE</div>
-      <div class="right">0 / 16</div>
-    </div>
-    <div class="server">
-      <div>ARK – Fjordur</div>
-      <div class="status"><span class="dot"></span>ONLINE</div>
-      <div class="right">1 / 16</div>
-    </div>
-    <div class="server">
-      <div>ARK – Ragnarok</div>
-      <div class="status"><span class="dot"></span>ONLINE</div>
-      <div class="right">22 / 26</div>
-    </div>
-  </div>
-</section>
-
-<!-- NETWORK -->
-<section class="section">
-  <div class="network">
-    <div class="globe-wrap">
-      <canvas id="cobe" width="600" height="600"></canvas>
-    </div>
-    <div>
-      <h2>Network Latency</h2>
-      <div class="ping">
-        <div>🇺🇸 New York <span class="green">34ms</span></div>
-        <div>🇺🇸 Miami <span class="green">22ms</span></div>
-        <div>🇬🇧 London <span class="red">114ms</span></div>
-        <div>🇦🇺 Sydney <span class="red">314ms</span></div>
+<section id="servers">
+  <div class="container">
+    <h2>Current Servers</h2>
+    <div class="status">
+      <div class="server">
+        <div>ARK – Ragnarok PvE</div>
+        <div><span class="dot online"></span>Online</div>
+        <div>42 / 70</div>
+      </div>
+      <div class="server">
+        <div>ARK – Fjordur PvP</div>
+        <div><span class="dot online"></span>Online</div>
+        <div>15 / 70</div>
+      </div>
+      <div class="server">
+        <div>Hytale – Alpha World</div>
+        <div><span class="dot offline"></span>Standby</div>
+        <div>0 / 150</div>
       </div>
     </div>
   </div>
 </section>
 
-<footer>
-  © <span id="year"></span> Zeropoint Hosting
-</footer>
+<section>
+  <div class="container network">
+    <div class="globe-wrap">
+      <canvas id="globe"></canvas>
+    </div>
+    <div class="pings">
+      <div class="ping"><strong>New York</strong><span class="low">34ms</span></div>
+      <div class="ping"><strong>Miami</strong><span class="low">22ms</span></div>
+      <div class="ping"><strong>London</strong><span class="high">114ms</span></div>
+      <div class="ping"><strong>Sydney</strong><span class="high">314ms</span></div>
+    </div>
+  </div>
+</section>
 
 <script type="module">
-import createGlobe from 'https://cdn.skypack.dev/cobe'
+import createGlobe from 'https://cdn.skypack.dev/cobe';
 
-const canvas = document.getElementById("cobe")
-let phi = 0
-
-createGlobe(canvas,{
-  devicePixelRatio: window.innerWidth < 768 ? 1 : 2,
-  width:600,
-  height:600,
+const globe = createGlobe(document.getElementById("globe"),{
+  devicePixelRatio:2,
+  width:420*2,
+  height:420*2,
+  phi:0,
   theta:.45,
   dark:1,
   diffuse:1.2,
-  mapSamples:8000,
+  mapSamples:12000,
   mapBrightness:6,
   baseColor:[.05,.05,.1],
-  glowColor:[1,.3,.85],
   markerColor:[.13,.77,.36],
+  glowColor:[1,.3,.85],
   markers:[
-    {location:[40.73,-73.93],size:.08},
-    {location:[25.78,-80.22],size:.08}
+    {location:[40.7,-74],size:.1},
+    {location:[25.7,-80],size:.1},
+    {location:[51.5,-.12],size:.05},
+    {location:[-33.8,151.2],size:.05}
   ],
-  arcs:[
-    {start:[51.5,-.12],end:[51.5,-.12],color:'#f87171'},
-    {start:[-33.86,151.21],end:[-33.86,151.21],color:'#f87171'}
-  ],
-  onRender:(s)=>{s.phi=phi;phi+=.003}
-})
+  onRender:(s)=>{ s.phi+=.004 }
+});
+</script>
 
-document.getElementById("year").textContent=new Date().getFullYear()
+<script>
+const p = document.getElementById("particles");
+for(let i=0;i<30;i++){
+  const s=document.createElement("span");
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*100+"%";
+  s.style.animationDuration=10+Math.random()*10+"s";
+  p.appendChild(s);
+}
 </script>
 
 </body>
