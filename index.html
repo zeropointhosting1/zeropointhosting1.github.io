@@ -18,6 +18,8 @@
   --green:#22c55e;
   --red:#f87171;
   --border:rgba(255,79,216,.25);
+  --nav-bg: rgba(10,10,18,.72);
+  --nav-pill: rgba(255,255,255,.06);
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -39,54 +41,90 @@ body{
 }
 @keyframes move{to{transform:translate(50px,50px)}}
 
-/* NAV — CLEAN & PREMIUM */
+/* NAV (cleaner on PC, mobile stays stacked) */
 nav{
   position:fixed;
   top:0;
   width:100%;
   z-index:10;
-  backdrop-filter:blur(14px);
-  background:rgba(5,5,10,.92);
-  border-bottom:1px solid var(--border);
+  padding:.65rem 1rem;
 }
-.nav-inner{
+.nav-shell{
   max-width:1200px;
   margin:auto;
-  padding:1rem 2rem;
+  background:var(--nav-bg);
+  border:1px solid var(--border);
+  border-radius:18px;
+  backdrop-filter:blur(14px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.35);
+}
+.nav-inner{
+  padding:.8rem 1.1rem;
   display:grid;
   grid-template-columns:auto 1fr auto;
   align-items:center;
+  gap:1rem;
 }
+
 .brand{
   display:flex;
   align-items:center;
   gap:.65rem;
   text-decoration:none;
 }
-.brand img{width:36px}
+.brand img{width:34px;filter: drop-shadow(0 0 10px rgba(255,79,216,.25));}
 .brand span{
   font-weight:900;
   letter-spacing:1px;
   color:white;
 }
+
+/* PC nav pill */
 .nav-links{
   display:flex;
   justify-content:center;
-  gap:2.5rem;
+  gap:.4rem;
   list-style:none;
+  padding:.35rem;
+  background: rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:999px;
 }
 .nav-links a{
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
   text-decoration:none;
-  font-weight:800;
+  font-weight:900;
   color:var(--muted);
   text-transform:uppercase;
   font-size:.8rem;
   letter-spacing:1px;
+  padding:.55rem .9rem;
+  border-radius:999px;
+  transition: .2s ease;
 }
-.nav-links a:hover{color:var(--pink)}
+.nav-links a:hover{
+  color:white;
+  background: var(--nav-pill);
+}
+.nav-links a:active{ transform: translateY(1px); }
+
 .discord{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:40px;height:40px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
   color:var(--pink);
-  font-size:1.4rem;
+  font-size:1.2rem;
+  transition:.2s ease;
+}
+.discord:hover{
+  background: rgba(255,79,216,.12);
+  border-color: rgba(255,79,216,.35);
 }
 
 /* HERO */
@@ -96,7 +134,7 @@ nav{
   align-items:center;
   justify-content:center;
   text-align:center;
-  padding:7rem 2rem 3rem;
+  padding:8.2rem 2rem 3rem; /* extra for nav shell */
   position:relative;
   z-index:2;
 }
@@ -109,7 +147,7 @@ nav{
   margin-bottom:1rem;
 }
 .hero p{
-  max-width:700px;
+  max-width:740px;
   margin:auto;
   color:var(--muted);
   font-size:1.25rem;
@@ -148,7 +186,7 @@ h2{
   display:flex;
   align-items:center;
   gap:.5rem;
-  font-weight:800;
+  font-weight:900;
 }
 .dot{
   width:8px;height:8px;border-radius:50%;
@@ -186,7 +224,7 @@ canvas{
   gap:1.2rem;
   margin-top:1.5rem;
 }
-.ping div{font-weight:700;color:var(--muted)}
+.ping div{font-weight:800;color:var(--muted)}
 .ping .green{color:var(--green);font-weight:900}
 .ping .red{color:var(--red);font-weight:900}
 
@@ -199,8 +237,9 @@ footer{
   background:var(--bg2);
 }
 
-/* MOBILE (unchanged behavior) */
+/* MOBILE (keep behavior you liked) */
 @media(max-width:768px){
+  nav{ padding:.55rem .75rem; }
   .nav-inner{
     grid-template-columns:1fr;
     gap:.75rem;
@@ -209,6 +248,8 @@ footer{
   .nav-links{
     flex-wrap:wrap;
     justify-content:center;
+    border-radius:16px; /* looks better when wrapping */
+    background: rgba(255,255,255,.03);
   }
   .network{grid-template-columns:1fr;text-align:center}
   .server{grid-template-columns:1fr;text-align:center;gap:.5rem}
@@ -224,28 +265,30 @@ footer{
 <div class="grid"></div>
 
 <nav>
-  <div class="nav-inner">
-    <a class="brand" href="#">
-      <img src="zeropoint.png">
-      <span>Zeropoint</span>
-    </a>
+  <div class="nav-shell">
+    <div class="nav-inner">
+      <a class="brand" href="#">
+        <img src="zeropoint.png" alt="Zeropoint">
+        <span>Zeropoint</span>
+      </a>
 
-    <ul class="nav-links">
-      <li><a href="#ark">ARK Hosting</a></li>
-      <li><a href="#hytale">Hytale Hosting</a></li>
-      <li><a href="#servers">Live Nodes</a></li>
-    </ul>
+      <ul class="nav-links">
+        <li><a href="#ark"><i class="fa-solid fa-dragon"></i> ARK Hosting</a></li>
+        <li><a href="#hytale"><i class="fa-solid fa-cubes"></i> Hytale Hosting</a></li>
+        <li><a href="#servers"><i class="fa-solid fa-signal"></i> Live Nodes</a></li>
+      </ul>
 
-    <a class="discord" href="YOUR_DISCORD_INVITE" target="_blank">
-      <i class="fab fa-discord"></i>
-    </a>
+      <a class="discord" href="YOUR_DISCORD_INVITE" target="_blank" aria-label="Join Discord">
+        <i class="fab fa-discord"></i>
+      </a>
+    </div>
   </div>
 </nav>
 
 <section class="hero">
   <div>
     <h1>Zeropoint Hosting</h1>
-    <p>High-performance ARK and Hytale hosting built for stability, progression, and community.</p>
+    <p>ARK and Hytale hosting built for stability, progression, and community.</p>
   </div>
 </section>
 
@@ -297,6 +340,17 @@ import createGlobe from 'https://cdn.skypack.dev/cobe'
 const canvas = document.getElementById("cobe")
 let phi = 0
 
+// Helper: make tiny arcs that LOOK like red "dots" (COBe markers are one global color)
+function tinyDotArcs(lat, lon) {
+  // very small offsets to create a tiny “x” / “spark” that reads as a dot
+  const dLat = 0.35
+  const dLon = 0.55
+  return [
+    { start: [lat - dLat, lon - dLon], end: [lat + dLat, lon + dLon], color: '#f87171' },
+    { start: [lat - dLat, lon + dLon], end: [lat + dLat, lon - dLon], color: '#f87171' },
+  ]
+}
+
 createGlobe(canvas,{
   devicePixelRatio:2,
   width:800,
@@ -309,13 +363,20 @@ createGlobe(canvas,{
   mapBrightness:6,
   baseColor:[.05,.05,.1],
   glowColor:[1,.3,.85],
-  markers:[
-    { location:[40.73,-73.93], size:.07, color:'#22c55e' }, // NY
-    { location:[25.78,-80.22], size:.07, color:'#22c55e' }, // Miami
-    { location:[51.50,-0.12], size:.055, color:'#f87171' }, // London
-    { location:[-33.86,151.21], size:.055, color:'#f87171' } // Sydney
-  ],
+
+  // Green markers (low ping)
   markerColor:[.13,.77,.36],
+  markers:[
+    { location:[40.73,-73.93], size:.07 }, // New York (green)
+    { location:[25.78,-80.22], size:.07 }, // Miami (green)
+  ],
+
+  // Red “ping dots” (high ping) using tiny arcs so they can be red
+  arcs: [
+    ...tinyDotArcs(51.50, -0.12),       // London (red)
+    ...tinyDotArcs(-33.86, 151.21),     // Sydney (red)
+  ],
+
   onRender:(s)=>{
     s.phi = phi
     phi += .004
