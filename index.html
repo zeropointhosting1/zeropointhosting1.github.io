@@ -57,8 +57,8 @@ body{
   animation:float 18s infinite linear;
 }
 @keyframes float{
-  0%{transform:translateY(0)}
-  100%{transform:translateY(-120vh)}
+  from{transform:translateY(110vh)}
+  to{transform:translateY(-120vh)}
 }
 
 /* ===== NAV ===== */
@@ -213,6 +213,7 @@ footer{
 
 <body>
 
+<!-- Background -->
 <div class="animated-bg">
   <div class="grid"></div>
   <div class="particles">
@@ -225,15 +226,18 @@ footer{
   </div>
 </div>
 
+<!-- Navigation -->
 <nav>
   <div class="nav-inner">
-    <a class="brand" href="#"><img src="zeropoint.png" alt="Zeropoint"></a>
+    <a class="brand" href="index.html">
+      <img src="zeropoint.png" alt="Zeropoint">
+    </a>
     <ul class="nav-links">
-      <li><a href="#ark">ARK Hosting</a></li>
+      <li><a href="arkdonations.html">ARK Hosting</a></li>
       <li><a href="#hytale">Hytale Hosting</a></li>
       <li><a href="#servers">Live Nodes</a></li>
-      <li><a href="#about">About Us</a></li>
-      <li><a href="#admins">Current Admins</a></li>
+      <li><a href="aboutus.html">About Us</a></li>
+      <li><a href="admin.html">Current Admins</a></li>
     </ul>
     <a class="discord-btn" href="YOUR_DISCORD_INVITE" target="_blank">
       <i class="fab fa-discord"></i>
@@ -241,6 +245,7 @@ footer{
   </div>
 </nav>
 
+<!-- Hero -->
 <section class="hero">
   <div>
     <h1>Zeropoint Hosting</h1>
@@ -248,6 +253,7 @@ footer{
   </div>
 </section>
 
+<!-- Servers -->
 <section id="servers" class="container">
   <h2>Command Center</h2>
   <div class="server-box">
@@ -269,6 +275,7 @@ footer{
   </div>
 </section>
 
+<!-- Network -->
 <section class="container">
   <div class="network">
     <div class="globe-wrap">
@@ -286,20 +293,7 @@ footer{
   </div>
 </section>
 
-<section id="about" class="container">
-  <h2>About Us</h2>
-  <p>Zeropoint is a community-driven ARK and Hytale hosting platform focused on long-term progression, fair administration, and stable environments.</p>
-</section>
-
-<section id="admins" class="container">
-  <h2>Current Admins</h2>
-  <ul>
-    <li>Owner – Zeropoint</li>
-    <li>Admin – TBD</li>
-    <li>Moderator – TBD</li>
-  </ul>
-</section>
-
+<!-- Footer -->
 <footer>
   © <span id="year"></span> Zeropoint Hosting
 </footer>
