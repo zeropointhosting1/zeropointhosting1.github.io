@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zeropoint Hosting | Servers</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zeropoint Hosting | Live Servers</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700;900&display=swap" rel="stylesheet">
 
 <style>
-:root{
+:root {
   --bg:#0b0b16;
-  --bg2:#141428;
-  --card:#1c1c38;
+  --card:#17172d;
   --pink:#ff4fd8;
   --pink-soft:#ff7de9;
-  --text:#f5f5ff;
-  --muted:#b9b9d6;
-  --green:#22c55e;
+  --text:#ffffff;
+  --muted:#a6a6c8;
   --border:rgba(255,79,216,.25);
+  --green:#22c55e;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -29,18 +27,7 @@ body{
   color:var(--text);
 }
 
-.bg{
-  position:fixed;inset:0;
-  background:
-    linear-gradient(rgba(255,79,216,.05) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,79,216,.05) 1px,transparent 1px);
-  background-size:60px 60px;
-  z-index:0;
-}
-
-.content{position:relative;z-index:1}
-
-/* NAV — SAME ACROSS SITE */
+/* ===== NAV (MATCHES MAIN SITE) ===== */
 nav{
   position:fixed;
   top:0;
@@ -48,10 +35,10 @@ nav{
   background:rgba(11,11,22,.95);
   backdrop-filter:blur(10px);
   border-bottom:1px solid var(--border);
-  z-index:10;
+  z-index:1000;
 }
-nav .nav-inner{
-  max-width:1200px;
+.nav-inner{
+  max-width:1400px;
   margin:auto;
   padding:1rem 1.5rem;
   display:flex;
@@ -60,226 +47,189 @@ nav .nav-inner{
 }
 .logo{
   font-weight:900;
-  font-size:1.3rem;
+  font-size:1.4rem;
+  text-decoration:none;
+  color:#fff;
 }
 .logo span{color:var(--pink)}
-nav ul{
+
+.nav-links{
   display:flex;
+  gap:2rem;
   list-style:none;
-  gap:1.5rem;
 }
-nav a{
+.nav-links a{
   text-decoration:none;
   color:var(--muted);
   font-weight:700;
-  font-size:.85rem;
 }
-nav a:hover{color:var(--pink)}
+.nav-links a:hover{color:var(--pink)}
+
 .discord-btn{
   background:linear-gradient(135deg,var(--pink),#9b5cff);
-  padding:.6rem 1.2rem;
-  border-radius:30px;
+  padding:.6rem 1.4rem;
+  border-radius:999px;
   color:#fff;
   font-weight:800;
   text-decoration:none;
 }
 
-/* HERO */
-.hero{
-  padding:8rem 1.5rem 4rem;
-  text-align:center;
+/* ===== PAGE ===== */
+.page{
+  padding-top:6.5rem;
+  padding-bottom:5rem;
 }
-.hero h1{
-  font-size:clamp(2.8rem,6vw,4rem);
-}
-.hero h1 span{color:var(--pink)}
-.hero p{
-  margin-top:1rem;
-  color:var(--muted);
-}
-
-/* LAYOUT */
 .container{
-  max-width:1200px;
+  max-width:1000px;
   margin:auto;
   padding:0 1.5rem;
 }
 
-.server-layout{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:3rem;
-  align-items:center;
-  margin-top:3rem;
+h1{
+  font-size:clamp(2.5rem,6vw,3.5rem);
+  text-align:center;
+}
+h1 span{color:var(--pink)}
+
+.subtitle{
+  text-align:center;
+  color:var(--muted);
+  margin-top:.8rem;
+  margin-bottom:3rem;
 }
 
-@media(max-width:900px){
-  .server-layout{
-    grid-template-columns:1fr;
-  }
-}
-
-/* MAP */
-.map-card{
-  background:var(--card);
-  border-radius:24px;
-  padding:2rem;
-  border:1px solid var(--border);
-}
-.network-map{
-  width:100%;
-  height:auto;
-}
-
-/* SERVERS */
+/* ===== SERVER CARDS ===== */
 .server-list{
   display:flex;
   flex-direction:column;
-  gap:1.5rem;
+  gap:1.4rem;
 }
-.server{
+
+.server-card{
   background:var(--card);
-  padding:1.6rem;
-  border-radius:18px;
+  border-radius:20px;
+  padding:1.4rem 1.6rem;
   border:1px solid var(--border);
   display:flex;
   justify-content:space-between;
   align-items:center;
+  transition:.25s;
 }
-.server h3{
-  font-size:1.1rem;
-}
-.server p{
-  font-size:.9rem;
-  color:var(--muted);
-}
-.ping{
-  font-weight:800;
-  color:var(--green);
-  display:flex;
-  align-items:center;
-  gap:.4rem;
-}
-.dot{
-  width:8px;
-  height:8px;
-  background:var(--green);
-  border-radius:50%;
+.server-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 25px rgba(255,79,216,.2);
 }
 
-/* FOOTER */
-footer{
-  margin-top:5rem;
-  padding:2rem;
-  text-align:center;
-  background:var(--bg2);
-  border-top:1px solid var(--border);
+.server-info h3{
+  font-size:1.3rem;
+  margin-bottom:.3rem;
+}
+.server-info p{
   color:var(--muted);
+  font-size:.95rem;
+}
+
+.server-status{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  font-weight:700;
+}
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 10px var(--green);
+}
+.ping{
+  color:var(--green);
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:700px){
+  .server-card{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:.8rem;
+  }
 }
 </style>
 </head>
 
 <body>
-<div class="bg"></div>
 
+<!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <div class="logo">Zeropoint <span>Hosting</span></div>
-    <ul>
+    <a href="index.html" class="logo">Zeropoint <span>Hosting</span></a>
+
+    <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="ark.html">ARK</a></li>
       <li><a href="hytale.html">Hytale</a></li>
-      <li><a href="servers.html">Servers</a></li>
+      <li><a href="servers.html" style="color:var(--pink)">Servers</a></li>
       <li><a href="about.html">About</a></li>
     </ul>
-    <a href="#" class="discord-btn">Discord</a>
+
+    <a class="discord-btn" href="#" target="_blank">Discord</a>
   </div>
 </nav>
 
-<div class="content">
+<!-- PAGE -->
+<div class="page">
+  <div class="container">
+    <h1>Live <span>Servers</span></h1>
+    <p class="subtitle">Currently running Zeropoint PvE servers</p>
 
-<section class="hero">
-  <h1>Live <span>Servers</span></h1>
-  <p>Currently running Zeropoint PvE servers</p>
-</section>
+    <div class="server-list">
 
-<div class="container server-layout">
+      <div class="server-card">
+        <div class="server-info">
+          <h3>ARK | Crystal Isles (PvE)</h3>
+          <p>Miami • Xbox • 0 / 16</p>
+        </div>
+        <div class="server-status">
+          <span class="dot"></span>
+          <span class="ping dynamic-ping" data-min="18" data-max="26">22</span> ms
+        </div>
+      </div>
 
-<!-- MAP -->
-<div class="map-card">
-<svg viewBox="0 0 1000 600" class="network-map">
+      <div class="server-card">
+        <div class="server-info">
+          <h3>ARK | Fjordur (PvE)</h3>
+          <p>New York • Xbox • 1 / 16</p>
+        </div>
+        <div class="server-status">
+          <span class="dot"></span>
+          <span class="ping dynamic-ping" data-min="32" data-max="42">37</span> ms
+        </div>
+      </div>
 
-  <!-- US Shape -->
-  <path d="M80,200 L150,150 L300,140 L430,110 L560,130 L670,150
-           L760,200 L800,260 L770,310 L720,350 L650,390 L570,420
-           L480,440 L400,430 L330,410 L260,390 L200,350 L140,310
-           L100,260 Z"
-        fill="#0f132a"
-        stroke="rgba(255,79,216,.4)"
-        stroke-width="3"/>
+      <div class="server-card">
+        <div class="server-info">
+          <h3>ARK | Ragnarok (PvE)</h3>
+          <p>Miami • Xbox • 11 / 26</p>
+        </div>
+        <div class="server-status">
+          <span class="dot"></span>
+          <span class="ping dynamic-ping" data-min="17" data-max="25">21</span> ms
+        </div>
+      </div>
 
-  <!-- Network Lines -->
-  <g stroke="rgba(255,79,216,.25)" stroke-width="1">
-    <line x1="250" y1="280" x2="400" y2="240"/>
-    <line x1="400" y1="240" x2="550" y2="260"/>
-    <line x1="300" y1="340" x2="500" y2="320"/>
-    <line x1="500" y1="320" x2="650" y2="280"/>
-  </g>
-
-  <!-- Nodes -->
-  <g fill="rgba(255,79,216,.6)">
-    <circle cx="250" cy="280" r="3"/>
-    <circle cx="400" cy="240" r="3"/>
-    <circle cx="500" cy="260" r="3"/>
-    <circle cx="300" cy="340" r="3"/>
-    <circle cx="650" cy="280" r="3"/>
-  </g>
-
-  <!-- SERVERS -->
-  <circle cx="640" cy="220" r="7" fill="#22c55e"/>
-  <text x="655" y="225" fill="#eafff1" font-size="12" font-weight="700">New York</text>
-
-  <circle cx="610" cy="360" r="7" fill="#22c55e"/>
-  <text x="625" y="365" fill="#eafff1" font-size="12" font-weight="700">Miami</text>
-
-</svg>
-</div>
-
-<!-- SERVERS -->
-<div class="server-list">
-
-<div class="server">
-  <div>
-    <h3>ARK | Crystal Isles (PvE)</h3>
-    <p>Miami • Xbox • 0 / 16</p>
+    </div>
   </div>
-  <div class="ping"><span class="dot"></span>22 ms</div>
 </div>
 
-<div class="server">
-  <div>
-    <h3>ARK | Fjordur (PvE)</h3>
-    <p>New York • Xbox • 1 / 16</p>
-  </div>
-  <div class="ping"><span class="dot"></span>37 ms</div>
-</div>
-
-<div class="server">
-  <div>
-    <h3>ARK | Ragnarok (PvE)</h3>
-    <p>Miami • Xbox • 11 / 26</p>
-  </div>
-  <div class="ping"><span class="dot"></span>21 ms</div>
-</div>
-
-</div>
-</div>
-
-</div>
-
-<footer>
-© 2026 Zeropoint Hosting • PvE Community Servers
-</footer>
+<script>
+setInterval(() => {
+  document.querySelectorAll('.dynamic-ping').forEach(p => {
+    const min = +p.dataset.min;
+    const max = +p.dataset.max;
+    p.textContent = Math.floor(Math.random() * (max - min + 1)) + min;
+  });
+}, 2500);
+</script>
 
 </body>
 </html>
