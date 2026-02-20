@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZeroPoint PvE</title>
+<title>Zer0Point PvE</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -13,14 +13,11 @@
   --bg:#0b0b16;
   --bg2:#141428;
   --card:#1c1c38;
-
   --pink:#ff4fd8;
   --pink-soft:#ff7de9;
   --purple:#9b5cff;
-
   --text:#f5f5ff;
   --muted:#b9b9d6;
-
   --glow:rgba(255,79,216,.55);
 }
 
@@ -33,7 +30,6 @@ body{
   overflow-x:hidden;
 }
 
-/* Background grid (iOS safe) */
 .bg{
   position:fixed;inset:0;z-index:0;
   background:
@@ -44,7 +40,6 @@ body{
 
 .content{position:relative;z-index:1}
 
-/* Nav */
 nav{
   position:fixed;top:0;width:100%;
   background:rgba(11,11,22,.96);
@@ -67,7 +62,6 @@ nav a{
 }
 nav a:hover{color:var(--pink)}
 
-/* Hero */
 .hero{
   min-height:100vh;
   display:flex;
@@ -99,7 +93,6 @@ nav a:hover{color:var(--pink)}
   box-shadow:0 0 30px var(--glow);
 }
 
-/* Global */
 section{padding:5rem 0}
 .container{max-width:1200px;margin:auto;padding:0 1.5rem}
 .section-title{
@@ -115,7 +108,7 @@ section{padding:5rem 0}
   gap:2rem;
 }
 
-/* Package cards (fixed glow + corners) */
+/* PACKAGE CARDS */
 .package-wrap{
   border-radius:26px;
   padding:2px;
@@ -126,13 +119,14 @@ section{padding:5rem 0}
 .package{
   background:var(--card);
   border-radius:24px;
-  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  height:100%;
 }
 
 .package-top{
-  padding:2.2rem;
+  padding:2rem;
   text-align:center;
-  background:linear-gradient(135deg,var(--bg2),var(--card));
 }
 .package-top i{
   font-size:3rem;
@@ -140,16 +134,34 @@ section{padding:5rem 0}
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
-.package-top h3{margin-top:.8rem;font-size:1.6rem}
-.price{margin-top:.6rem;font-size:1.9rem;color:var(--pink-soft)}
+.package-top h3{
+  margin-top:.8rem;
+  font-size:1.6rem;
+}
+.price{
+  margin-top:.4rem;
+  font-size:1.9rem;
+  color:var(--pink-soft);
+}
 
-.package-body{padding:2rem}
-.package-body p{color:var(--muted);margin-bottom:1rem}
+.package-body{
+  padding:2rem;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+.package-body p{
+  color:var(--muted);
+  margin-bottom:1.2rem;
+  text-align:center;
+}
 
 .tags{
   display:flex;
   flex-wrap:wrap;
+  justify-content:center;
   gap:.5rem;
+  margin-bottom:auto;
 }
 .tag{
   padding:.35rem 1rem;
@@ -159,35 +171,51 @@ section{padding:5rem 0}
   font-size:.85rem;
 }
 
-.buy{
-  display:block;
-  margin-top:1.6rem;
-  padding:1rem;
-  text-align:center;
+.payments{
+  display:flex;
+  gap:.75rem;
+  margin-top:1.8rem;
+}
+.payments a{
+  flex:1;
+  padding:.9rem;
   border-radius:14px;
-  background:linear-gradient(135deg,var(--pink),var(--purple));
-  color:#fff;
-  text-decoration:none;
+  text-align:center;
   font-weight:700;
+  text-decoration:none;
+  color:#fff;
+}
+.paypal{
+  background:#0070ba;
+}
+.stripe{
+  background:linear-gradient(135deg,#635bff,#8f85ff);
 }
 
-/* Admin cards */
+/* ADMINS */
 .admin{
   background:var(--card);
-  padding:2rem;
+  padding:2.2rem;
   border-radius:22px;
   text-align:center;
   border:2px solid rgba(255,79,216,.25);
 }
 .admin i{
-  font-size:2.8rem;
+  font-size:2.6rem;
   background:linear-gradient(135deg,var(--pink),var(--purple));
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
-.admin p{color:var(--muted);margin-top:.4rem}
+.admin h3{
+  margin-top:.8rem;
+  font-size:1.4rem;
+}
+.admin p{
+  margin-top:.4rem;
+  color:var(--muted);
+  font-size:.95rem;
+}
 
-/* Footer */
 footer{
   text-align:center;
   padding:2rem;
@@ -206,7 +234,6 @@ footer{
     <li><a href="#home">Home</a></li>
     <li><a href="#ark">ARK Packages</a></li>
     <li><a href="#admins">Admins</a></li>
-    <li><a href="#discord">Discord</a></li>
   </ul>
 </nav>
 
@@ -215,11 +242,8 @@ footer{
 <section id="home" class="hero">
   <div>
     <h1>Zer0Point PvE</h1>
-    <p>
-      Thank you for supporting our PvE community 🦖💖<br>
-      Every donation helps keep the server running and improving.
-    </p>
-    <a href="#ark">View ARK Packages</a>
+    <p>Thank you for supporting our PvE community 🦖💖</p>
+    <a href="#ark">View Packages</a>
   </div>
 </section>
 
@@ -235,7 +259,10 @@ footer{
 <div class="package-body">
 <p>Any PvE dino, tamed and server-balanced.</p>
 <div class="tags"><span class="tag">Any Dino</span><span class="tag">PvE Only</span><span class="tag">Custom Paint</span></div>
-<a class="buy" href="#discord">Request Dino</a>
+<div class="payments">
+<a class="paypal" href="#">PayPal</a>
+<a class="stripe" href="#">Stripe</a>
+</div>
 </div></div></div>
 
 <!-- $5 -->
@@ -244,7 +271,10 @@ footer{
 <div class="package-body">
 <p>Great starter value for new players.</p>
 <div class="tags"><span class="tag">PvE Safe</span><span class="tag">Any Mix</span><span class="tag">Custom Paint</span></div>
-<a class="buy" href="#discord">Get Pack</a>
+<div class="payments">
+<a class="paypal" href="#">PayPal</a>
+<a class="stripe" href="#">Stripe</a>
+</div>
 </div></div></div>
 
 <!-- $10 -->
@@ -253,7 +283,10 @@ footer{
 <div class="package-body">
 <p>Best balance of value and variety.</p>
 <div class="tags"><span class="tag">PvE Safe</span><span class="tag">Any Mix</span><span class="tag">Custom Paint</span></div>
-<a class="buy" href="#discord">Get Pack</a>
+<div class="payments">
+<a class="paypal" href="#">PayPal</a>
+<a class="stripe" href="#">Stripe</a>
+</div>
 </div></div></div>
 
 <!-- $20 -->
@@ -262,7 +295,10 @@ footer{
 <div class="package-body">
 <p>Best value for established players.</p>
 <div class="tags"><span class="tag">PvE Safe</span><span class="tag">Any Mix</span><span class="tag">Custom Paint</span></div>
-<a class="buy" href="#discord">Get Pack</a>
+<div class="payments">
+<a class="paypal" href="#">PayPal</a>
+<a class="stripe" href="#">Stripe</a>
+</div>
 </div></div></div>
 
 <!-- $30 -->
@@ -270,8 +306,11 @@ footer{
 <div class="package-top"><i class="fas fa-crown"></i><h3>$30 Dino Pack</h3><div class="price">60 Dinos</div></div>
 <div class="package-body">
 <p>High-tier pack for large PvE builds.</p>
-<div class="tags"><span class="tag">PvE Safe</span><span class="tag">Any Mix</span><span class="tag">Admin Coordinated</span></div>
-<a class="buy" href="#discord">Get Pack</a>
+<div class="tags"><span class="tag">PvE Safe</span><span class="tag">Admin Coordinated</span></div>
+<div class="payments">
+<a class="paypal" href="#">PayPal</a>
+<a class="stripe" href="#">Stripe</a>
+</div>
 </div></div></div>
 
 <!-- $50 -->
@@ -279,8 +318,11 @@ footer{
 <div class="package-top"><i class="fas fa-fire"></i><h3>$50 Dino Pack</h3><div class="price">120 Dinos</div></div>
 <div class="package-body">
 <p>Maximum value for tribes & long-term players.</p>
-<div class="tags"><span class="tag">PvE Safe</span><span class="tag">Any Mix</span><span class="tag">Admin Supervised</span></div>
-<a class="buy" href="#discord">Get Pack</a>
+<div class="tags"><span class="tag">PvE Safe</span><span class="tag">Admin Supervised</span></div>
+<div class="payments">
+<a class="paypal" href="#">PayPal</a>
+<a class="stripe" href="#">Stripe</a>
+</div>
 </div></div></div>
 
 </div>
@@ -291,30 +333,18 @@ footer{
 <div class="container">
 <h2 class="section-title">PvE <span>Active Admins</span></h2>
 <div class="grid">
-<div class="admin"><i class="fas fa-user-shield"></i><h3>Hlurgio</h3><p>Founder Of ZeroPoint</p></div>
+<div class="admin"><i class="fas fa-user-shield"></i><h3>Hlurgio</h3><p>Founder of Zer0Point</p></div>
 <div class="admin"><i class="fas fa-headset"></i><h3>DUKE</h3><p>Co-Founder</p></div>
 <div class="admin"><i class="fas fa-tools"></i><h3>Chaoticc</h3><p>PvE Active Admin</p></div>
-<div class="admin"><i class="fas fa-dna"></i><h3>FR4STY</h3><p>PvE Active Admin</p></div>
+<div class="admin"><i class="fas fa-dna"></i><h3>FRASTY</h3><p>PvE Active Admin</p></div>
 <div class="admin"><i class="fas fa-shield-alt"></i><h3>OPEN</h3><p>PvE Active Admin</p></div>
 <div class="admin"><i class="fas fa-dragon"></i><h3>OPEN</h3><p>PvE Active Admin</p></div>
 </div>
 </div>
 </section>
 
-<section id="discord">
-<div class="container">
-<h2 class="section-title">Join the <span>Discord</span></h2>
-<div class="admin">
-<i class="fab fa-discord"></i>
-<p>Support, deliveries, events, and admin coordination.</p>
-<a class="buy" href="https://discord.gg/F5vv6twUKS" target="_blank">Join Discord</a>
-</div>
-</div>
-</section>
-
 </div>
 
-<footer>© 2026 ZeroPoint PvE</footer>
-
+<footer>© 2026 Zer0Point PvE</footer>
 </body>
 </html>
