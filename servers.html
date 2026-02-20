@@ -25,10 +25,9 @@ body{
   font-family:'Rajdhani',sans-serif;
   background:var(--bg);
   color:var(--text);
-  overflow-x:hidden;
 }
 
-/* NAV (MATCHED) */
+/* NAV */
 nav{
   position:fixed;top:0;width:100%;
   background:rgba(11,11,22,.95);
@@ -42,7 +41,6 @@ nav ul{
   gap:2rem;
   list-style:none;
   padding:1rem;
-  flex-wrap:wrap;
 }
 nav a{
   color:var(--muted);
@@ -62,73 +60,60 @@ nav .discord{
 }
 
 /* LAYOUT */
-.container{max-width:1200px;margin:auto;padding:7rem 1.5rem 4rem}
-h1{
-  text-align:center;
-  font-size:3rem;
-  margin-bottom:1rem;
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:7rem 1.5rem 4rem;
 }
-.subtitle{
-  text-align:center;
-  color:var(--muted);
-  margin-bottom:3rem;
-}
+h1{text-align:center;font-size:3rem}
+.subtitle{text-align:center;color:var(--muted);margin:1rem 0 3rem}
 
 /* GRID */
 .server-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:3rem;
+  grid-template-columns:360px 1fr;
+  gap:2.5rem;
 }
 @media(max-width:900px){
   .server-grid{grid-template-columns:1fr}
 }
 
-/* GLOBE */
+/* SMALL GLOBE */
 .globe-wrap{
-  height:420px;
-  background:radial-gradient(circle,rgba(255,79,216,.15),transparent 70%);
-  border-radius:24px;
+  height:260px;
   display:flex;
   align-items:center;
   justify-content:center;
+  background:radial-gradient(circle,rgba(255,79,216,.15),transparent 70%);
+  border-radius:20px;
 }
 
 /* SERVER LIST */
-.server-list{
-  display:grid;
-  gap:1.5rem;
-}
+.server-list{display:grid;gap:1.2rem}
 .server-card{
   background:var(--card);
-  border-radius:18px;
-  padding:1.6rem;
+  border-radius:16px;
+  padding:1.4rem;
   border:1px solid var(--border);
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:1rem;
 }
-.server-info h3{
-  font-size:1.2rem;
-}
-.server-info p{
-  color:var(--muted);
-  font-size:.9rem;
-}
+.server-info h3{font-size:1.2rem}
+.server-info p{color:var(--muted);font-size:.9rem}
+
 .status{
   display:flex;
-  align-items:center;
-  gap:.4rem;
-  font-weight:700;
-  color:var(--green);
+  flex-direction:column;
+  align-items:flex-end;
+  gap:.25rem;
 }
 .dot{
-  width:8px;height:8px;
+  width:8px;height:8px;border-radius:50%;
   background:var(--green);
-  border-radius:50%;
   box-shadow:0 0 10px var(--green);
 }
+.ping{font-size:.85rem;color:var(--green)}
 </style>
 </head>
 
@@ -142,80 +127,97 @@ h1{
     <li><a href="servers.html">Servers</a></li>
     <li><a href="about.html">About</a></li>
   </ul>
-  <a class="discord" href="#" target="_blank">Discord</a>
+  <a class="discord" href="#">Discord</a>
 </nav>
 
 <div class="container">
   <h1>Live Servers</h1>
-  <p class="subtitle">All currently running Zeropoint PvE servers</p>
+  <p class="subtitle">Currently running Zeropoint PvE servers</p>
 
   <div class="server-grid">
 
-    <!-- GLOBE -->
+    <!-- SMALL GLOBE -->
     <div class="globe-wrap">
-      <canvas id="cobe" width="420" height="420"></canvas>
+      <canvas id="cobe" width="260" height="260"></canvas>
     </div>
 
-    <!-- SERVER LIST -->
+    <!-- SERVERS -->
     <div class="server-list">
 
       <div class="server-card">
         <div class="server-info">
           <h3>ARK | Crystal Isles (PvE)</h3>
-          <p>Miami • Xbox • 0/16 Slots</p>
+          <p>Miami • Xbox • 0/16</p>
         </div>
-        <div class="status"><span class="dot"></span> Online</div>
+        <div class="status">
+          <span class="dot"></span>
+          <span class="ping" data-min="18" data-max="26">22 ms</span>
+        </div>
       </div>
 
       <div class="server-card">
         <div class="server-info">
           <h3>ARK | Fjordur (PvE)</h3>
-          <p>New York • Xbox • 1/16 Slots</p>
+          <p>New York • Xbox • 1/16</p>
         </div>
-        <div class="status"><span class="dot"></span> Online</div>
+        <div class="status">
+          <span class="dot"></span>
+          <span class="ping" data-min="30" data-max="38">34 ms</span>
+        </div>
       </div>
 
       <div class="server-card">
         <div class="server-info">
           <h3>ARK | Ragnarok (PvE)</h3>
-          <p>Miami • Xbox • 11/26 Slots</p>
+          <p>Miami • Xbox • 11/26</p>
         </div>
-        <div class="status"><span class="dot"></span> Online</div>
+        <div class="status">
+          <span class="dot"></span>
+          <span class="ping" data-min="20" data-max="28">24 ms</span>
+        </div>
       </div>
 
     </div>
   </div>
 </div>
 
-<!-- GLOBE SCRIPT -->
 <script type="module">
 import createGlobe from 'https://cdn.skypack.dev/cobe'
 
 let phi = 0
 const canvas = document.getElementById("cobe")
 
-createGlobe(canvas, {
-  devicePixelRatio: 2,
-  width: 420 * 2,
-  height: 420 * 2,
-  phi: 0,
-  theta: 0.4,
-  dark: 1,
-  diffuse: 1.2,
-  mapSamples: 16000,
-  mapBrightness: 6,
-  baseColor: [0.05,0.05,0.1],
-  markerColor: [1,0.3,0.85],
-  glowColor: [1,0.3,0.85],
-  markers: [
-    { location: [25.7617,-80.1918], size: 0.1 }, // Miami
-    { location: [40.7128,-74.0060], size: 0.1 }  // New York
+createGlobe(canvas,{
+  devicePixelRatio:2,
+  width:260*2,
+  height:260*2,
+  phi:0,
+  theta:0.45,
+  dark:1,
+  diffuse:1.2,
+  mapSamples:16000,
+  mapBrightness:6,
+  baseColor:[0.05,0.05,0.1],
+  markerColor:[1,0.3,0.85],
+  glowColor:[1,0.3,0.85],
+  markers:[
+    {location:[25.7617,-80.1918],size:0.1}, // Miami
+    {location:[40.7128,-74.0060],size:0.1}  // New York
   ],
-  onRender: (state) => {
+  onRender:(state)=>{
     state.phi = phi
-    phi += 0.004
+    phi += 0.003
   }
 })
+
+// DYNAMIC PING
+setInterval(()=>{
+  document.querySelectorAll('.ping').forEach(p=>{
+    const min = +p.dataset.min
+    const max = +p.dataset.max
+    p.textContent = Math.floor(Math.random()*(max-min+1)+min)+' ms'
+  })
+},2000)
 </script>
 
 </body>
