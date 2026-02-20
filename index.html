@@ -27,7 +27,7 @@ body{
 }
 
 a{text-decoration:none;color:inherit}
-.container{max-width:1050px;margin:auto;padding:0 20px}
+.container{max-width:1100px;margin:auto;padding:0 20px}
 
 /* NAV */
 header{
@@ -58,18 +58,28 @@ nav{
   margin:0 0 10px;
 }
 .hero span{color:var(--pink)}
-.hero p{color:var(--muted);max-width:600px}
-
-/* SERVERS */
-section{
-  padding:50px 0;
+.hero p{
+  color:var(--muted);
+  max-width:620px;
 }
+
+/* LAYOUT SECTIONS */
+section{padding:50px 0}
+.grid{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:24px;
+}
+
+/* PANELS */
 .panel{
   background:var(--panel);
   border:1px solid var(--border);
   border-radius:var(--radius);
   overflow:hidden;
 }
+
+/* SERVER LIST */
 .server-row{
   display:grid;
   grid-template-columns:2fr 1fr 1fr 1fr;
@@ -79,6 +89,7 @@ section{
 }
 .server-row:last-child{border-bottom:none}
 .server-name{font-weight:600}
+
 .status{
   display:flex;
   align-items:center;
@@ -94,6 +105,44 @@ section{
 .ping-good{color:var(--green)}
 .ping-bad{color:var(--red)}
 
+/* DISCORD CARD */
+.discord-card{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  padding:20px;
+}
+.discord-card h3{
+  margin:0;
+  font-size:20px;
+}
+.discord-stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.stat-box{
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  background:rgba(0,0,0,.25);
+}
+.stat-box strong{
+  font-size:22px;
+}
+.join-btn{
+  text-align:center;
+  padding:14px;
+  border-radius:14px;
+  background:rgba(255,70,190,.22);
+  border:1px solid rgba(255,70,190,.5);
+  font-weight:600;
+}
+.join-btn:hover{
+  background:rgba(255,70,190,.32);
+}
+
+/* FOOTER */
 footer{
   padding:30px 0;
   border-top:1px solid var(--border);
@@ -102,7 +151,8 @@ footer{
 }
 
 /* MOBILE */
-@media(max-width:800px){
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
   .server-row{
     grid-template-columns:1fr;
     gap:8px;
@@ -130,16 +180,47 @@ footer{
   <div class="container">
     <h1>Welcome to <span>Zeropoint</span></h1>
     <p>
-      Community-run ARK servers. Balanced gameplay. Active admins.
-      Join our servers and connect through Discord.
+      Community-run ARK servers with balanced gameplay and active admins.
+      Join our servers and connect with the community through Discord.
     </p>
   </div>
 </section>
 
 <section>
-  <div class="container">
-    <h2>Current Running Servers</h2>
-    <div class="panel" id="serverPanel"></div>
+  <div class="container grid">
+
+    <!-- SERVERS -->
+    <div>
+      <h2>Current Running Servers</h2>
+      <div class="panel" id="serverPanel"></div>
+    </div>
+
+    <!-- DISCORD CARD -->
+    <div>
+      <h2>Community</h2>
+      <div class="panel discord-card">
+        <h3>Discord Server</h3>
+        <p class="muted">
+          All communication, updates, and support happen in Discord.
+        </p>
+
+        <div class="discord-stats">
+          <div class="stat-box">
+            <div class="muted">Members</div>
+            <strong id="discordMembers">—</strong>
+          </div>
+          <div class="stat-box">
+            <div class="muted">Online</div>
+            <strong id="discordOnline">—</strong>
+          </div>
+        </div>
+
+        <a class="join-btn" href="https://discord.gg/YOURINVITE">
+          Join Discord
+        </a>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -152,41 +233,25 @@ footer{
 <script>
 document.getElementById("year").textContent = new Date().getFullYear();
 
+/* SERVER DATA */
 const servers = [
-  {
-    name:"ARK — Ragnarok",
-    max:32,
-    basePlayers:18,
-    status:"Online",
-    basePing:28
-  },
-  {
-    name:"ARK — Fjordur",
-    max:16,
-    basePlayers:6,
-    status:"Online",
-    basePing:42
-  },
-  {
-    name:"ARK — Crystal Isles",
-    max:16,
-    basePlayers:0,
-    status:"Standby",
-    basePing:75
-  }
+  { name:"ARK — Ragnarok", max:32, basePlayers:18, status:"Online", basePing:28 },
+  { name:"ARK — Fjordur", max:16, basePlayers:6, status:"Online", basePing:42 },
+  { name:"ARK — Crystal Isles", max:16, basePlayers:0, status:"Standby", basePing:75 }
 ];
 
-function render(){
+/* DISCORD DATA */
+let discordMembers = 412;
+let discordOnline = 96;
+
+function renderServers(){
   const panel=document.getElementById("serverPanel");
   panel.innerHTML="";
 
   servers.forEach(s=>{
-    // fluctuate player count slightly
     let players = s.basePlayers + Math.floor(Math.random()*5 - 2);
-    if(players<0) players=0;
-    if(players>s.max) players=s.max;
+    players = Math.max(0, Math.min(players, s.max));
 
-    // fluctuate ping
     let ping = s.basePing + Math.floor(Math.random()*10 - 5);
     let pingClass = ping < 80 ? "ping-good" : "ping-bad";
 
@@ -204,19 +269,29 @@ function render(){
   });
 }
 
-// update ping every 5 seconds
-setInterval(render,5000);
+function updateDiscord(){
+  discordMembers += Math.floor(Math.random()*3);
+  discordOnline += Math.floor(Math.random()*7 - 3);
 
-// update base player count every 5 minutes
-setInterval(()=>{
+  if(discordOnline < 40) discordOnline = 40;
+  if(discordOnline > discordMembers) discordOnline = discordMembers;
+
+  document.getElementById("discordMembers").textContent = discordMembers;
+  document.getElementById("discordOnline").textContent = discordOnline;
+}
+
+/* UPDATE LOOPS */
+renderServers();
+updateDiscord();
+
+setInterval(renderServers, 5000);        // ping updates
+setInterval(updateDiscord, 30000);       // discord activity
+setInterval(() => {
   servers.forEach(s=>{
     s.basePlayers += Math.floor(Math.random()*3 - 1);
-    if(s.basePlayers<0) s.basePlayers=0;
-    if(s.basePlayers>s.max) s.basePlayers=s.max;
+    s.basePlayers = Math.max(0, Math.min(s.basePlayers, s.max));
   });
-},300000);
-
-render();
+}, 300000); // players every 5 min
 </script>
 
 </body>
