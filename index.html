@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zer0Point Gaming</title>
+<title>Zer0Point PvE</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
   --text:#f5f5ff;
   --muted:#b9b9d6;
 
-  --glow:rgba(255,79,216,.45);
+  --glow:rgba(255,79,216,.55);
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -33,7 +33,7 @@ body{
   overflow-x:hidden;
 }
 
-/* ===== BACKGROUND ===== */
+/* Background grid */
 .bg{
   position:fixed;inset:0;z-index:0;
   background:
@@ -46,7 +46,7 @@ body{
 
 .content{position:relative;z-index:1}
 
-/* ===== NAV ===== */
+/* Nav */
 nav{
   position:fixed;top:0;width:100%;
   background:rgba(11,11,22,.95);
@@ -66,7 +66,7 @@ nav a{
 }
 nav a:hover{color:var(--pink)}
 
-/* ===== HERO ===== */
+/* Hero */
 .hero{
   min-height:100vh;
   display:flex;
@@ -82,7 +82,7 @@ nav a:hover{color:var(--pink)}
   -webkit-text-fill-color:transparent;
 }
 .hero p{
-  max-width:650px;
+  max-width:700px;
   margin:1.5rem auto;
   color:var(--muted);
   font-size:1.3rem;
@@ -98,7 +98,7 @@ nav a:hover{color:var(--pink)}
   box-shadow:0 0 35px var(--glow);
 }
 
-/* ===== GLOBAL ===== */
+/* Global */
 section{padding:6rem 0}
 .container{max-width:1200px;margin:auto;padding:0 2rem}
 .section-title{
@@ -106,28 +106,30 @@ section{padding:6rem 0}
   font-size:2.6rem;
   margin-bottom:3rem;
 }
-.section-title span{
-  color:var(--pink);
-}
+.section-title span{color:var(--pink)}
 
-/* ===== GRID ===== */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
   gap:2.5rem;
 }
 
-/* ===== PACKAGE CARDS ===== */
+/* ===== PACKAGE FIX (NO CLIPPED CORNERS) ===== */
+.package-wrap{
+  border-radius:28px;
+  padding:2px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  box-shadow:0 0 40px var(--glow);
+}
+
 .package{
   background:var(--card);
-  border-radius:22px;
-  border:2px solid rgba(255,79,216,.25);
+  border-radius:26px;
+  overflow:hidden;
   transition:.4s;
 }
 .package:hover{
-  transform:translateY(-14px);
-  box-shadow:0 25px 60px var(--glow);
-  border-color:var(--pink);
+  transform:translateY(-10px);
 }
 
 .package-top{
@@ -158,6 +160,7 @@ section{padding:6rem 0}
   color:var(--muted);
   margin-bottom:1.2rem;
 }
+
 .tags{
   display:flex;
   flex-wrap:wrap;
@@ -166,14 +169,15 @@ section{padding:6rem 0}
 .tag{
   padding:.4rem 1.1rem;
   border-radius:20px;
-  border:1px solid rgba(255,79,216,.4);
+  border:1px solid rgba(255,79,216,.45);
   color:var(--pink-soft);
   font-size:.9rem;
 }
+
 .buy{
   display:block;
   margin-top:1.8rem;
-  padding:.95rem;
+  padding:1rem;
   text-align:center;
   border-radius:14px;
   background:linear-gradient(135deg,var(--pink),var(--purple));
@@ -182,7 +186,7 @@ section{padding:6rem 0}
   font-weight:700;
 }
 
-/* ===== ADMINS ===== */
+/* Admins */
 .admin{
   background:var(--card);
   padding:2.2rem;
@@ -192,7 +196,7 @@ section{padding:6rem 0}
   transition:.3s;
 }
 .admin:hover{
-  transform:translateY(-10px);
+  transform:translateY(-8px);
   box-shadow:0 20px 45px var(--glow);
 }
 .admin i{
@@ -201,8 +205,12 @@ section{padding:6rem 0}
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
+.admin p{
+  color:var(--muted);
+  margin-top:.4rem;
+}
 
-/* ===== FOOTER ===== */
+/* Footer */
 footer{
   text-align:center;
   padding:2rem;
@@ -219,8 +227,7 @@ footer{
 <nav>
   <ul>
     <li><a href="#home">Home</a></li>
-    <li><a href="#ark">ARK</a></li>
-    <li><a href="#hytale">Hytale</a></li>
+    <li><a href="#ark">ARK Packages</a></li>
     <li><a href="#admins">Admins</a></li>
     <li><a href="#discord">Discord</a></li>
   </ul>
@@ -230,8 +237,9 @@ footer{
 
 <section id="home" class="hero">
   <div>
-    <h1>Zer0Point Gaming</h1>
-    <p>Community-driven ARK & Hytale servers with active admins, stable performance, and a clean experience.</p>
+    <h1>Zer0Point PvE</h1>
+    <p>Thank you for supporting our PvE community 🦖💖  
+    Every donation helps keep the server running and improving.</p>
     <a href="#ark">View Packages</a>
   </div>
 </section>
@@ -239,169 +247,67 @@ footer{
 <!-- ARK PACKAGES -->
 <section id="ark">
   <div class="container">
-    <h2 class="section-title"><span>ARK</span> PvE Packages</h2>
-
-    <p style="text-align:center;max-width:800px;margin:0 auto 3rem;color:var(--muted);font-size:1.1rem;">
-      🦖💖 Thank you for supporting our PvE community!  
-      Every donation helps keep the server running, stable, and improving.
-    </p>
+    <h2 class="section-title"><span>ARK</span> PvE Dino Packages</h2>
 
     <div class="grid">
 
-      <!-- SINGLE DINO -->
-      <div class="package">
-        <div class="package-top">
-          <i class="fas fa-dragon"></i>
-          <h3>Single PvE Dino</h3>
-          <div class="price">$1 Each</div>
-        </div>
-        <div class="package-body">
-          <p>Perfect if you only need one specific dino.</p>
-          <div class="tags">
-            <span class="tag">Any Dino</span>
-            <span class="tag">PvE Only</span>
-            <span class="tag">Tamed</span>
-            <span class="tag">Balanced Level</span>
-            <span class="tag">Custom Paint</span>
-          </div>
-          <p style="margin-top:1rem;color:var(--muted);font-size:.95rem;">
-            ⚠️ Boss dinos delivered via PvE-safe methods only (admin-supervised or boss completion).
-          </p>
-          <a href="#discord" class="buy">Request Dino</a>
-        </div>
-      </div>
-
       <!-- $5 PACK -->
-      <div class="package">
-        <div class="package-top">
-          <i class="fas fa-box"></i>
-          <h3>$5 Dino Pack</h3>
-          <div class="price">7 Dinos</div>
-        </div>
-        <div class="package-body">
-          <p>Great starter value for new players.</p>
-          <div class="tags">
-            <span class="tag">PvE Safe</span>
-            <span class="tag">Any Dino Mix</span>
-            <span class="tag">Custom Paint</span>
+      <div class="package-wrap">
+        <div class="package">
+          <div class="package-top">
+            <i class="fas fa-box"></i>
+            <h3>$5 Dino Pack</h3>
+            <div class="price">7 Dinos</div>
           </div>
-          <a href="#discord" class="buy">Get Pack</a>
+          <div class="package-body">
+            <p>Great starter value for new players.</p>
+            <div class="tags">
+              <span class="tag">PvE Safe</span>
+              <span class="tag">Any Dino Mix</span>
+              <span class="tag">Custom Paint</span>
+            </div>
+            <a href="#discord" class="buy">Get Pack</a>
+          </div>
         </div>
       </div>
 
       <!-- $10 PACK -->
-      <div class="package">
-        <div class="package-top">
-          <i class="fas fa-boxes"></i>
-          <h3>$10 Dino Pack</h3>
-          <div class="price">15 Dinos</div>
-        </div>
-        <div class="package-body">
-          <p>Best balance of value and variety.</p>
-          <div class="tags">
-            <span class="tag">PvE Safe</span>
-            <span class="tag">Any Dino Mix</span>
-            <span class="tag">Custom Paint</span>
+      <div class="package-wrap">
+        <div class="package">
+          <div class="package-top">
+            <i class="fas fa-boxes"></i>
+            <h3>$10 Dino Pack</h3>
+            <div class="price">15 Dinos</div>
           </div>
-          <a href="#discord" class="buy">Get Pack</a>
+          <div class="package-body">
+            <p>Best balance of value and variety.</p>
+            <div class="tags">
+              <span class="tag">PvE Safe</span>
+              <span class="tag">Any Dino Mix</span>
+              <span class="tag">Custom Paint</span>
+            </div>
+            <a href="#discord" class="buy">Get Pack</a>
+          </div>
         </div>
       </div>
 
       <!-- $20 PACK -->
-      <div class="package">
-        <div class="package-top">
-          <i class="fas fa-gem"></i>
-          <h3>$20 Dino Pack</h3>
-          <div class="price">35 Dinos</div>
-        </div>
-        <div class="package-body">
-          <p>Best value for established players.</p>
-          <div class="tags">
-            <span class="tag">PvE Safe</span>
-            <span class="tag">Any Dino Mix</span>
-            <span class="tag">Custom Paint</span>
+      <div class="package-wrap">
+        <div class="package">
+          <div class="package-top">
+            <i class="fas fa-gem"></i>
+            <h3>$20 Dino Pack</h3>
+            <div class="price">35 Dinos</div>
           </div>
-          <a href="#discord" class="buy">Get Pack</a>
-        </div>
-      </div>
-
-      <!-- $30 PACK -->
-      <div class="package">
-        <div class="package-top">
-          <i class="fas fa-crown"></i>
-          <h3>$30 Dino Pack</h3>
-          <div class="price">60 Dinos</div>
-        </div>
-        <div class="package-body">
-          <p>High-tier pack for large PvE builds.</p>
-          <div class="tags">
-            <span class="tag">PvE Safe</span>
-            <span class="tag">Any Dino Mix</span>
-            <span class="tag">Custom Paint</span>
+          <div class="package-body">
+            <p>Best value for established players.</p>
+            <div class="tags">
+              <span class="tag">PvE Safe</span>
+              <span class="tag">Any Dino Mix</span>
+              <span class="tag">Custom Paint</span>
+            </div>
+            <a href="#discord" class="buy">Get Pack</a>
           </div>
-          <a href="#discord" class="buy">Get Pack</a>
-        </div>
-      </div>
-
-      <!-- $50 PACK -->
-      <div class="package">
-        <div class="package-top">
-          <i class="fas fa-fire"></i>
-          <h3>$50 Dino Pack</h3>
-          <div class="price">120 Dinos</div>
-        </div>
-        <div class="package-body">
-          <p>Maximum value for tribes & long-term players.</p>
-          <div class="tags">
-            <span class="tag">PvE Safe</span>
-            <span class="tag">Any Dino Mix</span>
-            <span class="tag">Custom Paint</span>
-            <span class="tag">Admin Coordinated</span>
-          </div>
-          <a href="#discord" class="buy">Get Pack</a>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- HYTALE PACKAGES -->
-<section id="hytale">
-  <div class="container">
-    <h2 class="section-title"><span>Hytale</span> Packages</h2>
-    <div class="grid">
-
-      <div class="package">
-        <div class="package-top">
-          <i class="fas fa-cube"></i>
-          <h3>Explorer</h3>
-          <div class="price">$6 / mo</div>
-        </div>
-        <div class="package-body">
-          <p>Entry-level perks and cosmetics for Hytale SMP supporters.</p>
-          <div class="tags">
-            <span class="tag">Cosmetics</span>
-            <span class="tag">Discord Role</span>
-          </div>
-          <a href="#discord" class="buy">Join Discord</a>
-        </div>
-      </div>
-
-      <div class="package">
-        <div class="package-top">
-          <i class="fas fa-gem"></i>
-          <h3>Adventurer</h3>
-          <div class="price">$12 / mo</div>
-        </div>
-        <div class="package-body">
-          <p>Premium Hytale perks with early access and exclusive rewards.</p>
-          <div class="tags">
-            <span class="tag">Early Access</span>
-            <span class="tag">Exclusive Items</span>
-            <span class="tag">Event Access</span>
-          </div>
-          <a href="#discord" class="buy">Join Discord</a>
         </div>
       </div>
 
@@ -412,26 +318,15 @@ footer{
 <!-- ADMINS -->
 <section id="admins">
   <div class="container">
-    <h2 class="section-title">Active <span>Admins</span></h2>
+    <h2 class="section-title">PvE <span>Active Admins</span></h2>
     <div class="grid">
 
-      <div class="admin">
-        <i class="fas fa-user-shield"></i>
-        <h3>Harrison</h3>
-        <p>Owner / Lead Admin</p>
-      </div>
-
-      <div class="admin">
-        <i class="fas fa-headset"></i>
-        <h3>Admin Name</h3>
-        <p>Support Admin</p>
-      </div>
-
-      <div class="admin">
-        <i class="fas fa-tools"></i>
-        <h3>Admin Name</h3>
-        <p>Server Admin</p>
-      </div>
+      <div class="admin"><i class="fas fa-user-shield"></i><h3>Harrison</h3><p>PvE Active Admin</p></div>
+      <div class="admin"><i class="fas fa-headset"></i><h3>Admin</h3><p>PvE Active Admin</p></div>
+      <div class="admin"><i class="fas fa-tools"></i><h3>Admin</h3><p>PvE Active Admin</p></div>
+      <div class="admin"><i class="fas fa-dna"></i><h3>Admin</h3><p>PvE Active Admin</p></div>
+      <div class="admin"><i class="fas fa-shield-alt"></i><h3>Admin</h3><p>PvE Active Admin</p></div>
+      <div class="admin"><i class="fas fa-dragon"></i><h3>Admin</h3><p>PvE Active Admin</p></div>
 
     </div>
   </div>
@@ -440,10 +335,10 @@ footer{
 <!-- DISCORD -->
 <section id="discord">
   <div class="container">
-    <h2 class="section-title">Join the <span>Community</span></h2>
+    <h2 class="section-title">Join the <span>Discord</span></h2>
     <div class="admin">
       <i class="fab fa-discord"></i>
-      <p>Announcements, support, events, and direct admin interaction.</p>
+      <p>Support, deliveries, events, and admin coordination.</p>
       <a class="buy" href="https://discord.gg/YOURINVITE" target="_blank">Join Discord</a>
     </div>
   </div>
@@ -452,7 +347,7 @@ footer{
 </div>
 
 <footer>
-  © 2026 Zer0Point Gaming
+  © 2026 Zer0Point PvE
 </footer>
 
 </body>
