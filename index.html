@@ -1,315 +1,474 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0b0a12">
-<title>Zeropoint — Community ARK & Hytale Servers</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0a12" />
+  <meta name="description" content="Zeropoint is a community-run ARK & Hytale server network. Join our servers, hang out in Discord, and learn about donation perks." />
+  <title>Zeropoint — Community ARK & Hytale Servers</title>
 
-<style>
-:root{
-  --bg:#0b0a12;
-  --panel:#13121c;
-  --border:rgba(255,255,255,.12);
-  --text:#f4f4f8;
-  --muted:#b9b9c7;
-  --pink:#ff46be;
-  --green:#6effa0;
-  --red:#ff4f4f;
-  --radius:18px;
-}
+  <style>
+    :root{
+      --bg:#0b0a12;
+      --panel:rgba(255,255,255,.05);
+      --panel2:rgba(255,255,255,.035);
+      --border:rgba(255,255,255,.10);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.68);
+      --pink:#ff46be;
+      --pink2:#ff2aa8;
+      --green:#6effa0;
+      --red:#ff4f4f;
+      --r:18px;
+      --shadow:0 18px 70px rgba(0,0,0,.55);
+      --max:1100px;
+    }
 
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
-  background:linear-gradient(180deg,#0b0a12,#0e0d18);
-  color:var(--text);
-  line-height:1.6;
-}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background: radial-gradient(900px 450px at 15% 8%, rgba(255,70,190,.14), transparent 60%),
+                  radial-gradient(800px 420px at 85% 15%, rgba(255,255,255,.06), transparent 55%),
+                  linear-gradient(180deg, #0b0a12, #0e0d18);
+      color:var(--text);
+      line-height:1.55;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:geometricPrecision;
+    }
 
-a{color:inherit;text-decoration:none}
-.container{max-width:1100px;margin:auto;padding:0 20px}
+    a{color:inherit;text-decoration:none}
+    .container{width:min(var(--max),calc(100% - 40px));margin:0 auto}
 
-/* ================= NAV ================= */
-header{
-  position:sticky;
-  top:0;
-  z-index:10;
-  background:rgba(11,10,18,.85);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--border);
-}
-nav{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:12px 0;
-}
-.logo{height:34px}
-.nav-links{
-  display:flex;
-  gap:14px;
-}
-.nav-links a{
-  padding:10px 14px;
-  border-radius:12px;
-}
-.nav-links a:hover{background:rgba(255,255,255,.06)}
-.discord-btn{
-  background:rgba(255,70,190,.18);
-  border:1px solid rgba(255,70,190,.5);
-}
+    /* NAV */
+    header{
+      position:sticky; top:0; z-index:10;
+      background:rgba(11,10,18,.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 0; gap:14px;
+    }
+    .brand img{height:34px; width:auto; display:block}
+    .links{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+    .links a{
+      padding:10px 12px;
+      border-radius:12px;
+      color:rgba(255,255,255,.86);
+    }
+    .links a:hover{background:rgba(255,255,255,.05)}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:11px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.03);
+      -webkit-tap-highlight-color:transparent;
+    }
+    .btn-primary{
+      border-color:rgba(255,70,190,.38);
+      background:linear-gradient(135deg, rgba(255,70,190,.22), rgba(255,70,190,.10));
+      box-shadow: 0 10px 40px rgba(255,70,190,.14);
+    }
+    .btn-primary:hover{
+      border-color:rgba(255,70,190,.6);
+      background:linear-gradient(135deg, rgba(255,70,190,.28), rgba(255,70,190,.12));
+    }
 
-/* ================= HERO ================= */
-.hero{padding:80px 0 40px}
-.hero-grid{
-  display:grid;
-  grid-template-columns:1.2fr .8fr;
-  gap:30px;
-}
-.hero h1{
-  font-size:clamp(38px,4.5vw,56px);
-  line-height:1.05;
-  margin:0;
-}
-.hero span{color:var(--pink)}
-.hero p{color:var(--muted);max-width:58ch}
-.hero-actions{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
-.btn{
-  padding:14px 18px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.04);
-}
-.btn.primary{
-  background:rgba(255,70,190,.22);
-  border-color:rgba(255,70,190,.6);
-}
+    /* HERO */
+    .hero{padding:64px 0 26px}
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:18px;
+      align-items:start;
+    }
+    .eyebrow{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.68);
+      margin:0 0 10px;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(34px,4.2vw,52px);
+      line-height:1.05;
+      letter-spacing:-.02em;
+    }
+    .accent{color:var(--pink)}
+    .lead{margin:0 0 16px; color:rgba(255,255,255,.82); max-width:62ch}
+    .actions{display:flex; gap:12px; flex-wrap:wrap}
 
-/* ================= PANELS ================= */
-.panel{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:18px;
-}
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .panel .pad{padding:16px}
+    .mini{
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+    .mini .box{
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
+      padding:12px;
+    }
+    .k{font-size:12px;color:var(--muted)}
+    .v{font-size:20px;font-weight:700;margin-top:2px}
 
-/* ================= SERVERS ================= */
-section{padding:44px 0}
-table{width:100%;border-collapse:collapse;min-width:600px}
-th,td{padding:14px;border-bottom:1px solid var(--border)}
-.status{
-  display:inline-flex;
-  gap:8px;
-  align-items:center;
-}
-.dot{
-  width:8px;height:8px;border-radius:50%;
-}
-.green{background:var(--green)}
-.red{background:var(--red)}
+    /* SECTIONS */
+    section{padding:34px 0}
+    .head{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+    .head h2{margin:0;font-size:24px;letter-spacing:-.01em}
+    .head p{margin:0;color:var(--muted)}
 
-/* ================= NETWORK ================= */
-.network{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:24px;
-}
-.globe-wrap{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-.globe{
-  width:260px;
-  height:260px;
-  animation:spin 18s linear infinite;
-}
-@keyframes spin{
-  from{transform:rotate(0deg)}
-  to{transform:rotate(360deg)}
-}
-.ping-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:12px 14px;
-  border:1px solid var(--border);
-  border-radius:14px;
-  margin-bottom:10px;
-}
-.ping-good{color:var(--green)}
-.ping-bad{color:var(--red)}
+    /* SERVERS TABLE */
+    .table-wrap{
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.14);
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    table{width:100%;border-collapse:collapse;min-width:640px}
+    th,td{padding:14px;border-bottom:1px solid rgba(255,255,255,.07)}
+    th{
+      text-align:left;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.65);
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    tr:hover td{background:rgba(255,255,255,.03)}
+    .right{text-align:right}
 
-/* ================= CTA ================= */
-.cta{
-  background:rgba(255,70,190,.18);
-  border:1px solid rgba(255,70,190,.5);
-  border-radius:26px;
-  padding:28px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:20px;
-}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.03);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .pill::before{
+      content:"";
+      width:8px;height:8px;border-radius:999px;display:inline-block;
+    }
+    .online::before{background:var(--green)}
+    .standby::before{background:var(--red)}
 
-/* ================= FOOTER ================= */
-footer{
-  border-top:1px solid var(--border);
-  padding:24px 0;
-  color:var(--muted);
-}
+    /* PING LIST */
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    .list{
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .row{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.16);
+    }
+    .ms{
+      font-weight:700;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.02);
+    }
+    .good{color:rgba(110,255,160,.95);border-color:rgba(110,255,160,.22)}
+    .bad{color:rgba(255,79,79,.95);border-color:rgba(255,79,79,.22)}
 
-/* ================= MOBILE ================= */
-@media(max-width:900px){
-  .hero-grid,.network{grid-template-columns:1fr}
-  .nav-links{display:none}
-  .globe{animation:none}
-}
-</style>
+    /* CTA */
+    .cta{
+      border-radius:26px;
+      border:1px solid rgba(255,70,190,.22);
+      background: radial-gradient(700px 220px at 15% 25%, rgba(255,70,190,.20), transparent 60%),
+                  rgba(255,255,255,.03);
+      padding:18px;
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .cta h2{margin:0;font-size:22px}
+    .cta p{margin:6px 0 0;color:rgba(255,255,255,.78);max-width:70ch}
+
+    footer{
+      border-top:1px solid rgba(255,255,255,.08);
+      padding:22px 0 32px;
+      color:var(--muted);
+    }
+
+    /* MOBILE */
+    @media (max-width: 920px){
+      .hero-grid{grid-template-columns:1fr}
+      .grid2{grid-template-columns:1fr}
+      .links{gap:6px}
+      table{min-width:560px}
+    }
+  </style>
 </head>
 
 <body>
+  <header>
+    <div class="container">
+      <div class="nav">
+        <!-- Logo image only. Put your logo file next to index.html as "logo.png" -->
+        <a class="brand" href="#top" aria-label="Zeropoint home">
+          <img src="logo.png" alt="Zeropoint">
+        </a>
 
-<header>
-  <div class="container">
-    <nav>
-      <img src="logo.png" class="logo" alt="Zeropoint">
-      <div class="nav-links">
-        <a href="#servers">Servers</a>
-        <a href="#ark">ARK Perks</a>
-        <a href="#hytale">Hytale Perks</a>
-        <a href="https://discord.gg/YOURINVITE" class="discord-btn">Join Discord</a>
-      </div>
-    </nav>
-  </div>
-</header>
-
-<main>
-
-<section class="hero">
-  <div class="container hero-grid">
-    <div>
-      <h1>Welcome to <span>Zeropoint</span></h1>
-      <p>
-        Zeropoint is a <strong>community-run ARK & Hytale server network</strong>.
-        Join long-term servers, play with active admins, and unlock optional donation perks —
-        always fair, never pay-to-win.
-      </p>
-      <div class="hero-actions">
-        <a class="btn primary" href="#ark">View ARK Donation Perks</a>
-        <a class="btn" href="https://discord.gg/YOURINVITE">Join Discord</a>
+        <div class="links" aria-label="Navigation links">
+          <a href="#ark-perks">ARK Donation Perks</a>
+          <a href="#hytale-perks">Hytale Donation Perks</a>
+          <a href="#servers">Servers</a>
+          <a class="btn btn-primary" href="https://discord.gg/YOUR_INVITE" target="_blank" rel="noreferrer">
+            Join Discord
+          </a>
+        </div>
       </div>
     </div>
+  </header>
 
-    <div class="panel">
-      <h3>Live Snapshot</h3>
-      <p class="muted">Community & server activity</p>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:12px">
-        <div><strong>3</strong><br><span class="muted">Servers</span></div>
-        <div><strong>2</strong><br><span class="muted">Online</span></div>
-        <div><strong>18</strong><br><span class="muted">Players</span></div>
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">Community-run • Active admins • Long-term servers</p>
+          <h1>Welcome to <span class="accent">Zeropoint</span></h1>
+          <p class="lead">
+            Zeropoint is a <strong>community-run ARK & Hytale server network</strong>.
+            You join our existing servers, hang out in Discord, and play in a balanced, fair environment.
+            Donations unlock <strong>optional perks</strong> that our admins deliver in-game.
+          </p>
+
+          <div class="actions">
+            <a class="btn btn-primary" href="#ark-perks">View ARK Donation Perks</a>
+            <a class="btn" href="https://discord.gg/YOUR_INVITE" target="_blank" rel="noreferrer">Join Discord</a>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="pad">
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px;">
+              <div>
+                <div style="font-weight:700;">Live Snapshot</div>
+                <div style="color:var(--muted);font-size:13px;margin-top:2px;">Quick look at server activity</div>
+              </div>
+            </div>
+
+            <div class="mini" role="list" aria-label="Snapshot stats">
+              <div class="box" role="listitem">
+                <div class="k">Servers</div>
+                <div class="v" id="statServers">3</div>
+              </div>
+              <div class="box" role="listitem">
+                <div class="k">Online</div>
+                <div class="v" id="statOnline">2</div>
+              </div>
+              <div class="box" role="listitem">
+                <div class="k">Players</div>
+                <div class="v" id="statPlayers">18</div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;color:var(--muted);font-size:13px;">
+              New player? Join Discord and ask for help picking a server.
+            </div>
+          </div>
+        </div>
       </div>
+    </section>
+
+    <!-- CURRENT SERVERS -->
+    <section id="servers">
+      <div class="container">
+        <div class="head">
+          <h2>Current Servers</h2>
+          <p>Simple status + player counts. Discord has the details.</p>
+        </div>
+
+        <div class="table-wrap" role="region" aria-label="Server list">
+          <table>
+            <thead>
+              <tr>
+                <th>Server</th>
+                <th>Status</th>
+                <th class="right">Players</th>
+                <th class="right">Type</th>
+              </tr>
+            </thead>
+            <tbody id="serverRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- NETWORK / PING -->
+    <section id="network">
+      <div class="container">
+        <div class="head">
+          <h2>Network & Ping</h2>
+          <p>Quick estimates by region. Ping can vary by routing and ISP.</p>
+        </div>
+
+        <div class="grid2">
+          <div class="panel">
+            <div class="pad">
+              <div style="font-weight:700;">How to get the best connection</div>
+              <div style="color:var(--muted);margin-top:6px;">
+                For the most accurate info, tell us your location in Discord and we’ll help you choose the best server.
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="pad">
+              <div style="font-weight:700;">Ping Estimates</div>
+              <div style="color:var(--muted);font-size:13px;margin-top:2px;">Green = low ping • Red = high ping</div>
+
+              <div class="list" id="pingList" style="margin-top:12px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DONATION PERKS ANCHORS -->
+    <section id="ark-perks">
+      <div class="container">
+        <div class="head">
+          <h2>ARK Donation Perks</h2>
+          <p>Optional perks — delivered by admins in-game. Always fair and clearly explained.</p>
+        </div>
+
+        <div class="panel">
+          <div class="pad" style="color:var(--muted)">
+            Add your actual perk list here (tiers, examples, rules). Keep it community-friendly and transparent.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hytale-perks">
+      <div class="container">
+        <div class="head">
+          <h2>Hytale Donation Perks</h2>
+          <p>We’ll post details as Hytale gets closer — same community-first approach.</p>
+        </div>
+
+        <div class="panel">
+          <div class="pad" style="color:var(--muted)">
+            Placeholder for future Hytale perks. Keep it simple and fair.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section>
+      <div class="container">
+        <div class="cta">
+          <div>
+            <h2>Ready to join the community?</h2>
+            <p>Join Discord to meet players, get server info, and learn how donation perks work.</p>
+          </div>
+          <a class="btn btn-primary" href="https://discord.gg/YOUR_INVITE" target="_blank" rel="noreferrer">Join Discord</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      © <span id="year"></span> Zeropoint — community-run ARK & Hytale servers.
     </div>
-  </div>
-</section>
+  </footer>
 
-<section id="servers">
-  <div class="container">
-    <h2>Current Servers</h2>
-    <div style="overflow:auto">
-      <table>
-        <tr><th>Server</th><th>Status</th><th>Players</th></tr>
-        <tr><td>ARK — Ragnarok</td><td><span class="status"><span class="dot green"></span>Online</span></td><td>12 / 40</td></tr>
-        <tr><td>ARK — Crystal Isles</td><td><span class="status"><span class="dot green"></span>Online</span></td><td>6 / 40</td></tr>
-        <tr><td>Hytale — Community</td><td><span class="status"><span class="dot red"></span>Standby</span></td><td>0 / 50</td></tr>
-      </table>
-    </div>
-  </div>
-</section>
+  <script>
+    // Replace these with your real servers any time.
+    const servers = [
+      { name: "ARK — Ragnarok", status: "Online", playersNow: 12, playersMax: 40, type: "PvE" },
+      { name: "ARK — Crystal Isles", status: "Online", playersNow: 6, playersMax: 40, type: "PvE" },
+      { name: "Hytale — Community", status: "Standby", playersNow: 0, playersMax: 50, type: "SMP" }
+    ];
 
-<section>
-  <div class="container network">
-    <div class="panel globe-wrap">
-      <svg class="globe" viewBox="0 0 200 200">
-        <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(255,255,255,.3)"/>
-        <circle cx="130" cy="70" r="4" fill="#6effa0"/>
-        <circle cx="85" cy="95" r="4" fill="#6effa0"/>
-        <circle cx="60" cy="120" r="4" fill="#ff46be"/>
-        <circle cx="145" cy="115" r="4" fill="#ff46be"/>
-      </svg>
-    </div>
+    const pings = [
+      { region: "US East (Florida)", ms: 28 },
+      { region: "US Central (Texas)", ms: 44 },
+      { region: "US West (California)", ms: 72 },
+      { region: "EU West (Germany)", ms: 120 }
+    ];
 
-    <div class="panel">
-      <h3>Live Ping Estimates</h3>
-      <div id="pings"></div>
-      <p class="muted" style="font-size:13px">
-        Ping fluctuates by location and ISP.
-      </p>
-    </div>
-  </div>
-</section>
+    function renderServers(){
+      const tbody = document.getElementById("serverRows");
+      tbody.innerHTML = servers.map(s => {
+        const online = s.status.toLowerCase() === "online";
+        const cls = online ? "pill online" : "pill standby";
+        return `
+          <tr>
+            <td><strong>${escapeHtml(s.name)}</strong></td>
+            <td><span class="${cls}">${escapeHtml(s.status)}</span></td>
+            <td class="right">${s.playersNow} / ${s.playersMax}</td>
+            <td class="right">${escapeHtml(s.type)}</td>
+          </tr>
+        `;
+      }).join("");
 
-<section id="ark">
-  <div class="container">
-    <h2>ARK Donation Perks</h2>
-    <p class="muted">Optional perks delivered by admins — no plans, no pressure.</p>
-  </div>
-</section>
+      const totalServers = servers.length;
+      const onlineCount = servers.filter(s => s.status.toLowerCase() === "online").length;
+      const totalPlayers = servers.reduce((a,s)=>a + (s.playersNow||0), 0);
 
-<section id="hytale">
-  <div class="container">
-    <h2>Hytale Donation Perks</h2>
-    <p class="muted">Details coming closer to release.</p>
-  </div>
-</section>
+      document.getElementById("statServers").textContent = totalServers;
+      document.getElementById("statOnline").textContent = onlineCount;
+      document.getElementById("statPlayers").textContent = totalPlayers;
+    }
 
-<section>
-  <div class="container cta">
-    <div>
-      <h2>Join the Zeropoint Community</h2>
-      <p class="muted">Meet players, get info, and start playing today.</p>
-    </div>
-    <a class="btn primary" href="https://discord.gg/YOURINVITE">Join Discord</a>
-  </div>
-</section>
+    function renderPings(){
+      const list = document.getElementById("pingList");
+      list.innerHTML = pings.map(p => {
+        const good = p.ms <= 80;
+        const cls = good ? "ms good" : "ms bad";
+        return `
+          <div class="row">
+            <div>
+              <div style="font-weight:600">${escapeHtml(p.region)}</div>
+            </div>
+            <div class="${cls}">${p.ms} ms</div>
+          </div>
+        `;
+      }).join("");
+    }
 
-</main>
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[m]));
+    }
 
-<footer>
-  <div class="container">
-    © <span id="year"></span> Zeropoint — community-run ARK & Hytale servers
-  </div>
-</footer>
-
-<script>
-document.getElementById("year").textContent=new Date().getFullYear();
-
-const regions=[
-  {name:"US East (Florida)",base:28},
-  {name:"US Central (Texas)",base:42},
-  {name:"US West (California)",base:72},
-  {name:"EU West (Germany)",base:120}
-];
-
-function renderPings(){
-  const wrap=document.getElementById("pings");
-  wrap.innerHTML="";
-  regions.forEach(r=>{
-    const variance=Math.floor(Math.random()*10-5);
-    const ping=r.base+variance;
-    const good=ping<90;
-    wrap.innerHTML+=`
-      <div class="ping-row">
-        <span>${r.name}</span>
-        <strong class="${good?'ping-good':'ping-bad'}">${ping} ms</strong>
-      </div>`;
-  });
-}
-renderPings();
-setInterval(renderPings,3000);
-</script>
-
+    document.getElementById("year").textContent = new Date().getFullYear();
+    renderServers();
+    renderPings();
+  </script>
 </body>
 </html>
