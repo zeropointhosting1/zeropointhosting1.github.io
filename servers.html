@@ -1,257 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zeropoint Hosting | Servers</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeropoint | Servers</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
+      --border: #22222e; --accent: #00e676;
+      --text: #e8e8f0; --muted: #7a7a90; --radius: 10px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6; min-height: 100vh; overflow-x: hidden;
+    }
 
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700;900&display=swap" rel="stylesheet">
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: center; padding: 0 1.5rem;
+      background: rgba(10,10,15,0.88);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav ul { display: flex; align-items: center; gap: 0.25rem; list-style: none; height: 60px; flex-wrap: wrap; }
+    nav a { display: block; padding: 0.45rem 0.9rem; color: var(--muted); text-decoration: none; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; border-radius: 6px; transition: color 0.2s, background 0.2s; }
+    nav a:hover { color: var(--text); background: var(--surface2); }
+    nav a.active { color: var(--accent); background: var(--surface2); }
 
-<style>
-:root{
-  --bg:#0b0b16;
-  --card:#1c1c38;
-  --pink:#ff4fd8;
-  --purple:#9b5cff;
-  --text:#ffffff;
-  --muted:#a6a6c8;
-  --border:rgba(255,79,216,.25);
-  --green:#22c55e;
-}
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 120px 1.5rem 4rem;
+      text-align: center;
+      position: relative;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(0,230,118,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .page-eyebrow { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; opacity: 0.85; }
+    .page-header h1 { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; background: linear-gradient(160deg, #ffffff 0%, #a0a0b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.75rem; }
+    .page-header p { font-size: 1rem; color: var(--muted); }
 
-*{margin:0;padding:0;box-sizing:border-box}
+    /* ── SERVER LIST ── */
+    .server-list {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 1.5rem 6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
 
-body{
-  font-family:'Rajdhani',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
+    .server-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      transition: border-color 0.2s;
+    }
+    .server-card:hover { border-color: var(--accent); }
 
-/* ===== BACKGROUND GRID ===== */
-.bg{
-  position:fixed;
-  inset:0;
-  background:
-    linear-gradient(rgba(255,79,216,.05) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,79,216,.05) 1px,transparent 1px);
-  background-size:48px 48px;
-  z-index:-1;
-}
+    .server-left { display: flex; flex-direction: column; gap: 0.2rem; }
+    .server-game { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+    .server-name { font-size: 1.05rem; font-weight: 700; }
+    .server-meta { font-size: 0.82rem; color: var(--muted); }
 
-/* ===== NAVBAR ===== */
-.navbar{
-  position:fixed;
-  top:0;
-  width:100%;
-  z-index:1000;
-  background:rgba(11,11,22,.95);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
-}
+    .server-right { display: flex; align-items: center; gap: 0.65rem; flex-shrink: 0; }
+    .status-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(0,230,118,0.7);
+      flex-shrink: 0;
+    }
+    .ping-value { font-size: 0.88rem; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
 
-.nav-container{
-  max-width:1400px;
-  margin:auto;
-  padding:1rem 1.5rem;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  min-height:64px;
-}
+    /* ── SECTION DIVIDER ── */
+    .list-divider {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin: 0.5rem 0;
+    }
+    .list-divider span { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+    .list-divider::before, .list-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-.nav-logo{
-  font-weight:900;
-  font-size:1.4rem;
-  text-decoration:none;
-  color:#fff;
-}
-.nav-logo span{color:var(--pink)}
+    /* ── COMING SOON CARD ── */
+    .server-card-soon {
+      background: var(--surface);
+      border: 1px solid rgba(120,80,255,0.2);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      opacity: 0.75;
+    }
+    .server-game-soon { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: #a78bfa; font-weight: 600; }
+    .badge-soon {
+      font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.2rem 0.55rem; border-radius: 4px; font-weight: 600;
+      background: rgba(120,80,255,0.1); color: #a78bfa; border: 1px solid rgba(120,80,255,0.25);
+    }
 
-.nav-links{
-  list-style:none;
-  display:flex;
-  gap:2rem;
-}
-.nav-links a{
-  text-decoration:none;
-  color:var(--muted);
-  font-weight:700;
-  font-size:.85rem;
-}
-.nav-links a:hover{color:var(--pink)}
-
-.discord-btn{
-  background:linear-gradient(135deg,var(--pink),var(--purple));
-  padding:.6rem 1.5rem;
-  border-radius:999px;
-  color:#fff;
-  font-weight:800;
-  font-size:.8rem;
-  text-decoration:none;
-}
-
-/* ===== PAGE ===== */
-.page{
-  padding-top:120px;
-  max-width:1100px;
-  margin:auto;
-  padding-left:1.5rem;
-  padding-right:1.5rem;
-}
-
-h1{
-  font-size:3rem;
-  text-align:center;
-}
-h1 span{color:var(--pink)}
-
-.subtitle{
-  text-align:center;
-  margin-top:.6rem;
-  color:var(--muted);
-}
-
-/* ===== SERVER LIST ===== */
-.server-list{
-  margin-top:4rem;
-  display:grid;
-  gap:1.5rem;
-}
-
-.server{
-  background:var(--card);
-  border-radius:18px;
-  padding:1.6rem 2rem;
-  border:1px solid var(--border);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-}
-
-.server-info h3{
-  font-size:1.2rem;
-}
-.server-info p{
-  color:var(--muted);
-  font-size:.9rem;
-  margin-top:.2rem;
-}
-
-.server-status{
-  display:flex;
-  align-items:center;
-  gap:1rem;
-  margin-top:.8rem;
-}
-
-.dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 10px var(--green);
-}
-
-.ping{
-  font-weight:700;
-  color:var(--green);
-  font-size:.9rem;
-}
-
-/* ===== FOOTER ===== */
-footer{
-  text-align:center;
-  padding:3rem 1rem;
-  margin-top:4rem;
-  color:var(--muted);
-  border-top:1px solid var(--border);
-}
-
-/* ===== MOBILE ===== */
-@media(max-width:700px){
-  .nav-links{display:none}
-  h1{font-size:2.3rem}
-}
-</style>
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 1.5rem; text-align: center; }
+    footer p { color: var(--muted); font-size: 0.82rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
 </head>
-
 <body>
-<div class="bg"></div>
 
-<!-- NAV -->
-<nav class="navbar">
-  <div class="nav-container">
-    <a href="index.html" class="nav-logo">Zeropoint <span>Hosting</span></a>
-
-    <ul class="nav-links">
+  <!-- NAV -->
+  <nav>
+    <ul>
       <li><a href="index.html">Home</a></li>
+      <li><a href="servers.html" class="active">Servers</a></li>
       <li><a href="ark.html">ARK</a></li>
-      <li><a href="hytale.html">Hytale</a></li>
-      <li><a href="servers.html">Servers</a></li>
-      <li><a href="about.html">About</a></li>
+      <li><a href="discord.html">Discord</a></li>
+      <li><a href="admin.html">Admin</a></li>
     </ul>
+  </nav>
 
-    <a href="#" class="discord-btn">Discord</a>
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <p class="page-eyebrow">Infrastructure</p>
+    <h1>Live Servers</h1>
+    <p>Currently running Zeropoint PvE servers</p>
   </div>
-</nav>
 
-<!-- CONTENT -->
-<main class="page">
-  <h1>Live <span>Servers</span></h1>
-  <p class="subtitle">Currently running Zeropoint PvE servers</p>
-
+  <!-- SERVER LIST -->
   <div class="server-list">
 
-    <div class="server">
-      <div class="server-info">
-        <h3>ARK | Crystal Isles (PvE)</h3>
-        <p>Miami • Xbox • 0 / 16</p>
+    <div class="server-card">
+      <div class="server-left">
+        <span class="server-game">ARK: Survival Evolved</span>
+        <span class="server-name">Crystal Isles (PvE)</span>
+        <span class="server-meta">Miami &middot; Xbox</span>
       </div>
-      <div class="server-status">
-        <span class="dot"></span>
-        <span class="ping dynamic-ping" data-min="18" data-max="25">22 ms</span>
-      </div>
-    </div>
-
-    <div class="server">
-      <div class="server-info">
-        <h3>ARK | Fjordur (PvE)</h3>
-        <p>New York • Xbox • 1 / 16</p>
-      </div>
-      <div class="server-status">
-        <span class="dot"></span>
-        <span class="ping dynamic-ping" data-min="32" data-max="40">37 ms</span>
+      <div class="server-right">
+        <span class="status-dot"></span>
+        <span class="ping-value dynamic-ping" data-min="18" data-max="25">22 ms</span>
       </div>
     </div>
 
-    <div class="server">
-      <div class="server-info">
-        <h3>ARK | Ragnarok (PvE)</h3>
-        <p>Miami • Xbox • 11 / 26</p>
+    <div class="server-card">
+      <div class="server-left">
+        <span class="server-game">ARK: Survival Evolved</span>
+        <span class="server-name">Fjordur (PvE)</span>
+        <span class="server-meta">New York &middot; Xbox</span>
       </div>
-      <div class="server-status">
-        <span class="dot"></span>
-        <span class="ping dynamic-ping" data-min="19" data-max="26">21 ms</span>
+      <div class="server-right">
+        <span class="status-dot"></span>
+        <span class="ping-value dynamic-ping" data-min="32" data-max="40">37 ms</span>
+      </div>
+    </div>
+
+    <div class="server-card">
+      <div class="server-left">
+        <span class="server-game">ARK: Survival Evolved</span>
+        <span class="server-name">Ragnarok (PvE)</span>
+        <span class="server-meta">Miami &middot; Xbox</span>
+      </div>
+      <div class="server-right">
+        <span class="status-dot"></span>
+        <span class="ping-value dynamic-ping" data-min="19" data-max="26">21 ms</span>
+      </div>
+    </div>
+
+    <div class="list-divider"><span>Coming Soon</span></div>
+
+    <div class="server-card-soon">
+      <div class="server-left">
+        <span class="server-game-soon">Hytale</span>
+        <span class="server-name">Faction Server</span>
+        <span class="server-meta">Location TBD &middot; PC</span>
+      </div>
+      <div class="server-right">
+        <span class="badge-soon">Coming Soon</span>
       </div>
     </div>
 
   </div>
-</main>
 
-<footer>
-  © 2026 Zeropoint Hosting — PvE Community Servers
-</footer>
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 Zeropoint &mdash; <a href="discord.html">Join our Discord</a></p>
+  </footer>
 
-<script>
-setInterval(() => {
-  document.querySelectorAll('.dynamic-ping').forEach(el=>{
-    const min=+el.dataset.min;
-    const max=+el.dataset.max;
-    el.textContent = Math.floor(Math.random()*(max-min+1)+min)+' ms';
-  });
-},2000);
-</script>
+  <script>
+  setInterval(() => {
+    document.querySelectorAll('.dynamic-ping').forEach(el => {
+      const min = +el.dataset.min, max = +el.dataset.max;
+      el.textContent = Math.floor(Math.random() * (max - min + 1) + min) + ' ms';
+    });
+  }, 2000);
+
+  // Nav active state
+  (function () {
+    const page = location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('nav a').forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === page);
+    });
+  })();
+  </script>
 
 </body>
 </html>
