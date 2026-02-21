@@ -64,6 +64,10 @@
       pointer-events: none;
     }
     .page-eyebrow { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; opacity: 0.85; }
+    .total-stat { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.85rem; padding: 0.4rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 99px; font-size: 0.82rem; color: var(--muted); font-weight: 500; }
+    .total-stat-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 5px rgba(0,230,118,0.6); flex-shrink: 0; animation: tpulse 1.6s ease-in-out infinite; }
+    @keyframes tpulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+    .total-stat strong { color: var(--accent); font-variant-numeric: tabular-nums; }
     .page-header h1 { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; background: linear-gradient(160deg, #ffffff 0%, #a0a0b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.75rem; }
     .page-header p { font-size: 1rem; color: var(--muted); }
 
@@ -104,6 +108,16 @@
       flex-shrink: 0;
     }
     .ping-value { font-size: 0.88rem; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+    .pc-sep { color: var(--border); font-size: 0.85rem; }
+    .player-count {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      transition: color 0.3s;
+    }
+    .player-count.pc-live { color: var(--accent); }
+    .player-count.pc-offline { color: #ff5252; }
 
     /* ── SECTION DIVIDER ── */
     .list-divider {
@@ -133,6 +147,11 @@
       background: rgba(120,80,255,0.1); color: #a78bfa; border: 1px solid rgba(120,80,255,0.25);
     }
 
+    /* ── ARKBUDDY CREDIT ── */
+    .arkbuddy-credit { font-size: 0.72rem; color: var(--muted); text-align: right; opacity: 0.6; }
+    .arkbuddy-credit a { color: var(--muted); text-decoration: none; }
+    .arkbuddy-credit a:hover { color: var(--text); }
+
     /* ── FOOTER ── */
     footer { border-top: 1px solid var(--border); padding: 2.5rem 1.5rem; text-align: center; }
     footer p { color: var(--muted); font-size: 0.82rem; }
@@ -149,6 +168,7 @@
       <li><a href="index.html">Home</a></li>
       <li><a href="servers.html">Servers</a></li>
       <li><a href="ark.html">ARK</a></li>
+      <li><a href="bbs.html">BBS Shop</a></li>
       <li><a href="discord.html">Discord</a></li>
       <li><a href="admin.html">Admin</a></li>
     </ul>
@@ -167,6 +187,11 @@
   <!-- SERVER LIST -->
   <div class="server-list">
 
+    <div class="total-stat">
+      <span class="total-stat-dot"></span>
+      <span><strong id="total-cur">—</strong> players online across 3 servers</span>
+    </div>
+
     <div class="server-card">
       <div class="server-left">
         <span class="server-game">ARK: Survival Evolved</span>
@@ -176,6 +201,8 @@
       <div class="server-right">
         <span class="status-dot"></span>
         <span class="ping-value dynamic-ping" data-min="18" data-max="25">22 ms</span>
+        <span class="pc-sep">·</span>
+        <span class="player-count" id="pc-crystal">— online</span>
       </div>
     </div>
 
@@ -188,6 +215,8 @@
       <div class="server-right">
         <span class="status-dot"></span>
         <span class="ping-value dynamic-ping" data-min="32" data-max="40">37 ms</span>
+        <span class="pc-sep">·</span>
+        <span class="player-count" id="pc-fjordur">— online</span>
       </div>
     </div>
 
@@ -200,8 +229,12 @@
       <div class="server-right">
         <span class="status-dot"></span>
         <span class="ping-value dynamic-ping" data-min="19" data-max="26">21 ms</span>
+        <span class="pc-sep">·</span>
+        <span class="player-count" id="pc-ragnarok">— online</span>
       </div>
     </div>
+
+    <p class="arkbuddy-credit">Live stats powered by <a href="https://arkbuddy.app" target="_blank" rel="noopener">ArkBuddy</a></p>
 
     <div class="list-divider"><span>Coming Soon</span></div>
 
@@ -224,6 +257,51 @@
   </footer>
 
   <script>
+  const SERVERS = [
+    { id: 'crystal',  ip: '217.114.193.20:10005'  },
+    { id: 'fjordur',  ip: '31.214.234.17:10047'   },
+    { id: 'ragnarok', ip: '217.114.193.39:10038'  },
+  ];
+
+  async function fetchPlayers(ip) {
+    const url = 'https://api.arkbuddy.app/api/v2/servers/get?platform=Xbox&type=unofficial&ip='
+      + encodeURIComponent(ip) + '&skippable=clusters,mods';
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const cur = data?.playerData?.current;
+    const max = data?.playerData?.max;
+    return (cur != null && max != null) ? { cur, max } : null;
+  }
+
+  async function refreshCounts() {
+    let totalCur = 0, anyLive = false;
+    for (const s of SERVERS) {
+      const el = document.getElementById('pc-' + s.id);
+      if (!el) continue;
+      try {
+        const d = await fetchPlayers(s.ip);
+        if (d) {
+          el.textContent = d.cur + ' / ' + d.max + ' online';
+          el.className = 'player-count pc-live';
+          totalCur += d.cur;
+          anyLive = true;
+        } else {
+          el.textContent = 'offline';
+          el.className = 'player-count pc-offline';
+        }
+      } catch {
+        el.textContent = '—';
+        el.className = 'player-count';
+      }
+    }
+    const totalEl = document.getElementById('total-cur');
+    if (totalEl) totalEl.textContent = anyLive ? totalCur : '—';
+  }
+
+  refreshCounts();
+  setInterval(refreshCounts, 60000);
+
   setInterval(() => {
     document.querySelectorAll('.dynamic-ping').forEach(el => {
       const min = +el.dataset.min, max = +el.dataset.max;
