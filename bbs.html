@@ -109,7 +109,8 @@
     /* ── DINO LIST ── */
     .dino-shop-list {
       border: 1px solid var(--border); border-radius: 10px;
-      background: var(--bg); overflow: hidden; margin-bottom: 2.5rem;
+      background: var(--bg); overflow-x: hidden; overflow-y: auto;
+      max-height: 420px; margin-bottom: 2.5rem;
     }
     .shop-row {
       display: flex; align-items: center; gap: 0.75rem; justify-content: space-between;
@@ -138,6 +139,13 @@
       text-transform: uppercase; transition: background 0.15s; white-space: nowrap;
     }
     .shop-add-btn:hover { background: rgba(0,230,118,0.18); }
+    .shop-remove-btn {
+      background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.25);
+      color: #ff5252; border-radius: 5px; padding: 0.28rem 0.65rem;
+      font-size: 0.7rem; font-weight: 700; cursor: pointer; letter-spacing: 0.04em;
+      text-transform: uppercase; transition: background 0.15s; white-space: nowrap;
+    }
+    .shop-remove-btn:hover { background: rgba(255,82,82,0.18); }
     .no-results { padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
 
     /* ── ORDER SUMMARY ── */
@@ -325,20 +333,10 @@
     <div class="order-form-section" id="order-form-section">
       <h3 class="section-title">Place Your Order</h3>
 
-      <form action="https://formspree.io/f/xnjbgdzq" method="POST" id="bbs-order-form">
-        <input type="hidden" name="_subject"   id="bbs-subject"    value="BBS Shop Order">
-        <input type="hidden" name="bbs_total"  id="bbs-total-field" value="0">
-        <input type="hidden" name="dino_order" id="bbs-dino-field"  value="(none selected)">
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="f-ingame">In-Game Name *</label>
-            <input id="f-ingame" type="text" name="ingame_name" required placeholder="Your survivor name">
-          </div>
-          <div class="form-group">
-            <label for="f-email">Email *</label>
-            <input id="f-email" type="email" name="email" required placeholder="For order updates">
-          </div>
+      <form id="bbs-order-form">
+        <div class="form-group">
+          <label for="f-ingame">In-Game Name *</label>
+          <input id="f-ingame" type="text" name="ingame_name" required placeholder="Your survivor name">
         </div>
         <div class="form-group">
           <label for="f-teleporter">Teleporter Name / Delivery Location *</label>
@@ -516,9 +514,6 @@
   const bbsForm         = document.getElementById('bbs-order-form');
   const bbsSuccess      = document.getElementById('bbs-success');
   const bbsSubmitBtn    = document.getElementById('bbs-submit-btn');
-  const bbsSubject      = document.getElementById('bbs-subject');
-  const bbsTotalField   = document.getElementById('bbs-total-field');
-  const bbsDinoField    = document.getElementById('bbs-dino-field');
 
   // Scroll to form button
   document.getElementById('go-to-form-btn').addEventListener('click', () => {
@@ -548,6 +543,13 @@
 
   function removeItem(id) {
     orderItems = orderItems.filter(i => i.id !== id);
+    render();
+  }
+
+  function removeLastDino(name) {
+    for (let i = orderItems.length - 1; i >= 0; i--) {
+      if (orderItems[i].name === name) { orderItems.splice(i, 1); break; }
+    }
     render();
   }
 
@@ -613,6 +615,7 @@
         '<div class="shop-row-right">' +
           '<span class="size-badge ' + d.size + '">' + d.size + '</span>' +
           '<span class="shop-price">' + fmt(price) + ' <span class="shop-price-sym">🍓</span></span>' +
+          (count ? '<button class="shop-remove-btn" data-name="' + esc(d.name) + '">– 1</button>' : '') +
           '<button class="shop-add-btn" data-name="' + esc(d.name) + '" data-size="' + d.size + '">+ Add</button>' +
         '</div>' +
       '</div>';
@@ -620,6 +623,9 @@
 
     shopList.querySelectorAll('.shop-add-btn').forEach(btn => {
       btn.addEventListener('click', () => addDino(btn.dataset.name, btn.dataset.size));
+    });
+    shopList.querySelectorAll('.shop-remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => removeLastDino(btn.dataset.name));
     });
   }
 
@@ -688,49 +694,98 @@
     orderTotalDisp.textContent = fmt(total);
   }
 
-  function updateFormFields() {
-    const total = calcTotal();
-    bbsTotalField.value = fmt(total) + ' BBS';
-    if (!orderItems.length) { bbsDinoField.value = '(none selected)'; return; }
-    bbsDinoField.value = orderItems.map(item => {
-      const typeStr    = item.type === 'pair' ? 'Breeding Pair' : 'Single';
-      const colorParts = item.colors.map((c, i) => c ? 'R' + i + ':' + c : null).filter(Boolean);
-      const bbsStr     = fmt(calcItemBBS(item)) + ' BBS';
-      return '• ' + item.name + ' (' + typeStr + ') — ' + bbsStr + (colorParts.length ? ' | Colors: ' + colorParts.join(', ') : '');
-    }).join('\n');
-  }
+  function updateFormFields() { /* totals are now Discord-only */ }
 
   // ── Search / Filter ──
   shopSearch.addEventListener('input',  () => renderShopList());
   shopSizeFilter.addEventListener('change', () => renderShopList());
 
+  // ── Discord Webhooks ──
+  const DISCORD_WEBHOOK       = 'https://discord.com/api/webhooks/1474841263294517433/h_8duaJjzmRQ4NQQo9B1tnpTEUArqCoD_UKl4RHXe7qZSZ0JF7NXLeLrtMt0P7DImpnk';
+  const DISCORD_WEBHOOK_ADMIN = 'https://discord.com/api/webhooks/1474846554300092506/AlxQXWBdsMWSl1he9UFuFNHPIvnCz0rDhfQE8MbeT4QcquX4sJ6AOtxaYKTeX4fTzq_2';
+  const ARK_ADMIN_ROLE        = '1474505890827866175';
+
+  function buildOrderFields(ingame, teleporter, discord, notes, total) {
+    const dinoLines = orderItems.map(item => {
+      const typeStr    = item.type === 'pair' ? 'Breeding Pair' : 'Single';
+      const colorParts = item.colors.map((c, i) => c ? 'R' + i + ': ' + c : null).filter(Boolean);
+      let line = '• **' + item.name + '** (' + typeStr + ') — ' + fmt(calcItemBBS(item)) + ' 🍓';
+      if (colorParts.length) line += '\n  Colors: ' + colorParts.join(', ');
+      return line;
+    }).join('\n');
+
+    const fields = [
+      { name: 'PLAYER',        value: ingame,                      inline: true  },
+      { name: 'TELEPORTER',    value: teleporter,                  inline: true  },
+      { name: 'DISCORD',       value: discord || '_not provided_', inline: true  },
+      { name: 'DINOS ORDERED', value: dinoLines || '(none)',       inline: false },
+      { name: 'TOTAL BBS',     value: fmt(total) + ' 🍓',          inline: true  },
+      { name: '# DINOS',       value: String(orderItems.length),   inline: true  },
+    ];
+    if (notes && notes.trim()) fields.push({ name: 'NOTES', value: notes.trim(), inline: false });
+    return fields;
+  }
+
+  async function sendWebhook(url, payload) {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('Discord webhook failed (' + url.slice(-6) + '):', res.status, err);
+    }
+  }
+
+  async function postToDiscord(ingame, teleporter, discord, notes, total) {
+    const fields = buildOrderFields(ingame, teleporter, discord, notes, total);
+
+    // ── Public channel: community notification ──
+    await sendWebhook(DISCORD_WEBHOOK, {
+      content: '<@&' + ARK_ADMIN_ROLE + '> 🍓 New BBS order incoming!',
+      allowed_mentions: { roles: [ARK_ADMIN_ROLE] },
+      embeds: [{
+        title: '🍓 New BBS Order',
+        color: 58998, // #00e676
+        fields,
+        footer: { text: 'BBS Shop' },
+        timestamp: new Date().toISOString(),
+      }],
+    });
+
+    // ── Admin channel: action-focused ──
+    await sendWebhook(DISCORD_WEBHOOK_ADMIN, {
+      content: '<@&' + ARK_ADMIN_ROLE + '> 📋 New order to fulfil — react ✅ when delivered',
+      allowed_mentions: { roles: [ARK_ADMIN_ROLE] },
+      embeds: [{
+        title: '📋 BBS Order — Action Required',
+        color: 16753920, // orange #FFB300
+        fields,
+        footer: { text: 'BBS Shop • React ✅ when delivered, ❌ if declined' },
+        timestamp: new Date().toISOString(),
+      }],
+    });
+  }
+
   // ── Form Submit ──
   bbsForm.addEventListener('submit', async e => {
     e.preventDefault();
-    updateFormFields();
-    const ingame = document.getElementById('f-ingame').value;
-    const total  = calcTotal();
-    bbsSubject.value = 'BBS Order — ' + ingame + ' — ' + fmt(total) + ' BBS';
+    const ingame     = document.getElementById('f-ingame').value;
+    const teleporter = document.getElementById('f-teleporter').value;
+    const discord    = document.getElementById('f-discord').value;
+    const notes      = document.getElementById('f-notes').value;
+    const total      = calcTotal();
 
     bbsSubmitBtn.disabled = true;
     bbsSubmitBtn.textContent = 'Sending…';
 
     try {
-      const res = await fetch(bbsForm.action, {
-        method: 'POST',
-        body: new FormData(bbsForm),
-        headers: { Accept: 'application/json' }
-      });
-      if (res.ok) {
-        bbsForm.hidden = true;
-        bbsSuccess.hidden = false;
-      } else {
-        alert('Submission failed — please try again or contact us on Discord.');
-        bbsSubmitBtn.disabled = false;
-        bbsSubmitBtn.textContent = 'Submit Order →';
-      }
+      await postToDiscord(ingame, teleporter, discord, notes, total);
+      bbsForm.hidden = true;
+      bbsSuccess.hidden = false;
     } catch {
-      alert('Network error — check your connection and try again.');
+      alert('Could not send order — check your connection and try again.');
       bbsSubmitBtn.disabled = false;
       bbsSubmitBtn.textContent = 'Submit Order →';
     }
