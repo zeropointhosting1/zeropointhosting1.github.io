@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeropoint | BBS Dino Shop</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
+      --border: #22222e; --accent: #00e676;
+      --text: #e8e8f0; --muted: #7a7a90; --radius: 10px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6; min-height: 100vh; overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: center; padding: 0 1.5rem;
+      background: rgba(10,10,15,0.88);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border); height: 60px;
+    }
+    nav ul { display: flex; align-items: center; gap: 0.25rem; list-style: none; flex-wrap: nowrap; }
+    nav a { display: block; padding: 0.45rem 0.9rem; color: var(--muted); text-decoration: none; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; border-radius: 6px; transition: color 0.2s, background 0.2s; }
+    nav a:hover { color: var(--text); background: var(--surface2); }
+    nav a.active { color: var(--accent); background: var(--surface2); }
+    .nav-brand { display: none; color: var(--accent); font-weight: 700; font-size: 1rem; letter-spacing: 0.04em; text-decoration: none; }
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; flex-direction: column; justify-content: center; gap: 5px; }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.22s, opacity 0.22s; }
+    .nav-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.active span:nth-child(2) { opacity: 0; }
+    .nav-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 600px) {
+      nav { justify-content: space-between; }
+      .nav-brand { display: block; }
+      .nav-toggle { display: flex; }
+      nav ul { display: none; position: fixed; top: 60px; left: 0; right: 0; background: rgba(10,10,15,0.97); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); flex-direction: column; align-items: stretch; padding: 0.5rem 1rem 1rem; gap: 0.15rem; z-index: 99; }
+      nav ul.nav-open { display: flex; }
+      nav a { font-size: 1rem; padding: 0.65rem 0.9rem; }
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header { padding: 120px 1.5rem 3rem; text-align: center; position: relative; }
+    .page-header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(0,230,118,0.05) 0%, transparent 70%); pointer-events: none; }
+    .page-eyebrow { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; opacity: 0.85; }
+    .page-header h1 { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; background: linear-gradient(160deg, #ffffff 0%, #a0a0b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.75rem; }
+    .page-header p { font-size: 1rem; color: var(--muted); max-width: 520px; margin: 0 auto; }
+    .bbs-icon { font-size: 2.5rem; margin-bottom: 0.75rem; display: block; }
+
+    /* ── PRICE CARDS ── */
+    .price-section { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+    .price-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    @media (max-width: 700px) { .price-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 380px) { .price-grid { grid-template-columns: 1fr; } }
+    .price-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-top: 2px solid var(--accent); border-radius: var(--radius);
+      padding: 1.25rem 1rem; text-align: center;
+    }
+    .price-size { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
+    .price-bbs { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.03em; color: var(--text); line-height: 1; margin-bottom: 0.2rem; }
+    .price-sym { color: var(--accent); }
+    .price-unit { font-size: 0.68rem; color: var(--muted); }
+    .price-examples { font-size: 0.7rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.4; }
+
+    /* ── SHOP LAYOUT ── */
+    .shop-wrap { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+    /* ── RUNNING TOTAL BAR ── */
+    .total-bar {
+      background: var(--surface); border: 1px solid rgba(0,230,118,0.25);
+      border-radius: 10px; padding: 1rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .total-bar[hidden] { display: none; }
+    .total-bar-left { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .total-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .total-amount { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.03em; color: var(--text); }
+    .total-sym { color: var(--accent); }
+    .total-count { font-size: 0.75rem; color: var(--muted); }
+    .scroll-to-form-btn {
+      background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.3);
+      color: var(--accent); border-radius: 7px; padding: 0.5rem 1rem;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer;
+      transition: background 0.15s; white-space: nowrap; letter-spacing: 0.03em;
+    }
+    .scroll-to-form-btn:hover { background: rgba(0,230,118,0.18); }
+
+    /* ── SEARCH & FILTER ── */
+    .shop-controls { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; margin-bottom: 0.75rem; }
+    @media (max-width: 480px) { .shop-controls { grid-template-columns: 1fr; } }
+    .shop-controls input,
+    .shop-controls select {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+      border-radius: 7px; padding: 0.6rem 0.9rem; font-size: 0.875rem;
+      font-family: inherit; outline: none; transition: border-color 0.15s;
+    }
+    .shop-controls input:focus, .shop-controls select:focus { border-color: var(--accent); }
+    .shop-controls select { background-color: var(--surface2); }
+
+    /* ── DINO LIST ── */
+    .dino-shop-list {
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--bg); overflow: hidden; margin-bottom: 2.5rem;
+    }
+    .shop-row {
+      display: flex; align-items: center; gap: 0.75rem; justify-content: space-between;
+      padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); transition: background 0.12s;
+    }
+    .shop-row:last-child { border-bottom: none; }
+    .shop-row:hover { background: var(--surface2); }
+    .shop-row-left { display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 0; }
+    .shop-dino-name { font-size: 0.875rem; font-weight: 600; }
+    .shop-added-count { font-size: 0.65rem; color: var(--accent); font-weight: 700; }
+    .size-badge {
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.15rem 0.45rem; border-radius: 4px; flex-shrink: 0;
+    }
+    .size-badge.Small  { background: rgba(100,180,255,0.12); color: #7ab8ff; border: 1px solid rgba(100,180,255,0.25); }
+    .size-badge.Medium { background: rgba(255,200,80,0.12);  color: #ffd060; border: 1px solid rgba(255,200,80,0.25); }
+    .size-badge.Large  { background: rgba(255,120,60,0.12);  color: #ff9060; border: 1px solid rgba(255,120,60,0.25); }
+    .size-badge.XL     { background: rgba(200,60,255,0.12);  color: #d880ff; border: 1px solid rgba(200,60,255,0.25); }
+    .shop-row-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+    .shop-price { font-size: 0.78rem; font-weight: 700; color: var(--text); white-space: nowrap; }
+    .shop-price-sym { color: var(--accent); }
+    .shop-add-btn {
+      background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.25);
+      color: var(--accent); border-radius: 5px; padding: 0.28rem 0.65rem;
+      font-size: 0.7rem; font-weight: 700; cursor: pointer; letter-spacing: 0.04em;
+      text-transform: uppercase; transition: background 0.15s; white-space: nowrap;
+    }
+    .shop-add-btn:hover { background: rgba(0,230,118,0.18); }
+    .no-results { padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+
+    /* ── ORDER SUMMARY ── */
+    .order-summary-section { margin-bottom: 2rem; }
+    .order-summary-section[hidden] { display: none; }
+    .order-summary-title { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+    .order-items-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .order-item-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent); border-radius: 8px; padding: 0.9rem 1rem;
+    }
+    .order-item-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+    .order-item-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .order-item-name { font-size: 0.9rem; font-weight: 700; }
+    .order-item-price { font-size: 0.8rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+    .order-item-controls { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+    .type-btn {
+      padding: 0.26rem 0.6rem; border-radius: 5px; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.04em; cursor: pointer; border: 1px solid var(--border);
+      background: transparent; color: var(--muted); transition: all 0.15s; text-transform: uppercase;
+    }
+    .type-btn.active { background: rgba(0,230,118,0.15); border-color: rgba(0,230,118,0.4); color: var(--accent); }
+    .remove-item-btn {
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      font-size: 1rem; line-height: 1; padding: 0.1rem 0.3rem; border-radius: 4px; transition: color 0.15s;
+    }
+    .remove-item-btn:hover { color: #ff5555; }
+
+    /* Color regions */
+    .color-regions { display: flex; flex-direction: column; gap: 0.4rem; }
+    .region-row { display: flex; align-items: flex-start; gap: 0.65rem; }
+    .region-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); min-width: 50px; padding-top: 0.25rem; flex-shrink: 0; }
+    .color-swatches { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+    .swatch { width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; outline: none; transition: transform 0.12s, border-color 0.12s; padding: 0; flex-shrink: 0; }
+    .swatch:hover { transform: scale(1.25); }
+    .swatch.active { border-color: #fff; transform: scale(1.18); box-shadow: 0 0 0 1px rgba(255,255,255,0.25); }
+    .swatch.skip { background: var(--surface); border: 2px solid var(--border); color: var(--muted); font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .swatch.skip.active { border-color: var(--accent); color: var(--accent); }
+
+    /* Order total row */
+    .order-total-row {
+      display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem;
+      padding: 0.9rem 0 0; border-top: 1px solid var(--border); margin-top: 0.75rem;
+    }
+    .order-total-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .order-total-value { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.03em; }
+    .order-total-sym { color: var(--accent); }
+
+    /* ── ORDER FORM ── */
+    .order-form-section { border-top: 1px solid var(--border); padding-top: 2rem; }
+    .section-title { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    @media (max-width: 520px) { .form-row { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 0.38rem; margin-bottom: 0.75rem; }
+    .form-group label { font-size: 0.77rem; font-weight: 600; color: var(--text); }
+    .form-group input, .form-group textarea {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+      border-radius: 7px; padding: 0.6rem 0.85rem; font-size: 0.875rem;
+      font-family: inherit; outline: none; transition: border-color 0.15s; width: 100%;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
+    .form-note { font-size: 0.78rem; color: var(--muted); flex: 1; }
+    .submit-btn {
+      background: var(--accent); color: #000; border: none; border-radius: 8px;
+      padding: 0.75rem 1.75rem; font-size: 0.9rem; font-weight: 800;
+      cursor: pointer; letter-spacing: 0.02em; transition: opacity 0.15s, transform 0.15s; white-space: nowrap;
+    }
+    .submit-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Success */
+    .form-success { text-align: center; padding: 3rem 1rem; }
+    .form-success[hidden] { display: none; }
+    .success-icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(0,230,118,0.12); border: 2px solid var(--accent); color: var(--accent); font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
+    .form-success h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .form-success p { color: var(--muted); margin-bottom: 1.5rem; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 1.5rem; text-align: center; }
+    footer p { color: var(--muted); font-size: 0.82rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-brand" href="index.html">Zeropoint</a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="servers.html">Servers</a></li>
+      <li><a href="ark.html">ARK</a></li>
+      <li><a href="bbs.html">BBS Shop</a></li>
+      <li><a href="discord.html">Discord</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <span class="bbs-icon">🍓</span>
+    <p class="page-eyebrow">In-Game Currency</p>
+    <h1>BBS Dino Shop</h1>
+    <p>Spend your in-game BBS to get tamed dinos delivered straight to your teleporter. An admin will verify your balance before delivery.</p>
+  </div>
+
+  <!-- PRICE GUIDE -->
+  <div class="price-section">
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-size">Small</div>
+        <div class="price-bbs">250,000 <span class="price-sym">🍓</span></div>
+        <div class="price-unit">per dino</div>
+        <div class="price-examples">Raptor, Otter, Dodo &amp; more</div>
+      </div>
+      <div class="price-card">
+        <div class="price-size">Medium</div>
+        <div class="price-bbs">400,000 <span class="price-sym">🍓</span></div>
+        <div class="price-unit">per dino</div>
+        <div class="price-examples">Argentavis, Carnotaurus &amp; more</div>
+      </div>
+      <div class="price-card">
+        <div class="price-size">Large</div>
+        <div class="price-bbs">800,000 <span class="price-sym">🍓</span></div>
+        <div class="price-unit">per dino</div>
+        <div class="price-examples">Rex, Wyvern, Griffin &amp; more</div>
+      </div>
+      <div class="price-card">
+        <div class="price-size">XL</div>
+        <div class="price-bbs">900,000 <span class="price-sym">🍓</span></div>
+        <div class="price-unit">per dino</div>
+        <div class="price-examples">Giga, Mosasaurus &amp; more</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHOP -->
+  <div class="shop-wrap">
+
+    <!-- Running total bar -->
+    <div class="total-bar" id="total-bar" hidden>
+      <div class="total-bar-left">
+        <div>
+          <div class="total-label">BBS Total</div>
+          <div class="total-amount"><span id="total-display">0</span> <span class="total-sym">🍓</span></div>
+        </div>
+        <div class="total-count" id="total-count-label"></div>
+      </div>
+      <button class="scroll-to-form-btn" id="go-to-form-btn">Place Order ↓</button>
+    </div>
+
+    <!-- Search + filter -->
+    <div class="shop-controls">
+      <input type="text" id="shop-search" placeholder="Search dinos..." autocomplete="off">
+      <select id="shop-size-filter">
+        <option value="">All Sizes</option>
+        <option value="Small">Small — 250k</option>
+        <option value="Medium">Medium — 400k</option>
+        <option value="Large">Large — 800k</option>
+        <option value="XL">XL — 900k</option>
+      </select>
+    </div>
+
+    <!-- Dino list -->
+    <div class="dino-shop-list" id="dino-shop-list"></div>
+
+    <!-- Order summary -->
+    <div class="order-summary-section" id="order-summary-section" hidden>
+      <h3 class="order-summary-title">Your Order <span id="order-item-count" style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;"></span></h3>
+      <div class="order-items-list" id="order-items-list"></div>
+      <div class="order-total-row">
+        <span class="order-total-label">Total</span>
+        <span class="order-total-value"><span id="order-total-display">0</span> <span class="order-total-sym">🍓</span></span>
+      </div>
+    </div>
+
+    <!-- Order form -->
+    <div class="order-form-section" id="order-form-section">
+      <h3 class="section-title">Place Your Order</h3>
+
+      <form action="https://formspree.io/f/xnjbgdzq" method="POST" id="bbs-order-form">
+        <input type="hidden" name="_subject"   id="bbs-subject"    value="BBS Shop Order">
+        <input type="hidden" name="bbs_total"  id="bbs-total-field" value="0">
+        <input type="hidden" name="dino_order" id="bbs-dino-field"  value="(none selected)">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-ingame">In-Game Name *</label>
+            <input id="f-ingame" type="text" name="ingame_name" required placeholder="Your survivor name">
+          </div>
+          <div class="form-group">
+            <label for="f-email">Email *</label>
+            <input id="f-email" type="email" name="email" required placeholder="For order updates">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="f-teleporter">Teleporter Name / Delivery Location *</label>
+          <input id="f-teleporter" type="text" name="teleporter" required placeholder="e.g. Bob's TP, Green Obelisk, base coords...">
+        </div>
+        <div class="form-group">
+          <label for="f-discord">Discord Username</label>
+          <input id="f-discord" type="text" name="discord" placeholder="e.g. username or username#0000">
+        </div>
+        <div class="form-group">
+          <label for="f-notes">Additional Notes</label>
+          <textarea id="f-notes" name="notes" rows="3" placeholder="Stat preferences, mutations, anything else..."></textarea>
+        </div>
+
+        <div class="form-footer">
+          <p class="form-note">An admin will verify your BBS balance in-game before delivering your dinos.</p>
+          <button type="submit" class="submit-btn" id="bbs-submit-btn">Submit Order →</button>
+        </div>
+      </form>
+
+      <div class="form-success" id="bbs-success" hidden>
+        <div class="success-icon">✓</div>
+        <h3>Order Received!</h3>
+        <p>An admin will check your BBS balance and deliver your dinos. Watch Discord for updates.</p>
+        <button class="submit-btn" onclick="document.getElementById('bbs-success').hidden=true; document.getElementById('bbs-order-form').hidden=false;">New Order</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 Zeropoint &mdash; <a href="discord.html">Join our Discord</a> &mdash; <a href="rules.html">Community Rules</a></p>
+  </footer>
+
+  <script>
+  // ── NAV ACTIVE ──
+  (function () {
+    const page = location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('nav a').forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === page);
+    });
+  })();
+
+  // ── MOBILE NAV TOGGLE ──
+  (function () {
+    var t = document.querySelector('.nav-toggle');
+    var m = document.querySelector('nav ul');
+    if (!t || !m) return;
+    t.addEventListener('click', function () { t.classList.toggle('active'); m.classList.toggle('nav-open'); });
+    m.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () { t.classList.remove('active'); m.classList.remove('nav-open'); });
+    });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('nav')) { t.classList.remove('active'); m.classList.remove('nav-open'); }
+    });
+  })();
+
+  // ══════════════════════════════════════
+  //  BBS SHOP
+  // ══════════════════════════════════════
+
+  const BBS_PRICES = { Small: 250000, Medium: 400000, Large: 800000, XL: 900000 };
+
+  const DINOS = [
+    // Small
+    { name: 'Archaeopteryx',   size: 'Small'  },
+    { name: 'Desmodus',        size: 'Small'  },
+    { name: 'Dilophosaurus',   size: 'Small'  },
+    { name: 'Dimorphodon',     size: 'Small'  },
+    { name: 'Dodo',            size: 'Small'  },
+    { name: 'Electrophorus',   size: 'Small'  },
+    { name: 'Fjordhawk',       size: 'Small'  },
+    { name: 'Jerboa',          size: 'Small'  },
+    { name: 'Lystrosaurus',    size: 'Small'  },
+    { name: 'Mesopithecus',    size: 'Small'  },
+    { name: 'Otter',           size: 'Small'  },
+    { name: 'Oviraptor',       size: 'Small'  },
+    { name: 'Parasaur',        size: 'Small'  },
+    { name: 'Pegomastax',      size: 'Small'  },
+    { name: 'Pteranodon',      size: 'Small'  },
+    { name: 'Troodon',         size: 'Small'  },
+    // Medium
+    { name: 'Argentavis',      size: 'Medium' },
+    { name: 'Baryonyx',        size: 'Medium' },
+    { name: 'Carnotaurus',     size: 'Medium' },
+    { name: 'Castoroides',     size: 'Medium' },
+    { name: 'Daeodon',         size: 'Medium' },
+    { name: 'Deinonychus',     size: 'Medium' },
+    { name: 'Doedicurus',      size: 'Medium' },
+    { name: 'Gallimimus',      size: 'Medium' },
+    { name: 'Iguanodon',       size: 'Medium' },
+    { name: 'Kaprosuchus',     size: 'Medium' },
+    { name: 'Maewing',         size: 'Medium' },
+    { name: 'Mammoth',         size: 'Medium' },
+    { name: 'Megaloceros',     size: 'Medium' },
+    { name: 'Megalosaurus',    size: 'Medium' },
+    { name: 'Moschops',        size: 'Medium' },
+    { name: 'Pachycephalosaurus', size: 'Medium' },
+    { name: 'Pelagornis',      size: 'Medium' },
+    { name: 'Procoptodon',     size: 'Medium' },
+    { name: 'Raptor',          size: 'Medium' },
+    { name: 'Sarcosuchus',     size: 'Medium' },
+    { name: 'Snow Owl',        size: 'Medium' },
+    { name: 'Stegosaurus',     size: 'Medium' },
+    { name: 'Tapejara',        size: 'Medium' },
+    { name: 'Thylacoleo',      size: 'Medium' },
+    { name: 'Velonasaur',      size: 'Medium' },
+    { name: 'Woolly Rhino',    size: 'Medium' },
+    // Large
+    { name: 'Allosaurus',                size: 'Large' },
+    { name: 'Ankylosaurus',              size: 'Large' },
+    { name: 'Astrodelphis',              size: 'Large' },
+    { name: 'Basilosaurus',              size: 'Large' },
+    { name: 'Brontosaurus',              size: 'Large' },
+    { name: 'Crystal Wyvern (Blood)',    size: 'Large' },
+    { name: 'Crystal Wyvern (Ember)',    size: 'Large' },
+    { name: 'Crystal Wyvern (Heart)',    size: 'Large' },
+    { name: 'Diplodocus',                size: 'Large' },
+    { name: 'Gacha',                     size: 'Large' },
+    { name: 'Griffin',                   size: 'Large' },
+    { name: 'Magmasaur',                 size: 'Large' },
+    { name: 'Managarmr',                 size: 'Large' },
+    { name: 'Megalodon',                 size: 'Large' },
+    { name: 'Paraceratherium',           size: 'Large' },
+    { name: 'Plesiosaur',                size: 'Large' },
+    { name: 'Quetzal',                   size: 'Large' },
+    { name: 'Rex',                       size: 'Large' },
+    { name: 'Rock Drake',                size: 'Large' },
+    { name: 'Shadowmane',                size: 'Large' },
+    { name: 'Spinosaurus',               size: 'Large' },
+    { name: 'Stryder',                   size: 'Large' },
+    { name: 'Therizinosaurus',           size: 'Large' },
+    { name: 'Triceratops',               size: 'Large' },
+    { name: 'Tropeognathus',             size: 'Large' },
+    { name: 'Wyvern (Fire)',             size: 'Large' },
+    { name: 'Wyvern (Ice)',              size: 'Large' },
+    { name: 'Wyvern (Lightning)',        size: 'Large' },
+    { name: 'Wyvern (Poison)',           size: 'Large' },
+    { name: 'Yutyrannus',                size: 'Large' },
+    // XL
+    { name: 'Astrocetus',     size: 'XL' },
+    { name: 'Giganotosaurus', size: 'XL' },
+    { name: 'Mosasaurus',     size: 'XL' },
+  ];
+
+  const COLORS = [
+    { name: 'White',      hex: '#F0F0F0' }, { name: 'Black',      hex: '#111111' },
+    { name: 'Gray',       hex: '#888888' }, { name: 'Red',        hex: '#C0392B' },
+    { name: 'Dark Red',   hex: '#7B0E0E' }, { name: 'Orange',     hex: '#D4581A' },
+    { name: 'Yellow',     hex: '#D4B800' }, { name: 'Lime',       hex: '#7DC800' },
+    { name: 'Green',      hex: '#1E8B1E' }, { name: 'Forest',     hex: '#145214' },
+    { name: 'Teal',       hex: '#1A9090' }, { name: 'Cyan',       hex: '#00BFBF' },
+    { name: 'Light Blue', hex: '#5B9BD5' }, { name: 'Blue',       hex: '#1C40CC' },
+    { name: 'Navy',       hex: '#0F1F6E' }, { name: 'Purple',     hex: '#7B22CC' },
+    { name: 'Magenta',    hex: '#CC22A0' }, { name: 'Pink',       hex: '#E06090' },
+    { name: 'Brown',      hex: '#7A4520' }, { name: 'Tan',        hex: '#C8A870' },
+  ];
+
+  // State: array of order items (allows multiple of same dino)
+  let orderItems = [];
+  let nextId = 0;
+
+  // DOM refs
+  const shopList        = document.getElementById('dino-shop-list');
+  const orderSummary    = document.getElementById('order-summary-section');
+  const orderItemsList  = document.getElementById('order-items-list');
+  const orderItemCount  = document.getElementById('order-item-count');
+  const orderTotalDisp  = document.getElementById('order-total-display');
+  const totalBar        = document.getElementById('total-bar');
+  const totalDisplay    = document.getElementById('total-display');
+  const totalCountLabel = document.getElementById('total-count-label');
+  const shopSearch      = document.getElementById('shop-search');
+  const shopSizeFilter  = document.getElementById('shop-size-filter');
+  const bbsForm         = document.getElementById('bbs-order-form');
+  const bbsSuccess      = document.getElementById('bbs-success');
+  const bbsSubmitBtn    = document.getElementById('bbs-submit-btn');
+  const bbsSubject      = document.getElementById('bbs-subject');
+  const bbsTotalField   = document.getElementById('bbs-total-field');
+  const bbsDinoField    = document.getElementById('bbs-dino-field');
+
+  // Scroll to form button
+  document.getElementById('go-to-form-btn').addEventListener('click', () => {
+    document.getElementById('order-form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // ── Formatting ──
+  function fmt(n) { return n.toLocaleString(); }
+
+  function calcItemBBS(item) {
+    return BBS_PRICES[item.size] * (item.type === 'pair' ? 2 : 1);
+  }
+
+  function calcTotal() {
+    return orderItems.reduce((sum, item) => sum + calcItemBBS(item), 0);
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Add / Remove ──
+  function addDino(name, size) {
+    orderItems.push({ id: nextId++, name, size, type: 'single', colors: ['','','','','',''] });
+    render();
+  }
+
+  function removeItem(id) {
+    orderItems = orderItems.filter(i => i.id !== id);
+    render();
+  }
+
+  function setItemType(id, type) {
+    const item = orderItems.find(i => i.id === id);
+    if (!item) return;
+    item.type = type;
+    updateTotals();
+    updateFormFields();
+    // Refresh type button active states
+    const card = orderItemsList.querySelector('[data-item-id="' + id + '"]');
+    if (card) card.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+    // Refresh price display
+    const priceEl = card && card.querySelector('.order-item-price');
+    if (priceEl) priceEl.textContent = fmt(calcItemBBS(item)) + ' 🍓';
+  }
+
+  function setColor(id, region, color) {
+    const item = orderItems.find(i => i.id === id);
+    if (!item) return;
+    item.colors[region] = color;
+    updateFormFields();
+    const card = orderItemsList.querySelector('[data-item-id="' + id + '"]');
+    if (!card) return;
+    const row = card.querySelector('.color-swatches[data-region="' + region + '"]');
+    if (!row) return;
+    row.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.color === color));
+  }
+
+  // ── Render ──
+  function render() {
+    renderShopList();
+    renderOrderSummary();
+    updateTotals();
+    updateFormFields();
+  }
+
+  function renderShopList() {
+    const q    = shopSearch.value.trim().toLowerCase();
+    const size = shopSizeFilter.value;
+    const filtered = DINOS.filter(d =>
+      (!q    || d.name.toLowerCase().includes(q)) &&
+      (!size || d.size === size)
+    );
+
+    if (!filtered.length) {
+      shopList.innerHTML = '<div class="no-results">No dinos match your search.</div>';
+      return;
+    }
+
+    // Count how many of each dino name in the order
+    const counts = {};
+    orderItems.forEach(i => { counts[i.name] = (counts[i.name] || 0) + 1; });
+
+    shopList.innerHTML = filtered.map(d => {
+      const count = counts[d.name] || 0;
+      const price = BBS_PRICES[d.size];
+      return '<div class="shop-row">' +
+        '<div class="shop-row-left">' +
+          '<span class="shop-dino-name">' + esc(d.name) + '</span>' +
+          (count ? '<span class="shop-added-count">×' + count + ' added</span>' : '') +
+        '</div>' +
+        '<div class="shop-row-right">' +
+          '<span class="size-badge ' + d.size + '">' + d.size + '</span>' +
+          '<span class="shop-price">' + fmt(price) + ' <span class="shop-price-sym">🍓</span></span>' +
+          '<button class="shop-add-btn" data-name="' + esc(d.name) + '" data-size="' + d.size + '">+ Add</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    shopList.querySelectorAll('.shop-add-btn').forEach(btn => {
+      btn.addEventListener('click', () => addDino(btn.dataset.name, btn.dataset.size));
+    });
+  }
+
+  function renderOrderSummary() {
+    const hasItems = orderItems.length > 0;
+    orderSummary.hidden = !hasItems;
+    if (!hasItems) { orderItemsList.innerHTML = ''; return; }
+
+    orderItemCount.textContent = '(' + orderItems.length + ' dino' + (orderItems.length !== 1 ? 's' : '') + ')';
+
+    orderItemsList.innerHTML = orderItems.map(item => {
+      const itemBBS = calcItemBBS(item);
+      const regionsHtml = [0,1,2,3,4,5].map(r => {
+        const swatches =
+          '<button class="swatch skip' + (item.colors[r] === '' ? ' active' : '') + '" data-color="" title="Any / Skip">–</button>' +
+          COLORS.map(c =>
+            '<button class="swatch' + (item.colors[r] === c.name ? ' active' : '') + '" style="background:' + c.hex + '" data-color="' + esc(c.name) + '" title="' + esc(c.name) + '"></button>'
+          ).join('');
+        return '<div class="region-row"><span class="region-label">Reg ' + r + '</span><div class="color-swatches" data-region="' + r + '">' + swatches + '</div></div>';
+      }).join('');
+
+      return '<div class="order-item-card" data-item-id="' + item.id + '">' +
+        '<div class="order-item-top">' +
+          '<div class="order-item-meta">' +
+            '<span class="order-item-name">' + esc(item.name) + '</span>' +
+            '<span class="size-badge ' + item.size + '">' + item.size + '</span>' +
+          '</div>' +
+          '<div class="order-item-controls">' +
+            '<span class="order-item-price">' + fmt(itemBBS) + ' 🍓</span>' +
+            '<div style="display:flex;gap:0.3rem;">' +
+              '<button class="type-btn' + (item.type === 'single' ? ' active' : '') + '" data-type="single" data-id="' + item.id + '">Single</button>' +
+              '<button class="type-btn' + (item.type === 'pair'   ? ' active' : '') + '" data-type="pair"   data-id="' + item.id + '">Pair</button>' +
+            '</div>' +
+            '<button class="remove-item-btn" data-id="' + item.id + '" title="Remove">✕</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="color-regions">' + regionsHtml + '</div>' +
+      '</div>';
+    }).join('');
+
+    // Bind events
+    orderItemsList.querySelectorAll('.type-btn').forEach(btn => {
+      btn.addEventListener('click', () => setItemType(+btn.dataset.id, btn.dataset.type));
+    });
+    orderItemsList.querySelectorAll('.remove-item-btn').forEach(btn => {
+      btn.addEventListener('click', () => removeItem(+btn.dataset.id));
+    });
+    orderItemsList.querySelectorAll('.swatch').forEach(btn => {
+      const card = btn.closest('[data-item-id]');
+      const row  = btn.closest('.color-swatches');
+      if (!card || !row) return;
+      btn.addEventListener('click', () => setColor(+card.dataset.itemId, +row.dataset.region, btn.dataset.color));
+    });
+  }
+
+  function updateTotals() {
+    const total    = calcTotal();
+    const count    = orderItems.length;
+    const hasItems = count > 0;
+
+    totalBar.hidden = !hasItems;
+    if (hasItems) {
+      totalDisplay.textContent    = fmt(total);
+      totalCountLabel.textContent = count + ' dino' + (count !== 1 ? 's' : '');
+    }
+    orderTotalDisp.textContent = fmt(total);
+  }
+
+  function updateFormFields() {
+    const total = calcTotal();
+    bbsTotalField.value = fmt(total) + ' BBS';
+    if (!orderItems.length) { bbsDinoField.value = '(none selected)'; return; }
+    bbsDinoField.value = orderItems.map(item => {
+      const typeStr    = item.type === 'pair' ? 'Breeding Pair' : 'Single';
+      const colorParts = item.colors.map((c, i) => c ? 'R' + i + ':' + c : null).filter(Boolean);
+      const bbsStr     = fmt(calcItemBBS(item)) + ' BBS';
+      return '• ' + item.name + ' (' + typeStr + ') — ' + bbsStr + (colorParts.length ? ' | Colors: ' + colorParts.join(', ') : '');
+    }).join('\n');
+  }
+
+  // ── Search / Filter ──
+  shopSearch.addEventListener('input',  () => renderShopList());
+  shopSizeFilter.addEventListener('change', () => renderShopList());
+
+  // ── Form Submit ──
+  bbsForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    updateFormFields();
+    const ingame = document.getElementById('f-ingame').value;
+    const total  = calcTotal();
+    bbsSubject.value = 'BBS Order — ' + ingame + ' — ' + fmt(total) + ' BBS';
+
+    bbsSubmitBtn.disabled = true;
+    bbsSubmitBtn.textContent = 'Sending…';
+
+    try {
+      const res = await fetch(bbsForm.action, {
+        method: 'POST',
+        body: new FormData(bbsForm),
+        headers: { Accept: 'application/json' }
+      });
+      if (res.ok) {
+        bbsForm.hidden = true;
+        bbsSuccess.hidden = false;
+      } else {
+        alert('Submission failed — please try again or contact us on Discord.');
+        bbsSubmitBtn.disabled = false;
+        bbsSubmitBtn.textContent = 'Submit Order →';
+      }
+    } catch {
+      alert('Network error — check your connection and try again.');
+      bbsSubmitBtn.disabled = false;
+      bbsSubmitBtn.textContent = 'Submit Order →';
+    }
+  });
+
+  // ── Init ──
+  renderShopList();
+  </script>
+
+</body>
+</html>
