@@ -117,16 +117,32 @@
     .block-label h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
     .block-body p { color: var(--muted); font-size: 0.97rem; margin-bottom: 1rem; }
     .block-body p:last-child { margin-bottom: 0; }
-    .server-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 0.5rem; }
-    @media (max-width: 640px) { .server-cards { grid-template-columns: 1fr; } }
-    .server-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; transition: border-color 0.2s; }
-    .server-card:hover { border-color: var(--accent); }
-    .server-card .game { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 0.4rem; }
-    .server-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .server-card p { font-size: 0.83rem; color: var(--muted); margin: 0; }
-    .badge { display: inline-block; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 4px; margin-top: 0.75rem; }
-    .badge-live { background: rgba(0,230,118,0.12); color: var(--accent); border: 1px solid rgba(0,230,118,0.25); }
-    .badge-soon { background: rgba(120,80,255,0.1); color: #a78bfa; border: 1px solid rgba(120,80,255,0.2); }
+    /* ── ARK SERVER PANEL ── */
+    .ark-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .ark-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.5rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 0.75rem; }
+    .ark-panel-title { display: flex; flex-direction: column; gap: 0.15rem; }
+    .ark-panel-h2 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+    .ark-total { display: flex; align-items: center; gap: 0.45rem; font-size: 0.82rem; color: var(--muted); font-weight: 500; }
+    .ark-total strong { color: var(--accent); font-variant-numeric: tabular-nums; }
+    .ark-total-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 5px rgba(0,230,118,0.6); flex-shrink: 0; animation: tpulse 1.6s ease-in-out infinite; }
+    @keyframes tpulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+    .ark-row { display: flex; align-items: center; gap: 1rem; padding: 0.95rem 1.5rem; border-bottom: 1px solid var(--border); transition: background 0.18s; }
+    .ark-row:hover { background: var(--surface2); }
+    .ark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 6px rgba(0,230,118,0.7); flex-shrink: 0; animation: tpulse 1.6s ease-in-out infinite; }
+    .ark-row-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+    .ark-map { font-size: 0.97rem; font-weight: 700; }
+    .ark-tags { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+    .ark-tag { font-size: 0.62rem; letter-spacing: 0.07em; text-transform: uppercase; padding: 0.13rem 0.42rem; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-weight: 600; }
+    .ark-row-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+    .ark-bar-wrap { width: 72px; height: 3px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+    .ark-bar { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.9s ease; box-shadow: 0 0 4px rgba(0,230,118,0.5); }
+    .ark-count { font-size: 0.82rem; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; transition: color 0.3s; }
+    .ark-count.pc-live { color: var(--accent); }
+    .ark-count.pc-offline { color: #ff5252; }
+    .ark-panel-footer { padding: 0.85rem 1.5rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
+    .arkbuddy-credit { font-size: 0.72rem; color: var(--muted); opacity: 0.6; }
+    .arkbuddy-credit a { color: var(--muted); text-decoration: none; }
+    .arkbuddy-credit a:hover { color: var(--text); }
     hr.divider { border: none; border-top: 1px solid var(--border); }
 
     /* ── RESTART COUNTDOWN ── */
@@ -252,6 +268,7 @@
       <li><a href="index.html">Home</a></li>
       <li><a href="servers.html">Servers</a></li>
       <li><a href="ark.html">ARK</a></li>
+      <li><a href="bbs.html">BBS Shop</a></li>
       <li><a href="discord.html">Discord</a></li>
       <li><a href="admin.html">Admin</a></li>
     </ul>
@@ -331,37 +348,73 @@
 
     <hr class="divider" />
 
-    <div class="content-block">
-      <div class="block-label">
-        <span class="block-tag">ARK</span>
-        <h2>ARK PvE Maps</h2>
+    <div class="ark-panel">
+      <div class="ark-panel-header">
+        <div class="ark-panel-title">
+          <span class="block-tag">ARK</span>
+          <h2 class="ark-panel-h2">ARK PvE Servers</h2>
+        </div>
+        <div class="ark-total">
+          <span class="ark-total-dot"></span>
+          <span><strong id="idx-total-cur">—</strong> players online</span>
+        </div>
       </div>
-      <div class="block-body">
-        <div class="server-cards">
-          <div class="server-card">
-            <p class="game">ARK: Survival Evolved</p>
-            <h3>Crystal Isles</h3>
-            <p>Miami &middot; Xbox &middot; PvE</p>
-            <span class="badge badge-live">Live</span>
-          </div>
-          <div class="server-card">
-            <p class="game">ARK: Survival Evolved</p>
-            <h3>Fjordur</h3>
-            <p>New York &middot; Xbox &middot; PvE</p>
-            <span class="badge badge-live">Live</span>
-          </div>
-          <div class="server-card">
-            <p class="game">ARK: Survival Evolved</p>
-            <h3>Ragnarok</h3>
-            <p>Miami &middot; Xbox &middot; PvE</p>
-            <span class="badge badge-live">Live</span>
+
+      <div class="ark-row">
+        <span class="ark-dot"></span>
+        <div class="ark-row-info">
+          <span class="ark-map">Crystal Isles</span>
+          <div class="ark-tags">
+            <span class="ark-tag">Miami</span>
+            <span class="ark-tag">Xbox</span>
+            <span class="ark-tag">PvE</span>
           </div>
         </div>
-        <div class="restart-bar">
+        <div class="ark-row-right">
+          <div class="ark-bar-wrap"><div class="ark-bar" id="idx-bar-crystal"></div></div>
+          <span class="ark-count" id="idx-pc-crystal">—</span>
+        </div>
+      </div>
+
+      <div class="ark-row">
+        <span class="ark-dot"></span>
+        <div class="ark-row-info">
+          <span class="ark-map">Fjordur</span>
+          <div class="ark-tags">
+            <span class="ark-tag">New York</span>
+            <span class="ark-tag">Xbox</span>
+            <span class="ark-tag">PvE</span>
+          </div>
+        </div>
+        <div class="ark-row-right">
+          <div class="ark-bar-wrap"><div class="ark-bar" id="idx-bar-fjordur"></div></div>
+          <span class="ark-count" id="idx-pc-fjordur">—</span>
+        </div>
+      </div>
+
+      <div class="ark-row">
+        <span class="ark-dot"></span>
+        <div class="ark-row-info">
+          <span class="ark-map">Ragnarok</span>
+          <div class="ark-tags">
+            <span class="ark-tag">Miami</span>
+            <span class="ark-tag">Xbox</span>
+            <span class="ark-tag">PvE</span>
+          </div>
+        </div>
+        <div class="ark-row-right">
+          <div class="ark-bar-wrap"><div class="ark-bar" id="idx-bar-ragnarok"></div></div>
+          <span class="ark-count" id="idx-pc-ragnarok">—</span>
+        </div>
+      </div>
+
+      <div class="ark-panel-footer">
+        <div class="restart-bar" style="margin:0;flex:1;border:none;background:none;padding:0;">
           <span class="restart-label"><span class="restart-dot"></span><span id="restart-label-text">Next Server Restart</span></span>
           <span class="restart-timer" id="restart-timer">--:--:--</span>
           <span class="restart-next" id="restart-next"></span>
         </div>
+        <p class="arkbuddy-credit" style="margin:0;">Live stats powered by <a href="https://arkbuddy.app" target="_blank" rel="noopener">ArkBuddy</a></p>
       </div>
     </div>
 
@@ -756,6 +809,53 @@
         m.classList.remove('nav-open');
       }
     });
+  })();
+
+  // ── LIVE PLAYER COUNTS ──
+  (function () {
+    const SERVERS = [
+      { id: 'idx-pc-crystal',  bar: 'idx-bar-crystal',  ip: '217.114.193.20:10005'  },
+      { id: 'idx-pc-fjordur',  bar: 'idx-bar-fjordur',  ip: '31.214.234.17:10047'   },
+      { id: 'idx-pc-ragnarok', bar: 'idx-bar-ragnarok', ip: '217.114.193.39:10038'  },
+    ];
+    async function fetchPlayers(ip) {
+      const url = 'https://api.arkbuddy.app/api/v2/servers/get?platform=Xbox&type=unofficial&ip='
+        + encodeURIComponent(ip) + '&skippable=clusters,mods';
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const data = await res.json();
+      const cur = data?.playerData?.current;
+      const max = data?.playerData?.max;
+      return (cur != null && max != null) ? { cur, max } : null;
+    }
+    async function refresh() {
+      let totalCur = 0, anyLive = false;
+      for (const s of SERVERS) {
+        const el = document.getElementById(s.id);
+        if (!el) continue;
+        try {
+          const d = await fetchPlayers(s.ip);
+          if (d) {
+            el.textContent = d.cur + ' / ' + d.max;
+            el.className = 'ark-count pc-live';
+            const bar = document.getElementById(s.bar);
+            if (bar) bar.style.width = Math.min(100, (d.cur / d.max) * 100).toFixed(1) + '%';
+            totalCur += d.cur;
+            anyLive = true;
+          } else {
+            el.textContent = 'offline';
+            el.className = 'ark-count pc-offline';
+          }
+        } catch {
+          el.textContent = '—';
+          el.className = 'ark-count';
+        }
+      }
+      const totalEl = document.getElementById('idx-total-cur');
+      if (totalEl) totalEl.textContent = anyLive ? totalCur : '—';
+    }
+    refresh();
+    setInterval(refresh, 60000);
   })();
   </script>
 
