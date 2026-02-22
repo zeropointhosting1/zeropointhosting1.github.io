@@ -53,29 +53,38 @@
 
     /* ── HERO ── */
     .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 1.5rem 4rem; position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(0,230,118,0.06) 0%, transparent 70%), radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0,100,255,0.04) 0%, transparent 60%); pointer-events: none; }
-    .hero-eyebrow { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; opacity: 0.85; }
-    .hero h1 { font-size: clamp(3rem,10vw,7rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; background: linear-gradient(160deg,#ffffff 0%,#a0a0b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1.25rem; }
-    .hero > p { font-size: clamp(1rem,2.5vw,1.2rem); color: var(--muted); max-width: 520px; margin: 0 auto 1.75rem; }
-    .hero-stats { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2.5rem; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(0,230,118,0.08) 0%, transparent 70%), radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0,100,255,0.05) 0%, transparent 60%); pointer-events: none; }
+    #hero-particles { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .hero-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; }
+    .hero-eyebrow { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; opacity: 0.9; }
+    .hero h1 { font-size: clamp(3.5rem,11vw,8rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; background: linear-gradient(160deg,#ffffff 0%,#b0b0c8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1.1rem; filter: drop-shadow(0 0 48px rgba(0,230,118,0.12)); }
+    .hero-content > p { font-size: clamp(0.95rem,2.2vw,1.1rem); color: var(--muted); max-width: 440px; margin: 0 auto 1.75rem; }
+    .hero-stats { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem; }
     .hero-stat { font-size: 0.8rem; color: var(--muted); font-weight: 500; display: flex; align-items: center; gap: 0.4rem; }
     .hero-stat-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 5px rgba(0,230,118,0.5); flex-shrink: 0; }
     .hero-stat-sep { color: var(--border); }
-    .hero-cta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; width: 100%; max-width: 540px; }
-    @media (max-width: 480px) { .hero-cta { grid-template-columns: 1fr; } }
-    .cta-tile { display: flex; align-items: center; gap: 0.85rem; padding: 0.95rem 1.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; color: var(--text); transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; text-align: left; }
-    .cta-tile:active { transform: scale(0.98); }
-    .cta-discord:hover { border-color: #5865f2; box-shadow: 0 0 24px rgba(88,101,242,0.18); }
-    .cta-servers:hover { border-color: var(--accent); box-shadow: 0 0 24px rgba(0,230,118,0.12); }
-    .cta-icon { width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-    .cta-discord .cta-icon { background: rgba(88,101,242,0.15); }
-    .cta-servers .cta-icon { background: rgba(0,230,118,0.1); }
-    .cta-discord .cta-icon svg { width: 18px; height: 18px; fill: #5865f2; }
-    .cta-servers .cta-icon svg { width: 18px; height: 18px; fill: var(--accent); }
-    .cta-text { flex: 1; min-width: 0; }
-    .cta-title { display: block; font-size: 0.88rem; font-weight: 700; margin-bottom: 0.12rem; }
-    .cta-sub { display: block; font-size: 0.68rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cta-arrow { width: 13px; height: 13px; flex-shrink: 0; opacity: 0.28; stroke: currentColor; stroke-width: 2.5; fill: none; }
+    /* game cards */
+    .game-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; width: 100%; max-width: 580px; margin-bottom: 1.75rem; }
+    @media (max-width: 480px) { .game-cards { grid-template-columns: 1fr; } }
+    .game-card { display: flex; flex-direction: column; align-items: flex-start; gap: 0.7rem; padding: 1.15rem 1.2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; color: var(--text); transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; text-align: left; }
+    .game-card:active { transform: scale(0.98); }
+    .game-card-ark:hover  { border-color: var(--accent); box-shadow: 0 0 28px rgba(0,230,118,0.14); }
+    .game-card-hytale:hover { border-color: #a78bfa; box-shadow: 0 0 28px rgba(167,139,250,0.14); }
+    .game-card-head { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 0.5rem; }
+    .game-card-title { font-size: 0.88rem; font-weight: 700; }
+    .game-badge { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.18rem 0.48rem; border-radius: 4px; flex-shrink: 0; }
+    .badge-live { background: rgba(0,230,118,0.14); color: var(--accent); border: 1px solid rgba(0,230,118,0.28); }
+    .badge-soon { background: rgba(167,139,250,0.1); color: #a78bfa; border: 1px solid rgba(167,139,250,0.22); }
+    .game-card-sub { font-size: 0.73rem; color: var(--muted); line-height: 1.4; }
+    .game-card-btn { margin-top: 0.2rem; display: inline-flex; align-items: center; gap: 0.32rem; font-size: 0.73rem; font-weight: 700; }
+    .game-card-ark   .game-card-btn { color: var(--accent); }
+    .game-card-hytale .game-card-btn { color: #a78bfa; }
+    .game-card-btn svg { width: 11px; height: 11px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+    /* secondary links */
+    .hero-links { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .hero-link { font-size: 0.78rem; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 0.3rem; transition: color 0.2s; }
+    .hero-link:hover { color: var(--text); }
+    .hero-link svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2; fill: none; opacity: 0.45; }
 
     /* ── GLOBE SECTION ── */
     .globe-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 5rem 1.5rem; }
@@ -139,6 +148,10 @@
     .ark-count { font-size: 0.82rem; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; transition: color 0.3s; }
     .ark-count.pc-live { color: var(--accent); }
     .ark-count.pc-offline { color: #ff5252; }
+    .ark-row-soon { display: flex; align-items: center; gap: 1rem; padding: 0.95rem 1.5rem; border-bottom: 1px solid var(--border); opacity: 0.65; }
+    .ark-dot-soon { width: 8px; height: 8px; border-radius: 50%; background: #ffb347; box-shadow: 0 0 6px rgba(255,179,71,0.5); flex-shrink: 0; }
+    .ark-tag-asa { font-size: 0.62rem; letter-spacing: 0.07em; text-transform: uppercase; padding: 0.13rem 0.42rem; border-radius: 4px; background: rgba(255,160,50,0.08); border: 1px solid rgba(255,160,50,0.2); color: #ffb347; font-weight: 600; }
+    .ark-badge-soon { font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700; background: rgba(255,160,50,0.1); color: #ffb347; border: 1px solid rgba(255,160,50,0.25); white-space: nowrap; }
     .ark-panel-footer { padding: 0.85rem 1.5rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
     .arkbuddy-credit { font-size: 0.72rem; color: var(--muted); opacity: 0.6; }
     .arkbuddy-credit a { color: var(--muted); text-decoration: none; }
@@ -270,6 +283,7 @@
       <li><a href="ark.html">ARK</a></li>
       <li><a href="bbs.html">BBS Shop</a></li>
       <li><a href="discord.html">Discord</a></li>
+      <li><a href="aboutus.html">About</a></li>
       <li><a href="admin.html">Admin</a></li>
     </ul>
     <button class="nav-toggle" aria-label="Toggle navigation">
@@ -279,37 +293,49 @@
 
   <!-- HERO -->
   <section class="hero">
-    <p class="hero-eyebrow">Gaming Community</p>
-    <h1>Zeropoint</h1>
-    <p>A community-driven home for ARK survivors and future Hytale adventurers. Built by players, run for players.</p>
-    <div class="hero-stats">
-      <span class="hero-stat"><span class="hero-stat-dot"></span>3 Live Servers</span>
-      <span class="hero-stat-sep">·</span>
-      <span class="hero-stat">71 Members</span>
-      <span class="hero-stat-sep">·</span>
-      <span class="hero-stat">Free to Join</span>
-    </div>
-    <div class="hero-cta">
-      <a href="discord.html" class="cta-tile cta-discord">
-        <div class="cta-icon">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-        </div>
-        <div class="cta-text">
-          <span class="cta-title">Join Discord</span>
-          <span class="cta-sub">discord.gg/7yhvhPCKcr · 71 members</span>
-        </div>
-        <svg class="cta-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-      </a>
-      <a href="servers.html" class="cta-tile cta-servers">
-        <div class="cta-icon">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="14" width="3" height="6" rx="1"/><rect x="7.5" y="10" width="3" height="10" rx="1"/><rect x="13" y="6" width="3" height="14" rx="1"/><rect x="18.5" y="2" width="3" height="18" rx="1"/></svg>
-        </div>
-        <div class="cta-text">
-          <span class="cta-title">View Servers</span>
-          <span class="cta-sub">Crystal Isles · Fjordur · Ragnarok</span>
-        </div>
-        <svg class="cta-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-      </a>
+    <canvas id="hero-particles"></canvas>
+    <div class="hero-content">
+      <p class="hero-eyebrow">ARK PvE &middot; Hytale Coming Soon</p>
+      <h1>Zeropoint</h1>
+      <p>Built by players. Run for players.</p>
+      <div class="hero-stats">
+        <span class="hero-stat"><span class="hero-stat-dot"></span>3 Live Servers</span>
+        <span class="hero-stat-sep">·</span>
+        <span class="hero-stat">71 Members</span>
+        <span class="hero-stat-sep">·</span>
+        <span class="hero-stat">Free to Join</span>
+      </div>
+      <div class="game-cards">
+        <a href="servers.html" class="game-card game-card-ark">
+          <div class="game-card-head">
+            <span class="game-card-title">🦕 ARK: Survival Evolved</span>
+            <span class="game-badge badge-live">Live</span>
+          </div>
+          <span class="game-card-sub">3 servers · Xbox PvE · US East</span>
+          <span class="game-card-btn">
+            Join Servers
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </a>
+        <a href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener" class="game-card game-card-hytale">
+          <div class="game-card-head">
+            <span class="game-card-title">⚔️ Hytale</span>
+            <span class="game-badge badge-soon">Coming Soon</span>
+          </div>
+          <span class="game-card-sub">Day 1 ready · Get notified on Discord</span>
+          <span class="game-card-btn">
+            Get Notified
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </a>
+      </div>
+      <div class="hero-links">
+        <a href="discord.html" class="hero-link">Join Discord <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
+        <span style="color:var(--border)">·</span>
+        <a href="servers.html" class="hero-link">View Servers <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
+        <span style="color:var(--border)">·</span>
+        <a href="bbs.html" class="hero-link">BBS Shop <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
+      </div>
     </div>
   </section>
 
@@ -341,8 +367,8 @@
         <h2>What is Zeropoint?</h2>
       </div>
       <div class="block-body">
-        <p>Zeropoint is a community built around shared survival experiences. We started as a group of ARK players who wanted a server that actually felt like home — no pay-to-win, fair rules, and admins who play alongside you.</p>
-        <p>As Hytale approaches, we're expanding. Our goal is to be the community you join on day one and stay in for years.</p>
+        <p>Zeropoint was started by two brothers who share a passion for building something people actually enjoy being part of. We host our own servers, handle our own community, and stay hands-on because we genuinely care about the experience — not just keeping the lights on.</p>
+        <p>No corpo nonsense. No pay-to-win. Just a well-run server with people who play alongside you. As Hytale approaches, we're growing — and we plan to be ready on day one.</p>
       </div>
     </div>
 
@@ -408,6 +434,21 @@
         </div>
       </div>
 
+      <div class="ark-row-soon">
+        <span class="ark-dot-soon"></span>
+        <div class="ark-row-info">
+          <span class="ark-map" style="color:var(--muted);font-weight:600;">ARK: Survival Ascended</span>
+          <div class="ark-tags">
+            <span class="ark-tag-asa">50x</span>
+            <span class="ark-tag-asa">Modded</span>
+            <span class="ark-tag-asa">PvE</span>
+            <span class="ark-tag-asa">Xbox</span>
+            <span class="ark-tag-asa">New York</span>
+          </div>
+        </div>
+        <span class="ark-badge-soon">Coming Soon</span>
+      </div>
+
       <div class="ark-panel-footer">
         <div class="restart-bar" style="margin:0;flex:1;border:none;background:none;padding:0;">
           <span class="restart-label"><span class="restart-dot"></span><span id="restart-label-text">Next Server Restart</span></span>
@@ -460,6 +501,52 @@
   </footer>
 
   <script>
+  // ── HERO PARTICLES ──
+  (function () {
+    const canvas = document.getElementById('hero-particles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H;
+
+    function resize() {
+      W = canvas.width  = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+    }
+
+    const particles = [];
+    function mkParticle(startAtBottom) {
+      return {
+        x: Math.random() * (W || window.innerWidth),
+        y: startAtBottom ? (H || window.innerHeight) + Math.random() * 40 : Math.random() * (H || window.innerHeight),
+        r: 0.5 + Math.random() * 1.2,
+        vy: -(0.18 + Math.random() * 0.42),
+        vx: (Math.random() - 0.5) * 0.12,
+        alpha: 0.06 + Math.random() * 0.22,
+      };
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    for (let i = 0; i < 120; i++) particles.push(mkParticle(false));
+
+    function frame() {
+      ctx.clearRect(0, 0, W, H);
+      for (const p of particles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,230,118,${p.alpha})`;
+        ctx.fill();
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.y + p.r < 0) { Object.assign(p, mkParticle(true)); }
+        if (p.x < 0) p.x = W;
+        if (p.x > W) p.x = 0;
+      }
+      requestAnimationFrame(frame);
+    }
+    frame();
+  })();
+
   // ─────────────────────────────────────────────────────────────────────────────
   // SHARED PING DATA
   // ─────────────────────────────────────────────────────────────────────────────
