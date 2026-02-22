@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeropoint | Place Your Order</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button { touch-action: manipulation; }
+    :root {
+      --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
+      --border: #22222e; --accent: #00e676;
+      --text: #e8e8f0; --muted: #7a7a90; --radius: 10px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6; min-height: 100vh; overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: center; padding: 0 1.5rem;
+      background: rgba(10,10,15,0.88);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border); height: 60px;
+    }
+    nav ul { display: flex; align-items: center; gap: 0.25rem; list-style: none; flex-wrap: nowrap; }
+    nav a { display: block; padding: 0.45rem 0.9rem; color: var(--muted); text-decoration: none; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; border-radius: 6px; transition: color 0.2s, background 0.2s; }
+    nav a:hover { color: var(--text); background: var(--surface2); }
+    nav a.active { color: var(--accent); background: var(--surface2); }
+    .nav-brand { display: none; color: var(--accent); font-weight: 700; font-size: 1rem; letter-spacing: 0.04em; text-decoration: none; }
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; flex-direction: column; justify-content: center; gap: 5px; }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.22s, opacity 0.22s; }
+    .nav-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.active span:nth-child(2) { opacity: 0; }
+    .nav-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 600px) {
+      nav { justify-content: space-between; }
+      .nav-brand { display: block; }
+      .nav-toggle { display: flex; }
+      nav ul {
+        display: none; position: fixed; top: 60px; left: 0; right: 0;
+        background: rgba(10,10,15,0.97); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border); flex-direction: column; align-items: stretch;
+        padding: 0.5rem 1rem 1rem; gap: 0.15rem; z-index: 99;
+      }
+      nav ul.nav-open { display: flex; }
+      nav a { font-size: 1rem; padding: 0.65rem 0.9rem; }
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header { padding: 100px 1.5rem 2.5rem; text-align: center; position: relative; }
+    .page-header::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(0,230,118,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.78rem; color: var(--muted); text-decoration: none;
+      margin-bottom: 1.5rem; transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--text); }
+    .page-eyebrow { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; opacity: 0.85; }
+    .page-header h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800; letter-spacing: -0.03em;
+      background: linear-gradient(160deg, #ffffff 0%, #a0a0b8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 1rem;
+    }
+    .order-badges { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .order-badge {
+      font-size: 0.71rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.28rem 0.7rem; border-radius: 5px;
+      background: rgba(0,230,118,0.1); color: var(--accent); border: 1px solid rgba(0,230,118,0.25);
+    }
+    .order-badge.secondary { background: rgba(255,255,255,0.06); color: var(--text); border-color: var(--border); }
+
+    /* ── FORM WRAP ── */
+    .form-wrap { max-width: 720px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+    .form-section { margin-bottom: 2rem; }
+    .section-title {
+      font-size: 0.73rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase;
+      color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem;
+    }
+    .section-desc { font-size: 0.82rem; color: var(--muted); margin-bottom: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.38rem; margin-bottom: 0.75rem; }
+    .form-group label { font-size: 0.77rem; font-weight: 600; color: var(--text); }
+    .form-group input,
+    .form-group textarea {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+      border-radius: 7px; padding: 0.6rem 0.85rem; font-size: 0.875rem;
+      font-family: inherit; outline: none; transition: border-color 0.15s; width: 100%;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    /* ── DINO PICKER ── */
+    .dino-search-bar { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; margin-bottom: 0.75rem; }
+    @media (max-width: 480px) { .dino-search-bar { grid-template-columns: 1fr; } }
+    .dino-search-bar input,
+    .dino-search-bar select {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+      border-radius: 7px; padding: 0.55rem 0.85rem; font-size: 0.85rem;
+      font-family: inherit; outline: none; transition: border-color 0.15s;
+    }
+    .dino-search-bar input:focus, .dino-search-bar select:focus { border-color: var(--accent); }
+    .dino-search-bar select { background-color: var(--surface2); }
+
+    .dino-limit-banner {
+      background: rgba(0,230,118,0.07); border: 1px solid rgba(0,230,118,0.22);
+      border-radius: 7px; padding: 0.55rem 0.9rem; font-size: 0.8rem; color: var(--accent);
+      margin-bottom: 0.5rem; text-align: center; font-weight: 600;
+    }
+
+    .dino-list {
+      max-height: 320px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--border); border-radius: 8px; background: var(--bg);
+    }
+    .dino-list::-webkit-scrollbar { width: 5px; }
+    .dino-list::-webkit-scrollbar-track { background: transparent; }
+    .dino-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    .dino-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--border); transition: background 0.12s;
+    }
+    .dino-row:last-child { border-bottom: none; }
+    .dino-row:hover { background: var(--surface2); }
+    .dino-row.is-added { background: rgba(0,230,118,0.04); }
+    .dino-info { display: flex; flex-direction: column; gap: 0.05rem; }
+    .dino-name-text { font-size: 0.875rem; font-weight: 600; }
+    .dino-cat-label { font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .dino-add-btn {
+      background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.25);
+      color: var(--accent); border-radius: 5px; padding: 0.26rem 0.65rem;
+      font-size: 0.7rem; font-weight: 700; cursor: pointer; letter-spacing: 0.04em;
+      text-transform: uppercase; transition: background 0.15s; white-space: nowrap; flex-shrink: 0;
+    }
+    .dino-add-btn:hover:not(:disabled) { background: rgba(0,230,118,0.18); }
+    .dino-add-btn:disabled { background: rgba(255,255,255,0.04); border-color: var(--border); color: var(--muted); cursor: default; }
+    .no-results { padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+
+    /* ── SELECTED DINOS ── */
+    .selected-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; }
+    .selected-header h4 { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: var(--accent); }
+    .count-badge { background: var(--accent); color: #000; font-size: 0.63rem; font-weight: 800; padding: 0.1rem 0.42rem; border-radius: 10px; min-width: 18px; text-align: center; }
+    .selected-dinos-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
+    .selected-dino-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent); border-radius: 8px; padding: 0.9rem 1rem;
+    }
+    .selected-dino-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.85rem; }
+    .selected-dino-name { font-size: 0.9rem; font-weight: 700; }
+    .dino-type-toggle { display: flex; gap: 0.35rem; flex-shrink: 0; }
+    .type-btn {
+      padding: 0.26rem 0.6rem; border-radius: 5px; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.04em; cursor: pointer; border: 1px solid var(--border);
+      background: transparent; color: var(--muted); transition: all 0.15s; text-transform: uppercase;
+      font-family: inherit;
+    }
+    .type-btn.active { background: rgba(0,230,118,0.15); border-color: rgba(0,230,118,0.4); color: var(--accent); }
+    .remove-dino-btn {
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      font-size: 1rem; line-height: 1; padding: 0.1rem 0.3rem; border-radius: 4px; transition: color 0.15s;
+    }
+    .remove-dino-btn:hover { color: #ff5555; }
+
+    /* Color regions */
+    .color-regions { display: flex; flex-direction: column; gap: 0.45rem; }
+    .region-row { display: flex; align-items: flex-start; gap: 0.65rem; }
+    .region-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); min-width: 52px; padding-top: 0.28rem; flex-shrink: 0; }
+    .color-swatches { display: flex; flex-wrap: wrap; gap: 0.28rem; }
+    .swatch { width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; outline: none; transition: transform 0.12s, border-color 0.12s; padding: 0; flex-shrink: 0; }
+    .swatch:hover { transform: scale(1.25); }
+    .swatch.active { border-color: #fff; transform: scale(1.18); box-shadow: 0 0 0 1px rgba(255,255,255,0.25); }
+    .swatch.skip { background: var(--surface); border: 2px solid var(--border); color: var(--muted); font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .swatch.skip.active { border-color: var(--accent); color: var(--accent); }
+
+    /* ── FORM FOOTER ── */
+    .form-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); flex-wrap: wrap;
+    }
+    .form-note { font-size: 0.78rem; color: var(--muted); flex: 1; }
+    .form-note em { color: var(--text); font-style: normal; font-weight: 600; }
+    .submit-btn {
+      background: var(--accent); color: #000; border: none; border-radius: 8px;
+      padding: 0.7rem 1.5rem; font-size: 0.875rem; font-weight: 800;
+      cursor: pointer; letter-spacing: 0.02em; transition: opacity 0.15s, transform 0.15s; white-space: nowrap;
+      font-family: inherit;
+    }
+    .submit-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── SUCCESS ── */
+    .form-success { text-align: center; padding: 4rem 1rem; }
+    .form-success[hidden] { display: none; }
+    .success-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(0,230,118,0.12); border: 2px solid var(--accent);
+      color: var(--accent); font-size: 1.5rem;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;
+    }
+    .form-success h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .form-success p { color: var(--muted); margin-bottom: 1.5rem; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 1.5rem; text-align: center; }
+    footer p { color: var(--muted); font-size: 0.82rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-brand" href="index.html">Zeropoint</a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="servers.html">Servers</a></li>
+      <li><a href="ark.html">ARK</a></li>
+      <li><a href="bbs.html">BBS Shop</a></li>
+      <li><a href="discord.html">Discord</a></li>
+      <li><a href="aboutus.html">About</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <a class="back-link" href="ark.html">← Back to Packages</a>
+    <p class="page-eyebrow">Step 2 of 2 — Place Your Order</p>
+    <h1>Complete Your Order</h1>
+    <div class="order-badges">
+      <span class="order-badge"           id="badge-pkg"></span>
+      <span class="order-badge secondary" id="badge-pay"></span>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-wrap">
+
+    <form id="order-form">
+
+      <!-- YOUR INFO -->
+      <div class="form-section">
+        <h3 class="section-title">Your Info</h3>
+        <div class="form-group">
+          <label for="f-ingame">In-Game Name *</label>
+          <input id="f-ingame" type="text" name="ingame_name" required placeholder="Your survivor name">
+        </div>
+        <div class="form-group">
+          <label for="f-teleporter">Teleporter Name / Delivery Location *</label>
+          <input id="f-teleporter" type="text" name="teleporter" required placeholder="e.g. Bob's TP, Green Obelisk, base coords...">
+        </div>
+        <div class="form-group">
+          <label for="f-discord">Discord Username</label>
+          <input id="f-discord" type="text" name="discord" placeholder="e.g. username or username#0000">
+        </div>
+      </div>
+
+      <!-- DINO PICKER -->
+      <div class="form-section">
+        <h3 class="section-title">Dino Selection</h3>
+        <p class="section-desc" id="dino-section-desc"></p>
+
+        <div id="selected-dinos-wrap" style="display:none; margin-bottom:1rem;">
+          <div class="selected-header">
+            <h4>Your Dinos</h4>
+            <span class="count-badge" id="selected-count">0</span>
+          </div>
+          <div class="selected-dinos-list" id="selected-dinos-list"></div>
+        </div>
+
+        <div class="dino-search-bar">
+          <input type="text" id="dino-search" placeholder="Search dinos..." autocomplete="off">
+          <select id="dino-cat-filter">
+            <option value="">All</option>
+            <option value="Flyer">Flyers</option>
+            <option value="Carnivore">Carnivores</option>
+            <option value="Herbivore">Herbivores</option>
+            <option value="Aquatic">Aquatic</option>
+            <option value="Special">Special / DLC</option>
+            <option value="Small">Small / Misc</option>
+          </select>
+        </div>
+
+        <div id="dino-limit-banner" class="dino-limit-banner" style="display:none;"></div>
+        <div class="dino-list" id="dino-list"></div>
+      </div>
+
+      <!-- NOTES -->
+      <div class="form-section">
+        <div class="form-group">
+          <label for="f-notes">Additional Notes</label>
+          <textarea id="f-notes" name="notes" rows="3" placeholder="Stat preferences, mutations, anything else..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <p class="form-note">Submit this after you've sent payment — we'll deliver once it clears.</p>
+        <button type="submit" class="submit-btn" id="submit-btn">Submit Order →</button>
+      </div>
+    </form>
+
+    <div class="form-success" id="form-success" hidden>
+      <div class="success-icon">✓</div>
+      <h3>Order Received!</h3>
+      <p>We'll process your dinos once your payment clears. Watch Discord for updates.</p>
+      <a href="ark.html" class="submit-btn" style="display:inline-block;text-decoration:none;">← Back to Packages</a>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 Zeropoint &mdash; <a href="discord.html">Join our Discord</a> &mdash; <a href="rules.html">Community Rules</a></p>
+  </footer>
+
+  <script>
+  // ── NAV ACTIVE ──
+  (function () {
+    const page = location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('nav a').forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === page);
+    });
+  })();
+
+  // ── MOBILE NAV TOGGLE ──
+  (function () {
+    var t = document.querySelector('.nav-toggle');
+    var m = document.querySelector('nav ul');
+    if (!t || !m) return;
+    t.addEventListener('click', function () { t.classList.toggle('active'); m.classList.toggle('nav-open'); });
+    m.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () { t.classList.remove('active'); m.classList.remove('nav-open'); });
+    });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('nav')) { t.classList.remove('active'); m.classList.remove('nav-open'); }
+    });
+  })();
+
+  // ── READ URL PARAMS ──
+  const params  = new URLSearchParams(location.search);
+  const PKG     = params.get('pkg')    || 'Unknown Package';
+  const PAY     = params.get('pay')    || 'Unknown';
+  const AMOUNT  = params.get('amount') || '';
+
+  document.getElementById('badge-pkg').textContent = PKG;
+  document.getElementById('badge-pay').textContent = PAY;
+
+  // Extract dino limit from package name e.g. "(7 Dinos)" → 7, "Single Dino" → 1
+  const limitMatch     = PKG.match(/\((\d+)\s*Dino/i);
+  const currentDinoLimit = limitMatch ? parseInt(limitMatch[1]) : 1;
+
+  document.getElementById('dino-section-desc').innerHTML =
+    'You can select up to <strong>' + currentDinoLimit + ' dino' + (currentDinoLimit > 1 ? 's' : '') +
+    '</strong> for this package. Hit <strong>+ Add</strong>, choose Single or Breeding Pair, and optionally pick colors for each region.';
+
+  // ── DATA ──
+  const DINOS = [
+    { name: 'Argentavis',             cat: 'Flyer' },
+    { name: 'Crystal Wyvern (Blood)', cat: 'Flyer' },
+    { name: 'Crystal Wyvern (Ember)', cat: 'Flyer' },
+    { name: 'Crystal Wyvern (Heart)', cat: 'Flyer' },
+    { name: 'Griffin',                cat: 'Flyer' },
+    { name: 'Pelagornis',             cat: 'Flyer' },
+    { name: 'Pteranodon',             cat: 'Flyer' },
+    { name: 'Quetzal',                cat: 'Flyer' },
+    { name: 'Tapejara',               cat: 'Flyer' },
+    { name: 'Tropeognathus',          cat: 'Flyer' },
+    { name: 'Wyvern (Fire)',          cat: 'Flyer' },
+    { name: 'Wyvern (Ice)',           cat: 'Flyer' },
+    { name: 'Wyvern (Lightning)',     cat: 'Flyer' },
+    { name: 'Wyvern (Poison)',        cat: 'Flyer' },
+    { name: 'Allosaurus',             cat: 'Carnivore' },
+    { name: 'Baryonyx',              cat: 'Carnivore' },
+    { name: 'Carnotaurus',            cat: 'Carnivore' },
+    { name: 'Deinonychus',            cat: 'Carnivore' },
+    { name: 'Giganotosaurus',         cat: 'Carnivore' },
+    { name: 'Kaprosuchus',            cat: 'Carnivore' },
+    { name: 'Megalosaurus',           cat: 'Carnivore' },
+    { name: 'Raptor',                 cat: 'Carnivore' },
+    { name: 'Rex',                    cat: 'Carnivore' },
+    { name: 'Sarcosuchus',            cat: 'Carnivore' },
+    { name: 'Spinosaurus',            cat: 'Carnivore' },
+    { name: 'Thylacoleo',             cat: 'Carnivore' },
+    { name: 'Troodon',                cat: 'Carnivore' },
+    { name: 'Yutyrannus',             cat: 'Carnivore' },
+    { name: 'Ankylosaurus',           cat: 'Herbivore' },
+    { name: 'Brontosaurus',           cat: 'Herbivore' },
+    { name: 'Castoroides',            cat: 'Herbivore' },
+    { name: 'Daeodon',                cat: 'Herbivore' },
+    { name: 'Diplodocus',             cat: 'Herbivore' },
+    { name: 'Doedicurus',             cat: 'Herbivore' },
+    { name: 'Gallimimus',             cat: 'Herbivore' },
+    { name: 'Iguanodon',              cat: 'Herbivore' },
+    { name: 'Mammoth',                cat: 'Herbivore' },
+    { name: 'Megaloceros',            cat: 'Herbivore' },
+    { name: 'Moschops',               cat: 'Herbivore' },
+    { name: 'Pachycephalosaurus',     cat: 'Herbivore' },
+    { name: 'Paraceratherium',        cat: 'Herbivore' },
+    { name: 'Parasaur',               cat: 'Herbivore' },
+    { name: 'Procoptodon',            cat: 'Herbivore' },
+    { name: 'Stegosaurus',            cat: 'Herbivore' },
+    { name: 'Therizinosaurus',        cat: 'Herbivore' },
+    { name: 'Triceratops',            cat: 'Herbivore' },
+    { name: 'Woolly Rhino',           cat: 'Herbivore' },
+    { name: 'Basilosaurus',           cat: 'Aquatic' },
+    { name: 'Electrophorus',          cat: 'Aquatic' },
+    { name: 'Megalodon',              cat: 'Aquatic' },
+    { name: 'Mosasaurus',             cat: 'Aquatic' },
+    { name: 'Plesiosaur',             cat: 'Aquatic' },
+    { name: 'Astrocetus',             cat: 'Special' },
+    { name: 'Astrodelphis',           cat: 'Special' },
+    { name: 'Desmodus',               cat: 'Special' },
+    { name: 'Fjordhawk',              cat: 'Special' },
+    { name: 'Gacha',                  cat: 'Special' },
+    { name: 'Magmasaur',              cat: 'Special' },
+    { name: 'Maewing',                cat: 'Special' },
+    { name: 'Managarmr',              cat: 'Special' },
+    { name: 'Rock Drake',             cat: 'Special' },
+    { name: 'Shadowmane',             cat: 'Special' },
+    { name: 'Snow Owl',               cat: 'Special' },
+    { name: 'Stryder',                cat: 'Special' },
+    { name: 'Velonasaur',             cat: 'Special' },
+    { name: 'Archaeopteryx',          cat: 'Small' },
+    { name: 'Dilophosaurus',          cat: 'Small' },
+    { name: 'Dimorphodon',            cat: 'Small' },
+    { name: 'Dodo',                   cat: 'Small' },
+    { name: 'Jerboa',                 cat: 'Small' },
+    { name: 'Lystrosaurus',           cat: 'Small' },
+    { name: 'Mesopithecus',           cat: 'Small' },
+    { name: 'Otter',                  cat: 'Small' },
+    { name: 'Oviraptor',              cat: 'Small' },
+    { name: 'Pegomastax',             cat: 'Small' },
+  ];
+
+  const COLORS = [
+    { name: 'White',      hex: '#F0F0F0' }, { name: 'Black',      hex: '#111111' },
+    { name: 'Gray',       hex: '#888888' }, { name: 'Red',        hex: '#C0392B' },
+    { name: 'Dark Red',   hex: '#7B0E0E' }, { name: 'Orange',     hex: '#D4581A' },
+    { name: 'Yellow',     hex: '#D4B800' }, { name: 'Lime',       hex: '#7DC800' },
+    { name: 'Green',      hex: '#1E8B1E' }, { name: 'Forest',     hex: '#145214' },
+    { name: 'Teal',       hex: '#1A9090' }, { name: 'Cyan',       hex: '#00BFBF' },
+    { name: 'Light Blue', hex: '#5B9BD5' }, { name: 'Blue',       hex: '#1C40CC' },
+    { name: 'Navy',       hex: '#0F1F6E' }, { name: 'Purple',     hex: '#7B22CC' },
+    { name: 'Magenta',    hex: '#CC22A0' }, { name: 'Pink',       hex: '#E06090' },
+    { name: 'Brown',      hex: '#7A4520' }, { name: 'Tan',        hex: '#C8A870' },
+  ];
+
+  // ── STATE ──
+  let selectedDinos = {};
+  let dinoOrderText = '(none selected)';
+
+  const dinoListEl    = document.getElementById('dino-list');
+  const selectedWrap  = document.getElementById('selected-dinos-wrap');
+  const selectedList  = document.getElementById('selected-dinos-list');
+  const selectedCount = document.getElementById('selected-count');
+  const dinoSearch    = document.getElementById('dino-search');
+  const catFilter     = document.getElementById('dino-cat-filter');
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── DINO LIST ──
+  function renderDinoList() {
+    const q       = dinoSearch.value.trim().toLowerCase();
+    const cat     = catFilter.value;
+    const atLimit = Object.keys(selectedDinos).length >= currentDinoLimit;
+    const banner  = document.getElementById('dino-limit-banner');
+
+    banner.style.display = atLimit ? 'block' : 'none';
+    banner.textContent   = atLimit
+      ? '✓ Dino limit reached (' + currentDinoLimit + '/' + currentDinoLimit + ') — remove a dino to swap.'
+      : '';
+
+    const filtered = DINOS.filter(d =>
+      (!q   || d.name.toLowerCase().includes(q)) &&
+      (!cat || d.cat === cat)
+    );
+
+    if (!filtered.length) {
+      dinoListEl.innerHTML = '<div class="no-results">No dinos match your search.</div>';
+      return;
+    }
+
+    dinoListEl.innerHTML = filtered.map(d => {
+      const added    = !!selectedDinos[d.name];
+      const disabled = added || atLimit;
+      return '<div class="dino-row' + (added ? ' is-added' : '') + '">' +
+        '<div class="dino-info">' +
+          '<span class="dino-name-text">' + esc(d.name) + '</span>' +
+          '<span class="dino-cat-label">' + d.cat + '</span>' +
+        '</div>' +
+        '<button type="button" class="dino-add-btn"' + (disabled ? ' disabled' : '') + ' data-dino="' + esc(d.name) + '">' +
+          (added ? '✓ Added' : '+ Add') +
+        '</button>' +
+      '</div>';
+    }).join('');
+
+    dinoListEl.querySelectorAll('.dino-add-btn:not([disabled])').forEach(btn => {
+      btn.addEventListener('click', () => addDino(btn.dataset.dino));
+    });
+  }
+
+  function addDino(name) {
+    if (selectedDinos[name] || Object.keys(selectedDinos).length >= currentDinoLimit) return;
+    selectedDinos[name] = { type: 'single', colors: ['','','','','',''] };
+    renderSelectedDinos();
+    renderDinoList();
+  }
+
+  function removeDino(name) {
+    delete selectedDinos[name];
+    renderSelectedDinos();
+    renderDinoList();
+  }
+
+  function setDinoType(name, type) {
+    if (!selectedDinos[name]) return;
+    selectedDinos[name].type = type;
+    const card = selectedList.querySelector('[data-card="' + name + '"]');
+    if (card) card.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+  }
+
+  function setColor(name, region, color) {
+    if (!selectedDinos[name]) return;
+    selectedDinos[name].colors[region] = color;
+    updateDinoField();
+    const card = selectedList.querySelector('[data-card="' + name + '"]');
+    if (!card) return;
+    const row = card.querySelector('.color-swatches[data-region="' + region + '"]');
+    if (row) row.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.color === color));
+  }
+
+  function renderSelectedDinos() {
+    const names = Object.keys(selectedDinos);
+    selectedCount.textContent  = names.length + ' / ' + currentDinoLimit;
+    selectedWrap.style.display = names.length ? 'block' : 'none';
+
+    selectedList.innerHTML = names.map(name => {
+      const d = selectedDinos[name];
+      const regionsHtml = [0,1,2,3,4,5].map(r => {
+        const swatches =
+          '<button type="button" class="swatch skip' + (d.colors[r] === '' ? ' active' : '') + '" data-color="" title="Any / Skip">–</button>' +
+          COLORS.map(c =>
+            '<button type="button" class="swatch' + (d.colors[r] === c.name ? ' active' : '') + '" style="background:' + c.hex + '" data-color="' + esc(c.name) + '" title="' + esc(c.name) + '"></button>'
+          ).join('');
+        return '<div class="region-row"><span class="region-label">Reg ' + r + '</span><div class="color-swatches" data-region="' + r + '">' + swatches + '</div></div>';
+      }).join('');
+
+      return '<div class="selected-dino-card" data-card="' + esc(name) + '">' +
+        '<div class="selected-dino-top">' +
+          '<span class="selected-dino-name">' + esc(name) + '</span>' +
+          '<div style="display:flex;align-items:center;gap:0.5rem;">' +
+            '<div class="dino-type-toggle">' +
+              '<button type="button" class="type-btn' + (d.type === 'single' ? ' active' : '') + '" data-type="single" data-dino="' + esc(name) + '">Single</button>' +
+              '<button type="button" class="type-btn' + (d.type === 'pair' ? ' active' : '') + '" data-type="pair" data-dino="' + esc(name) + '">Breeding Pair</button>' +
+            '</div>' +
+            '<button type="button" class="remove-dino-btn" data-dino="' + esc(name) + '" title="Remove">✕</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="color-regions">' + regionsHtml + '</div>' +
+      '</div>';
+    }).join('');
+
+    selectedList.querySelectorAll('.type-btn').forEach(btn => {
+      btn.addEventListener('click', () => setDinoType(btn.dataset.dino, btn.dataset.type));
+    });
+    selectedList.querySelectorAll('.remove-dino-btn').forEach(btn => {
+      btn.addEventListener('click', () => removeDino(btn.dataset.dino));
+    });
+    selectedList.querySelectorAll('.swatch').forEach(btn => {
+      const card = btn.closest('[data-card]');
+      const row  = btn.closest('.color-swatches');
+      if (!card || !row) return;
+      btn.addEventListener('click', () => setColor(card.dataset.card, +row.dataset.region, btn.dataset.color));
+    });
+
+    updateDinoField();
+  }
+
+  function updateDinoField() {
+    const names = Object.keys(selectedDinos);
+    if (!names.length) { dinoOrderText = '(none selected)'; return; }
+    dinoOrderText = names.map(name => {
+      const d = selectedDinos[name];
+      const colorParts = d.colors.map((c, i) => c ? 'R' + i + ':' + c : null).filter(Boolean);
+      return '• ' + name + ' (' + (d.type === 'pair' ? 'Breeding Pair' : 'Single') + ')' + (colorParts.length ? ' | Colors: ' + colorParts.join(', ') : '');
+    }).join('\n');
+  }
+
+  dinoSearch.addEventListener('input',  renderDinoList);
+  catFilter.addEventListener('change',  renderDinoList);
+  renderDinoList();
+
+  // ── DISCORD WEBHOOK ──
+  const DISCORD_WEBHOOK_ADMIN = 'https://discord.com/api/webhooks/1474854852327637164/y-sCCMBqPcj-H_uRWAAlhkNB0LlS5G0bmOVGKEx8CHkshfDy4N-VJHJLL0OkMVt19Ak-';
+  const ARK_ADMIN_ROLE        = '1474505890827866175';
+
+  async function postDonationToDiscord(ingame, discord, teleporter, notes) {
+    const dinoCount = Object.keys(selectedDinos).length;
+    const res = await fetch(DISCORD_WEBHOOK_ADMIN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: '<@&' + ARK_ADMIN_ROLE + '>',
+        allowed_mentions: { roles: [ARK_ADMIN_ROLE] },
+        embeds: [{
+          title: '📋 ARK Donation — Action Required',
+          color: 16737280,
+          fields: [
+            { name: 'PACKAGE',        value: PKG        || '—', inline: true  },
+            { name: 'PAYMENT METHOD', value: PAY        || '—', inline: true  },
+            { name: 'PLAYER',         value: ingame     || '—', inline: true  },
+            { name: 'DISCORD',        value: discord    || '—', inline: true  },
+            { name: 'TELEPORTER',     value: teleporter || '—', inline: true  },
+            { name: 'TOTAL DINOS',    value: String(dinoCount), inline: true  },
+            { name: 'DINOS ORDERED',  value: dinoOrderText || '—', inline: false },
+            { name: 'NOTES',          value: notes      || '—', inline: false },
+          ],
+          footer: { text: 'React ✅ when delivered' },
+          timestamp: new Date().toISOString(),
+        }],
+      }),
+    });
+    if (!res.ok) throw new Error('Webhook failed: ' + res.status);
+  }
+
+  // ── FORM SUBMIT ──
+  const orderForm  = document.getElementById('order-form');
+  const formSuccess = document.getElementById('form-success');
+  const submitBtn  = document.getElementById('submit-btn');
+
+  orderForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    updateDinoField();
+    const ingame     = document.getElementById('f-ingame').value;
+    const teleporter = document.getElementById('f-teleporter').value;
+    const discord    = document.getElementById('f-discord').value;
+    const notes      = document.getElementById('f-notes').value;
+
+    submitBtn.disabled    = true;
+    submitBtn.textContent = 'Sending…';
+
+    try {
+      await postDonationToDiscord(ingame, discord, teleporter, notes);
+      orderForm.hidden    = true;
+      formSuccess.hidden  = false;
+    } catch {
+      alert('Could not send order — check your connection and try again.');
+      submitBtn.disabled    = false;
+      submitBtn.textContent = 'Submit Order →';
+    }
+  });
+  </script>
+
+</body>
+</html>
