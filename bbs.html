@@ -282,6 +282,24 @@
     .form-success h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
     .form-success p { color: var(--muted); margin-bottom: 1.5rem; }
 
+    /* ── CATEGORY TABS ── */
+    .cat-tabs {
+      display: flex; gap: 0.3rem; margin-bottom: 1.5rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 0.3rem; flex-wrap: wrap;
+    }
+    .cat-tab {
+      flex: 1; min-width: 0; padding: 0.5rem 0.6rem; border: none; border-radius: 7px;
+      background: transparent; color: var(--muted); font-size: 0.8rem; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.02em; transition: color 0.15s, background 0.15s;
+      white-space: nowrap; text-align: center; font-family: inherit;
+    }
+    .cat-tab:hover { color: var(--text); background: var(--surface2); }
+    .cat-tab.active { background: var(--surface2); color: var(--accent); }
+    .cat-section { display: none; animation: catFade 0.18s ease; }
+    .cat-section.active { display: block; }
+    @keyframes catFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
     /* ── FOOTER ── */
     footer { border-top: 1px solid var(--border); padding: 2.5rem 1.5rem; text-align: center; }
     footer p { color: var(--muted); font-size: 0.82rem; }
@@ -300,6 +318,7 @@
       <li><a href="ark.html">ARK</a></li>
       <li><a href="bbs.html">BBS Shop</a></li>
       <li><a href="discord.html">Discord</a></li>
+      <li><a href="aboutus.html">About</a></li>
       <li><a href="admin.html">Admin</a></li>
     </ul>
     <button class="nav-toggle" aria-label="Toggle navigation">
@@ -360,123 +379,118 @@
       <button class="scroll-to-form-btn" id="go-to-form-btn">Place Order ↓</button>
     </div>
 
-    <!-- Search + filter -->
-    <div class="shop-controls">
-      <input type="text" id="shop-search" placeholder="Search dinos..." autocomplete="off">
-      <select id="shop-size-filter">
-        <option value="">All Sizes</option>
-        <option value="Small">Small — 250k</option>
-        <option value="Medium">Medium — 400k</option>
-        <option value="Large">Large — 800k</option>
-        <option value="XL">XL — 900k</option>
-      </select>
+    <!-- Category Tabs -->
+    <div class="cat-tabs">
+      <button class="cat-tab active" data-cat="dinos">🦕 Dinos</button>
+      <button class="cat-tab" data-cat="blueprints">📋 Blueprints</button>
+      <button class="cat-tab" data-cat="colors">🎨 Colors</button>
+      <button class="cat-tab" data-cat="review">🛒 Review</button>
     </div>
 
-    <!-- Dino list -->
-    <div class="dino-shop-list" id="dino-shop-list"></div>
-
-    <!-- Blueprint section -->
-    <h3 class="shop-section-title">📋 Blueprints</h3>
-    <div class="price-grid" style="margin-bottom:1rem;">
-      <div class="price-card">
-        <div class="price-size">Common</div>
-        <div class="price-bbs">10,000 <span class="price-sym">🍓</span></div>
-        <div class="price-unit">per blueprint</div>
+    <!-- DINOS -->
+    <div id="cat-dinos" class="cat-section active">
+      <div class="shop-controls">
+        <input type="text" id="shop-search" placeholder="Search dinos..." autocomplete="off">
+        <select id="shop-size-filter">
+          <option value="">All Sizes</option>
+          <option value="Small">Small — 250k</option>
+          <option value="Medium">Medium — 400k</option>
+          <option value="Large">Large — 800k</option>
+          <option value="XL">XL — 900k</option>
+        </select>
       </div>
-      <div class="price-card">
-        <div class="price-size">Journeyman</div>
-        <div class="price-bbs">20,000 <span class="price-sym">🍓</span></div>
-        <div class="price-unit">per blueprint</div>
-      </div>
-      <div class="price-card">
-        <div class="price-size">Mastercraft</div>
-        <div class="price-bbs">30,000 <span class="price-sym">🍓</span></div>
-        <div class="price-unit">per blueprint</div>
-      </div>
-      <div class="price-card">
-        <div class="price-size">Ascendant</div>
-        <div class="price-bbs">50,000 <span class="price-sym">🍓</span></div>
-        <div class="price-unit">per blueprint</div>
-      </div>
+      <div class="dino-shop-list" id="dino-shop-list"></div>
     </div>
-    <div class="shop-controls">
-      <input type="text" id="bp-search" placeholder="Search blueprints..." autocomplete="off">
-      <select id="bp-cat-filter">
-        <option value="">All Categories</option>
-        <option value="Saddle">Saddles</option>
-        <option value="Weapon">Weapons</option>
-        <option value="Armor">Armor</option>
-      </select>
-    </div>
-    <div class="dino-shop-list" id="bp-shop-list" style="margin-bottom:2.5rem;"></div>
 
-    <!-- Dino Color Service -->
-    <div class="color-job-panel" id="color-job-panel">
-      <button type="button" class="color-job-toggle" id="color-job-toggle" aria-expanded="false">
-        <div class="color-job-toggle-left">
-          <span class="color-job-toggle-title">🎨 Dino Color Service</span>
-          <span class="color-job-toggle-sub">Paint a dino you already own — 50,000 🍓 per dino</span>
+    <!-- BLUEPRINTS -->
+    <div id="cat-blueprints" class="cat-section">
+      <div class="price-grid" style="margin-bottom:1rem;">
+        <div class="price-card">
+          <div class="price-size">Common</div>
+          <div class="price-bbs">10,000 <span class="price-sym">🍓</span></div>
+          <div class="price-unit">per blueprint</div>
         </div>
-        <svg class="color-job-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="color-job-body">
-        <div class="color-job-body-inner">
-          <div class="color-job-info">
-            This service is for <strong>dinos you already own</strong> in-game. An admin will paint your existing tamed dino. Pick colors for up to 6 regions. <strong>50,000 🍓 per dino.</strong>
+        <div class="price-card">
+          <div class="price-size">Journeyman</div>
+          <div class="price-bbs">20,000 <span class="price-sym">🍓</span></div>
+          <div class="price-unit">per blueprint</div>
+        </div>
+        <div class="price-card">
+          <div class="price-size">Mastercraft</div>
+          <div class="price-bbs">30,000 <span class="price-sym">🍓</span></div>
+          <div class="price-unit">per blueprint</div>
+        </div>
+        <div class="price-card">
+          <div class="price-size">Ascendant</div>
+          <div class="price-bbs">50,000 <span class="price-sym">🍓</span></div>
+          <div class="price-unit">per blueprint</div>
+        </div>
+      </div>
+      <div class="shop-controls">
+        <input type="text" id="bp-search" placeholder="Search blueprints..." autocomplete="off">
+        <select id="bp-cat-filter">
+          <option value="">All Categories</option>
+          <option value="Saddle">Saddles</option>
+          <option value="Weapon">Weapons</option>
+          <option value="Armor">Armor</option>
+        </select>
+      </div>
+      <div class="dino-shop-list" id="bp-shop-list"></div>
+    </div>
+
+    <!-- COLORS -->
+    <div id="cat-colors" class="cat-section">
+      <div class="color-job-info" style="margin-bottom:1.25rem;">
+        This service is for <strong>dinos you already own</strong> in-game. An admin will paint your existing tamed dino. Pick colors for up to 6 regions. <strong>50,000 🍓 per dino.</strong>
+      </div>
+      <div class="form-group">
+        <label for="color-dino-name">Dino Name *</label>
+        <input id="color-dino-name" type="text" placeholder="e.g. Rex, Argy, Wyvern...">
+      </div>
+      <div id="color-job-regions"></div>
+      <button type="button" id="color-job-add-btn" class="shop-add-btn" style="margin-top:0.75rem;">+ Add Color Job</button>
+    </div>
+
+    <!-- REVIEW -->
+    <div id="cat-review" class="cat-section">
+      <div class="order-summary-section" id="order-summary-section" hidden>
+        <h3 class="order-summary-title">Your Order <span id="order-item-count" style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;"></span></h3>
+        <div class="order-items-list" id="order-items-list"></div>
+        <div class="order-total-row">
+          <span class="order-total-label">Total</span>
+          <span class="order-total-value"><span id="order-total-display">0</span> <span class="order-total-sym">🍓</span></span>
+        </div>
+      </div>
+      <div class="order-form-section" id="order-form-section">
+        <h3 class="section-title">Place Your Order</h3>
+        <form id="bbs-order-form">
+          <div class="form-group">
+            <label for="f-ingame">In-Game Name *</label>
+            <input id="f-ingame" type="text" name="ingame_name" required placeholder="Your survivor name">
           </div>
           <div class="form-group">
-            <label for="color-dino-name">Dino Name *</label>
-            <input id="color-dino-name" type="text" placeholder="e.g. Rex, Argy, Wyvern...">
+            <label for="f-teleporter">Teleporter Name / Delivery Location *</label>
+            <input id="f-teleporter" type="text" name="teleporter" required placeholder="e.g. Bob's TP, Green Obelisk, base coords...">
           </div>
-          <div id="color-job-regions"></div>
-          <button type="button" id="color-job-add-btn" class="shop-add-btn" style="margin-top:0.75rem;">+ Add Color Job</button>
+          <div class="form-group">
+            <label for="f-discord">Discord Username</label>
+            <input id="f-discord" type="text" name="discord" placeholder="e.g. username or username#0000">
+          </div>
+          <div class="form-group">
+            <label for="f-notes">Additional Notes</label>
+            <textarea id="f-notes" name="notes" rows="3" placeholder="Stat preferences, mutations, anything else..."></textarea>
+          </div>
+          <div class="form-footer">
+            <p class="form-note">An admin will verify your BBS balance in-game before delivering your dinos.</p>
+            <button type="submit" class="submit-btn" id="bbs-submit-btn">Submit Order →</button>
+          </div>
+        </form>
+        <div class="form-success" id="bbs-success" hidden>
+          <div class="success-icon">✓</div>
+          <h3>Order Received!</h3>
+          <p>An admin will check your BBS balance and deliver your dinos. Watch Discord for updates.</p>
+          <button class="submit-btn" onclick="document.getElementById('bbs-success').hidden=true; document.getElementById('bbs-order-form').hidden=false;">New Order</button>
         </div>
-      </div>
-    </div>
-
-    <!-- Order summary -->
-    <div class="order-summary-section" id="order-summary-section" hidden>
-      <h3 class="order-summary-title">Your Order <span id="order-item-count" style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;"></span></h3>
-      <div class="order-items-list" id="order-items-list"></div>
-      <div class="order-total-row">
-        <span class="order-total-label">Total</span>
-        <span class="order-total-value"><span id="order-total-display">0</span> <span class="order-total-sym">🍓</span></span>
-      </div>
-    </div>
-
-    <!-- Order form -->
-    <div class="order-form-section" id="order-form-section">
-      <h3 class="section-title">Place Your Order</h3>
-
-      <form id="bbs-order-form">
-        <div class="form-group">
-          <label for="f-ingame">In-Game Name *</label>
-          <input id="f-ingame" type="text" name="ingame_name" required placeholder="Your survivor name">
-        </div>
-        <div class="form-group">
-          <label for="f-teleporter">Teleporter Name / Delivery Location *</label>
-          <input id="f-teleporter" type="text" name="teleporter" required placeholder="e.g. Bob's TP, Green Obelisk, base coords...">
-        </div>
-        <div class="form-group">
-          <label for="f-discord">Discord Username</label>
-          <input id="f-discord" type="text" name="discord" placeholder="e.g. username or username#0000">
-        </div>
-        <div class="form-group">
-          <label for="f-notes">Additional Notes</label>
-          <textarea id="f-notes" name="notes" rows="3" placeholder="Stat preferences, mutations, anything else..."></textarea>
-        </div>
-
-        <div class="form-footer">
-          <p class="form-note">An admin will verify your BBS balance in-game before delivering your dinos.</p>
-          <button type="submit" class="submit-btn" id="bbs-submit-btn">Submit Order →</button>
-        </div>
-      </form>
-
-      <div class="form-success" id="bbs-success" hidden>
-        <div class="success-icon">✓</div>
-        <h3>Order Received!</h3>
-        <p>An admin will check your BBS balance and deliver your dinos. Watch Discord for updates.</p>
-        <button class="submit-btn" onclick="document.getElementById('bbs-success').hidden=true; document.getElementById('bbs-order-form').hidden=false;">New Order</button>
       </div>
     </div>
 
@@ -688,9 +702,19 @@
   const bbsSuccess      = document.getElementById('bbs-success');
   const bbsSubmitBtn    = document.getElementById('bbs-submit-btn');
 
-  // Scroll to form button
+  // ── CATEGORY TABS ──
+  function switchTab(cat) {
+    document.querySelectorAll('.cat-tab').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+    document.querySelectorAll('.cat-section').forEach(s => s.classList.toggle('active', s.id === 'cat-' + cat));
+  }
+  document.querySelectorAll('.cat-tab').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.cat));
+  });
+
+  // "Place Order" button → jump to Review tab
   document.getElementById('go-to-form-btn').addEventListener('click', () => {
-    document.getElementById('order-form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    switchTab('review');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   // ── Formatting ──
