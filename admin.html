@@ -123,9 +123,13 @@
     .b-founder   { background: rgba(0,230,118,0.12); color: var(--accent); border: 1px solid rgba(0,230,118,0.25); }
     .b-cofounder { background: rgba(0,230,118,0.12); color: var(--accent); border: 1px solid rgba(0,230,118,0.25); }
     .b-pve       { background: var(--surface2); color: var(--muted);      border: 1px solid var(--border); }
+    .b-asa       { background: rgba(255,160,50,0.1); color: #ffb347;       border: 1px solid rgba(255,160,50,0.28); }
+    .av-asa      { background: rgba(255,160,50,0.1); color: #ffb347;       border: 1.5px solid rgba(255,160,50,0.4); }
+    .card-asa    { border-top: 2px solid #ffb347; max-width: 280px; }
+    .card-asa:hover { border-color: #ffb347; box-shadow: 0 0 22px rgba(255,160,50,0.1); }
+    .card-asa .admin-name { font-size: 1rem; }
 
     /* ── CONNECTOR LINES ── */
-    /* simple vertical stem */
     .stem {
       width: 1px;
       height: 36px;
@@ -138,65 +142,109 @@
       background: var(--line);
       flex-shrink: 0;
     }
+    .drop {
+      width: 1px;
+      height: 28px;
+      background: var(--line);
+      flex-shrink: 0;
+    }
 
-    /*
-      Branch connector: a full-width row that draws the horizontal bar
-      and four short vertical drops above each PvE card column.
-      Uses a real div for the bar + pseudo-elements on each branch-col.
-    */
-    .branch-wrap {
+    /* ── DUAL BRANCH SPLIT (ASE left / ASA right) ── */
+    .dual-branch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
       width: 100%;
       position: relative;
     }
-
-    /* horizontal bar */
-    .branch-bar {
-      position: relative;
-      display: flex;
-      justify-content: center;
-    }
-    /* the actual line — spans from 1/8 to 7/8 of width so it lines up
-       with the centers of the four equal columns */
-    .branch-bar::after {
+    /* horizontal bar connecting both branch tops */
+    .dual-branch::before {
       content: '';
       position: absolute;
-      top: 0; bottom: 0;
-      left: 12.5%; right: 12.5%;
+      top: 0;
+      left: 25%; right: 25%;
       height: 1px;
       background: var(--line);
     }
-
-    /* four columns, each with its own drop line */
-    .branch-cols {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .branch-col {
+    .dual-col {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0;
     }
-    /* vertical drop from the bar to the card */
-    .branch-col .drop {
+    .dual-drop {
       width: 1px;
       height: 32px;
       background: var(--line);
       flex-shrink: 0;
     }
+    .branch-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.22rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface2);
+      white-space: nowrap;
+    }
+    .branch-label-ase {
+      color: var(--accent);
+      border-color: rgba(0,230,118,0.25);
+      background: rgba(0,230,118,0.06);
+    }
+    .branch-label-asa {
+      color: #ffb347;
+      border-color: rgba(255,160,50,0.28);
+      background: rgba(255,160,50,0.06);
+    }
+    /* aligns ASA card top with the first row of the ASE 2×2 grid */
+    .grid-align-spacer {
+      height: 29px;
+      flex-shrink: 0;
+    }
+    .label-drop {
+      width: 1px;
+      height: 28px;
+      background: var(--line);
+      flex-shrink: 0;
+    }
+
+    /* 2×2 grid inside ASE column */
+    .pve-grid-wrap { width: 100%; }
+    .pve-grid-bar {
+      position: relative;
+      height: 1px;
+    }
+    .pve-grid-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 25%; right: 25%;
+      height: 1px;
+      background: var(--line);
+    }
+    .pve-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      width: 100%;
+    }
+    .pve-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
     /* responsive */
-    @media (max-width: 680px) {
-      .branch-cols { grid-template-columns: repeat(2, 1fr); }
-      .branch-bar::after { left: 25%; right: 25%; }
+    @media (max-width: 600px) {
+      .dual-branch { grid-template-columns: 1fr; gap: 1.5rem; }
+      .dual-branch::before { display: none; }
+      .dual-drop { display: none; }
     }
     @media (max-width: 380px) {
-      .branch-cols { grid-template-columns: 1fr; }
-      .branch-bar::after { display: none; }
-      .branch-col .drop { display: none; }
+      .pve-grid { grid-template-columns: 1fr; }
+      .pve-grid-bar::after { display: none; }
     }
 
     /* ── FOOTER ── */
@@ -217,6 +265,7 @@
       <li><a href="ark.html">ARK</a></li>
       <li><a href="bbs.html">BBS Shop</a></li>
       <li><a href="discord.html">Discord</a></li>
+      <li><a href="aboutus.html">About</a></li>
       <li><a href="admin.html">Admin</a></li>
     </ul>
     <button class="nav-toggle" aria-label="Toggle navigation">
@@ -252,52 +301,62 @@
 
     <div class="stem-plain"></div>
 
-    <!-- TIER 3 — PvE ADMINS -->
-    <div class="branch-wrap">
+    <!-- DUAL BRANCH: ASE (left) / ASA (right) -->
+    <div class="dual-branch">
 
-      <!-- horizontal bar row (zero height, just draws the line) -->
-      <div class="branch-bar" style="height: 1px;"></div>
+      <!-- LEFT: ARK Survival Evolved -->
+      <div class="dual-col">
+        <div class="dual-drop"></div>
+        <span class="branch-label branch-label-ase">ARK: Survival Evolved</span>
+        <div class="label-drop"></div>
+        <div class="pve-grid-wrap">
+          <div class="pve-grid-bar"></div>
+          <div class="pve-grid">
 
-      <!-- four column drops + cards -->
-      <div class="branch-cols">
+            <div class="pve-col">
+              <div class="drop"></div>
+              <div class="admin-card card-pve">
+                <div class="avatar av-pve">MD</div>
+                <span class="admin-name">Mrs.Dove</span>
+                <span class="badge b-pve">ARK PvE Admin</span>
+              </div>
+            </div>
 
-        <div class="branch-col">
-          <div class="drop"></div>
-          <div class="admin-card card-pve">
-            <div class="avatar av-pve">MD</div>
-            <span class="admin-name">Mrs.Dove</span>
-            <span class="badge b-pve">ARK PvE Admin</span>
+            <div class="pve-col">
+              <div class="drop"></div>
+              <div class="admin-card card-pve">
+                <div class="avatar av-pve">FR</div>
+                <span class="admin-name">Fr4sty</span>
+                <span class="badge b-pve">ARK PvE Admin</span>
+              </div>
+            </div>
+
+            <div class="pve-col">
+              <div class="drop"></div>
+              <div class="admin-card card-pve">
+                <div class="avatar av-pve">CH</div>
+                <span class="admin-name">Chaotic</span>
+                <span class="badge b-pve">ARK PvE Admin</span>
+              </div>
+            </div>
+
           </div>
         </div>
-
-        <div class="branch-col">
-          <div class="drop"></div>
-          <div class="admin-card card-pve">
-            <div class="avatar av-pve">VL</div>
-            <span class="admin-name">Valentino</span>
-            <span class="badge b-pve">ARK PvE Admin</span>
-          </div>
-        </div>
-
-        <div class="branch-col">
-          <div class="drop"></div>
-          <div class="admin-card card-pve">
-            <div class="avatar av-pve">FR</div>
-            <span class="admin-name">Fr4sty</span>
-            <span class="badge b-pve">ARK PvE Admin</span>
-          </div>
-        </div>
-
-        <div class="branch-col">
-          <div class="drop"></div>
-          <div class="admin-card card-pve">
-            <div class="avatar av-pve">CH</div>
-            <span class="admin-name">Chaotic</span>
-            <span class="badge b-pve">ARK PvE Admin</span>
-          </div>
-        </div>
-
       </div>
+
+      <!-- RIGHT: ARK Survival Ascended -->
+      <div class="dual-col">
+        <div class="dual-drop"></div>
+        <span class="branch-label branch-label-asa">ARK: Survival Ascended</span>
+        <div class="label-drop"></div>
+        <div class="grid-align-spacer"></div>
+        <div class="admin-card card-asa" style="max-width: 100%;">
+          <div class="avatar av-asa">IH</div>
+          <span class="admin-name">Ihurtfeelings</span>
+          <span class="badge b-asa">ASA Server Owner</span>
+        </div>
+      </div>
+
     </div>
 
   </div>
