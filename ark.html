@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button { touch-action: manipulation; }
     :root {
       --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
       --border: #22222e; --accent: #00e676;
@@ -117,11 +118,14 @@
     ══════════════════════════════════════════ */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.78); backdrop-filter: blur(6px);
+      background: rgba(0,0,0,0.78); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
       display: flex; align-items: flex-start; justify-content: center;
       padding: 1rem; overflow-y: auto;
+      -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+      cursor: pointer; /* makes iOS fire tap events on the backdrop */
     }
     .modal-overlay[hidden] { display: none; }
+    .modal-panel { cursor: default; } /* reset pointer inside panel */
     .modal-panel {
       background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
       width: 100%; max-width: 760px; margin: auto; padding: 2rem; position: relative;
@@ -179,7 +183,7 @@
 
     /* Dino list */
     .dino-list {
-      max-height: 300px; overflow-y: auto;
+      max-height: 300px; overflow-y: auto; -webkit-overflow-scrolling: touch;
       border: 1px solid var(--border); border-radius: 8px; background: var(--bg);
     }
     .dino-list::-webkit-scrollbar { width: 5px; }
@@ -341,6 +345,7 @@
       <li><a href="ark.html">ARK</a></li>
       <li><a href="bbs.html">BBS Shop</a></li>
       <li><a href="discord.html">Discord</a></li>
+      <li><a href="aboutus.html">About</a></li>
       <li><a href="admin.html">Admin</a></li>
     </ul>
     <button class="nav-toggle" aria-label="Toggle navigation">
@@ -507,9 +512,9 @@
     <div class="modal-panel">
       <div class="modal-header">
         <div>
-          <div class="modal-eyebrow">Step 2 — Place Your Order</div>
-          <h2 class="modal-title">Complete Your Order</h2>
-          <p class="modal-subtitle">Fill this out after sending payment — we'll deliver once it clears.</p>
+          <div class="modal-eyebrow">Step 1 of 2 — Send Payment</div>
+          <h2 class="modal-title">Ready to Pay</h2>
+          <p class="modal-subtitle">Send your payment, then click the button below to place your order.</p>
         </div>
         <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
       </div>
@@ -541,93 +546,6 @@
         <button class="paid-btn" id="paid-btn" type="button">I've Sent Payment — Place My Order →</button>
       </div>
 
-      <!-- ── STEP 2: ORDER FORM ── -->
-      <div class="step-panel" id="step-order" hidden>
-
-      <form action="https://formspree.io/f/xnjbgdzq" method="POST" id="order-form">
-        <input type="hidden" name="_subject"       id="form-subject"    value="New ARK Order">
-        <input type="hidden" name="package"        id="form-package">
-        <input type="hidden" name="payment_method" id="form-payment">
-        <input type="hidden" name="dino_order"     id="form-dino-order" value="(none selected)">
-
-        <!-- ── YOUR INFO ── -->
-        <div class="form-section">
-          <h3 class="section-title">Your Info</h3>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="f-ingame">In-Game Name *</label>
-              <input id="f-ingame" type="text" name="ingame_name" required placeholder="Your survivor name">
-            </div>
-            <div class="form-group">
-              <label for="f-email">Email *</label>
-              <input id="f-email" type="email" name="email" required placeholder="For order confirmation">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="f-teleporter">Teleporter Name / Delivery Location *</label>
-            <input id="f-teleporter" type="text" name="teleporter" required placeholder="e.g. Bob's TP, Green Obelisk, base coords...">
-          </div>
-          <div class="form-group">
-            <label for="f-discord">Discord Username</label>
-            <input id="f-discord" type="text" name="discord" placeholder="e.g. username or username#0000">
-          </div>
-        </div>
-
-        <!-- ── DINO PICKER ── -->
-        <div class="form-section">
-          <h3 class="section-title">Dino Selection</h3>
-          <p class="section-desc" id="dino-section-desc">Search for dinos below, hit <strong>+ Add</strong>, then choose Single or Breeding Pair and optionally pick colors for each of the 6 color regions.</p>
-
-          <!-- Selected dinos summary -->
-          <div id="selected-dinos-wrap" style="display:none; margin-bottom:1rem;">
-            <div class="selected-header">
-              <h4>Your Dinos</h4>
-              <span class="count-badge" id="selected-count">0</span>
-            </div>
-            <div class="selected-dinos-list" id="selected-dinos-list"></div>
-          </div>
-
-          <!-- Search + category filter -->
-          <div class="dino-search-bar">
-            <input type="text"   id="dino-search"     placeholder="Search dinos..." autocomplete="off">
-            <select              id="dino-cat-filter">
-              <option value="">All</option>
-              <option value="Flyer">Flyers</option>
-              <option value="Carnivore">Carnivores</option>
-              <option value="Herbivore">Herbivores</option>
-              <option value="Aquatic">Aquatic</option>
-              <option value="Special">Special / DLC</option>
-              <option value="Small">Small / Misc</option>
-            </select>
-          </div>
-
-          <div id="dino-limit-banner" class="dino-limit-banner" style="display:none;"></div>
-          <div class="dino-list" id="dino-list"></div>
-        </div>
-
-        <!-- ── NOTES ── -->
-        <div class="form-section">
-          <div class="form-group">
-            <label for="f-notes">Additional Notes</label>
-            <textarea id="f-notes" name="notes" rows="3" placeholder="Stat preferences, mutations, anything else..."></textarea>
-          </div>
-        </div>
-
-        <div class="form-footer">
-          <p class="form-note">⚡ Your payment link opened in a new tab. Submit this form <em>after</em> you've sent the money.</p>
-          <button type="submit" class="submit-btn" id="submit-btn">Submit Order →</button>
-        </div>
-      </form>
-
-      <!-- Success state -->
-      <div class="form-success" id="form-success" hidden>
-        <div class="success-icon">✓</div>
-        <h3>Order Received!</h3>
-        <p>We'll process your dinos once your payment clears. Watch Discord for updates.</p>
-        <button class="submit-btn" id="success-close">Close</button>
-      </div>
-
-      </div><!-- /step-order -->
     </div>
   </div>
 
@@ -667,134 +585,25 @@
   //  ORDER MODAL
   // ══════════════════════════════════════
 
-  const DINOS = [
-    // Flyers
-    { name: 'Argentavis',             cat: 'Flyer' },
-    { name: 'Crystal Wyvern (Blood)', cat: 'Flyer' },
-    { name: 'Crystal Wyvern (Ember)', cat: 'Flyer' },
-    { name: 'Crystal Wyvern (Heart)', cat: 'Flyer' },
-    { name: 'Griffin',                cat: 'Flyer' },
-    { name: 'Pelagornis',             cat: 'Flyer' },
-    { name: 'Pteranodon',             cat: 'Flyer' },
-    { name: 'Quetzal',                cat: 'Flyer' },
-    { name: 'Tapejara',               cat: 'Flyer' },
-    { name: 'Tropeognathus',          cat: 'Flyer' },
-    { name: 'Wyvern (Fire)',          cat: 'Flyer' },
-    { name: 'Wyvern (Ice)',           cat: 'Flyer' },
-    { name: 'Wyvern (Lightning)',     cat: 'Flyer' },
-    { name: 'Wyvern (Poison)',        cat: 'Flyer' },
-    // Carnivores
-    { name: 'Allosaurus',             cat: 'Carnivore' },
-    { name: 'Baryonyx',              cat: 'Carnivore' },
-    { name: 'Carnotaurus',            cat: 'Carnivore' },
-    { name: 'Deinonychus',            cat: 'Carnivore' },
-    { name: 'Giganotosaurus',         cat: 'Carnivore' },
-    { name: 'Kaprosuchus',            cat: 'Carnivore' },
-    { name: 'Megalosaurus',           cat: 'Carnivore' },
-    { name: 'Raptor',                 cat: 'Carnivore' },
-    { name: 'Rex',                    cat: 'Carnivore' },
-    { name: 'Sarcosuchus',            cat: 'Carnivore' },
-    { name: 'Spinosaurus',            cat: 'Carnivore' },
-    { name: 'Thylacoleo',             cat: 'Carnivore' },
-    { name: 'Troodon',                cat: 'Carnivore' },
-    { name: 'Yutyrannus',             cat: 'Carnivore' },
-    // Herbivores
-    { name: 'Ankylosaurus',           cat: 'Herbivore' },
-    { name: 'Brontosaurus',           cat: 'Herbivore' },
-    { name: 'Castoroides',            cat: 'Herbivore' },
-    { name: 'Daeodon',                cat: 'Herbivore' },
-    { name: 'Diplodocus',             cat: 'Herbivore' },
-    { name: 'Doedicurus',             cat: 'Herbivore' },
-    { name: 'Gallimimus',             cat: 'Herbivore' },
-    { name: 'Iguanodon',              cat: 'Herbivore' },
-    { name: 'Mammoth',                cat: 'Herbivore' },
-    { name: 'Megaloceros',            cat: 'Herbivore' },
-    { name: 'Moschops',               cat: 'Herbivore' },
-    { name: 'Pachycephalosaurus',     cat: 'Herbivore' },
-    { name: 'Paraceratherium',        cat: 'Herbivore' },
-    { name: 'Parasaur',               cat: 'Herbivore' },
-    { name: 'Procoptodon',            cat: 'Herbivore' },
-    { name: 'Stegosaurus',            cat: 'Herbivore' },
-    { name: 'Therizinosaurus',        cat: 'Herbivore' },
-    { name: 'Triceratops',            cat: 'Herbivore' },
-    { name: 'Woolly Rhino',           cat: 'Herbivore' },
-    // Aquatic
-    { name: 'Basilosaurus',           cat: 'Aquatic' },
-    { name: 'Electrophorus',          cat: 'Aquatic' },
-    { name: 'Megalodon',              cat: 'Aquatic' },
-    { name: 'Mosasaurus',             cat: 'Aquatic' },
-    { name: 'Plesiosaur',             cat: 'Aquatic' },
-    // Special / DLC
-    { name: 'Astrocetus',             cat: 'Special' },
-    { name: 'Astrodelphis',           cat: 'Special' },
-    { name: 'Desmodus',               cat: 'Special' },
-    { name: 'Fjordhawk',              cat: 'Special' },
-    { name: 'Gacha',                  cat: 'Special' },
-    { name: 'Magmasaur',              cat: 'Special' },
-    { name: 'Maewing',                cat: 'Special' },
-    { name: 'Managarmr',              cat: 'Special' },
-    { name: 'Rock Drake',             cat: 'Special' },
-    { name: 'Shadowmane',             cat: 'Special' },
-    { name: 'Snow Owl',               cat: 'Special' },
-    { name: 'Stryder',                cat: 'Special' },
-    { name: 'Velonasaur',             cat: 'Special' },
-    // Small / Misc
-    { name: 'Archaeopteryx',          cat: 'Small' },
-    { name: 'Dilophosaurus',          cat: 'Small' },
-    { name: 'Dimorphodon',            cat: 'Small' },
-    { name: 'Dodo',                   cat: 'Small' },
-    { name: 'Jerboa',                 cat: 'Small' },
-    { name: 'Lystrosaurus',           cat: 'Small' },
-    { name: 'Mesopithecus',           cat: 'Small' },
-    { name: 'Otter',                  cat: 'Small' },
-    { name: 'Oviraptor',              cat: 'Small' },
-    { name: 'Pegomastax',             cat: 'Small' },
-  ];
+  // ── Pay Buttons ──
+  document.querySelectorAll('.pay-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('[data-package]');
+      openModal(
+        card ? card.dataset.package : 'Unknown Package',
+        btn.dataset.payment
+      );
+    });
+  });
 
-  const COLORS = [
-    { name: 'White',      hex: '#F0F0F0' },
-    { name: 'Black',      hex: '#111111' },
-    { name: 'Gray',       hex: '#888888' },
-    { name: 'Red',        hex: '#C0392B' },
-    { name: 'Dark Red',   hex: '#7B0E0E' },
-    { name: 'Orange',     hex: '#D4581A' },
-    { name: 'Yellow',     hex: '#D4B800' },
-    { name: 'Lime',       hex: '#7DC800' },
-    { name: 'Green',      hex: '#1E8B1E' },
-    { name: 'Forest',     hex: '#145214' },
-    { name: 'Teal',       hex: '#1A9090' },
-    { name: 'Cyan',       hex: '#00BFBF' },
-    { name: 'Light Blue', hex: '#5B9BD5' },
-    { name: 'Blue',       hex: '#1C40CC' },
-    { name: 'Navy',       hex: '#0F1F6E' },
-    { name: 'Purple',     hex: '#7B22CC' },
-    { name: 'Magenta',    hex: '#CC22A0' },
-    { name: 'Pink',       hex: '#E06090' },
-    { name: 'Brown',      hex: '#7A4520' },
-    { name: 'Tan',        hex: '#C8A870' },
-  ];
+  // ── State & DOM refs ──
+  let currentPackage = '';
+  let currentPayment = '';
+  let _scrollY = 0;
 
-  // State: { [dinoName]: { type: 'single'|'pair', colors: ['','','','','',''] } }
-  let selectedDinos = {};
-  let currentDinoLimit = 1;
-
-  // DOM refs
-  const modal         = document.getElementById('order-modal');
-  const pkgBadge      = document.getElementById('order-package-badge');
-  const payBadge      = document.getElementById('order-payment-badge');
-  const formPkg       = document.getElementById('form-package');
-  const formPay       = document.getElementById('form-payment');
-  const formSubject   = document.getElementById('form-subject');
-  const formDinoField = document.getElementById('form-dino-order');
-  const dinoListEl    = document.getElementById('dino-list');
-  const selectedWrap  = document.getElementById('selected-dinos-wrap');
-  const selectedList  = document.getElementById('selected-dinos-list');
-  const selectedCount = document.getElementById('selected-count');
-  const dinoSearch    = document.getElementById('dino-search');
-  const catFilter     = document.getElementById('dino-cat-filter');
-  const orderForm     = document.getElementById('order-form');
-  const formSuccess   = document.getElementById('form-success');
-  const submitBtn     = document.getElementById('submit-btn');
+  const modal    = document.getElementById('order-modal');
+  const pkgBadge = document.getElementById('order-package-badge');
+  const payBadge = document.getElementById('order-payment-badge');
 
   // ── Payment config ──
   const PAYMENT_CONFIG = {
@@ -803,29 +612,9 @@
     'Venmo':    { handle: '@ZeroPointArk',              baseUrl: 'https://venmo.com/u/ZeroPointArk' },
   };
 
-  // ── Step navigation ──
-  function showStep(n) {
-    document.getElementById('step-payment').hidden = (n !== 1);
-    document.getElementById('step-order').hidden   = (n !== 2);
-    const eyebrow  = document.querySelector('.modal-eyebrow');
-    const title    = document.querySelector('.modal-title');
-    const subtitle = document.querySelector('.modal-subtitle');
-    if (n === 1) {
-      eyebrow.textContent  = 'Step 1 of 2 — Send Payment';
-      title.textContent    = 'Ready to Pay';
-      subtitle.textContent = 'Send your payment, then click the button below to place your order.';
-    } else {
-      eyebrow.textContent  = 'Step 2 of 2 — Place Your Order';
-      title.textContent    = 'Complete Your Order';
-      subtitle.textContent = 'Fill this out — we\'ll deliver once your payment clears.';
-    }
-    modal.scrollTop = 0;
-  }
-
   document.getElementById('paid-btn').addEventListener('click', () => {
-    showStep(2);
-    renderDinoList();
-    renderSelectedDinos();
+    const p = new URLSearchParams({ pkg: currentPackage, pay: currentPayment, amount: (currentPackage.match(/\$(\d+)/) || [])[1] || '' });
+    window.location.href = 'ark-order.html?' + p.toString();
   });
 
   // ── Copy handle ──
@@ -841,249 +630,37 @@
 
   // ── Open / Close ──
   function openModal(packageName, paymentMethod) {
-    // Reset form state
-    selectedDinos = {};
-    orderForm.hidden   = false;
-    formSuccess.hidden = true;
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Submit Order →';
-    dinoSearch.value = '';
-    catFilter.value  = '';
-    orderForm.reset();
-
-    // Badges + hidden fields
     pkgBadge.textContent = packageName;
     payBadge.textContent = paymentMethod;
-    formPkg.value        = packageName;
-    formPay.value        = paymentMethod;
-    formSubject.value    = 'New ARK Order — ' + packageName + ' — ' + paymentMethod;
+    currentPackage       = packageName;
+    currentPayment       = paymentMethod;
 
-    // Extract dino limit from package name  e.g. "(7 Dinos)" → 7, "Single Dino" → 1
-    const limitMatch = packageName.match(/\((\d+)\s*Dino/i);
-    currentDinoLimit = limitMatch ? parseInt(limitMatch[1]) : 1;
-    const desc = document.getElementById('dino-section-desc');
-    if (desc) desc.innerHTML = 'You can select up to <strong>' + currentDinoLimit + ' dino' + (currentDinoLimit > 1 ? 's' : '') + '</strong> for this package. Hit <strong>+ Add</strong>, choose Single or Breeding Pair, and optionally pick colors for each region.';
-
-    // Step 1 content
     const cfg    = PAYMENT_CONFIG[paymentMethod] || {};
     const amount = (packageName.match(/\$(\d+)/) || [])[1] || '';
     document.getElementById('step-amount').textContent = amount ? '$' + amount : '—';
     document.getElementById('step-handle').textContent = cfg.handle || '';
     const openLink = document.getElementById('step-open-link');
-    openLink.href        = (paymentMethod === 'PayPal' && amount) ? cfg.baseUrl + '/' + amount : (cfg.baseUrl || '#');
-    openLink.textContent = '';
-    openLink.innerHTML   = 'Open ' + paymentMethod + ' to pay <span>(opens new tab)</span>';
+    openLink.href      = (paymentMethod === 'PayPal' && amount) ? cfg.baseUrl + '/' + amount : (cfg.baseUrl || '#');
+    openLink.innerHTML = 'Open ' + paymentMethod + ' to pay <span>(opens new tab)</span>';
 
-    showStep(1);
     modal.hidden = false;
-    document.body.style.overflow = 'hidden';
+    _scrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top      = '-' + _scrollY + 'px';
+    document.body.style.width    = '100%';
   }
 
   function closeModal() {
     modal.hidden = true;
-    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top      = '';
+    document.body.style.width    = '';
+    window.scrollTo(0, _scrollY);
   }
 
   document.getElementById('modal-close').addEventListener('click', closeModal);
-  document.getElementById('success-close').addEventListener('click', closeModal);
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
-
-  // ── Dino List ──
-  function renderDinoList() {
-    const q        = dinoSearch.value.trim().toLowerCase();
-    const cat      = catFilter.value;
-    const atLimit  = Object.keys(selectedDinos).length >= currentDinoLimit;
-    const banner   = document.getElementById('dino-limit-banner');
-
-    if (banner) {
-      banner.style.display = atLimit ? 'block' : 'none';
-      banner.textContent   = atLimit ? '✓ Dino limit reached (' + currentDinoLimit + '/' + currentDinoLimit + ') — remove a dino to swap it out.' : '';
-    }
-
-    const filtered = DINOS.filter(d =>
-      (!q   || d.name.toLowerCase().includes(q)) &&
-      (!cat || d.cat === cat)
-    );
-
-    if (!filtered.length) {
-      dinoListEl.innerHTML = '<div class="no-results">No dinos match your search.</div>';
-      return;
-    }
-
-    dinoListEl.innerHTML = filtered.map(d => {
-      const added    = !!selectedDinos[d.name];
-      const disabled = added || atLimit;
-      return '<div class="dino-row' + (added ? ' is-added' : '') + '">' +
-        '<div class="dino-info">' +
-          '<span class="dino-name-text">' + esc(d.name) + '</span>' +
-          '<span class="dino-cat-label">' + d.cat + '</span>' +
-        '</div>' +
-        '<button class="dino-add-btn"' + (disabled ? ' disabled' : '') + ' data-dino="' + esc(d.name) + '">' +
-          (added ? '✓ Added' : '+ Add') +
-        '</button>' +
-      '</div>';
-    }).join('');
-
-    dinoListEl.querySelectorAll('.dino-add-btn:not([disabled])').forEach(btn => {
-      btn.addEventListener('click', () => addDino(btn.dataset.dino));
-    });
-  }
-
-  function addDino(name) {
-    if (selectedDinos[name]) return;
-    if (Object.keys(selectedDinos).length >= currentDinoLimit) return;
-    selectedDinos[name] = { type: 'single', colors: ['','','','','',''] };
-    renderSelectedDinos();
-    renderDinoList();
-  }
-
-  function removeDino(name) {
-    delete selectedDinos[name];
-    renderSelectedDinos();
-    renderDinoList();
-  }
-
-  function setDinoType(name, type) {
-    if (!selectedDinos[name]) return;
-    selectedDinos[name].type = type;
-    // Just refresh toggle button states without full re-render
-    const card = selectedList.querySelector('[data-card="' + name + '"]');
-    if (!card) return;
-    card.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
-  }
-
-  function setColor(name, region, color) {
-    if (!selectedDinos[name]) return;
-    selectedDinos[name].colors[region] = color;
-    updateDinoField();
-    // Refresh just this region's swatch active states
-    const card = selectedList.querySelector('[data-card="' + name + '"]');
-    if (!card) return;
-    const row = card.querySelector('.color-swatches[data-region="' + region + '"]');
-    if (!row) return;
-    row.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.color === color));
-  }
-
-  // ── Render Selected Dinos ──
-  function renderSelectedDinos() {
-    const names = Object.keys(selectedDinos);
-    selectedCount.textContent = names.length + ' / ' + currentDinoLimit;
-    selectedWrap.style.display = names.length ? 'block' : 'none';
-
-    selectedList.innerHTML = names.map(name => {
-      const d = selectedDinos[name];
-
-      const regionsHtml = [0,1,2,3,4,5].map(r => {
-        const swatches =
-          '<button class="swatch skip' + (d.colors[r] === '' ? ' active' : '') + '" data-color="" title="Any / Skip">–</button>' +
-          COLORS.map(c =>
-            '<button class="swatch' + (d.colors[r] === c.name ? ' active' : '') + '" ' +
-              'style="background:' + c.hex + '" data-color="' + esc(c.name) + '" title="' + esc(c.name) + '">' +
-            '</button>'
-          ).join('');
-        return '<div class="region-row">' +
-          '<span class="region-label">Reg ' + r + '</span>' +
-          '<div class="color-swatches" data-region="' + r + '">' + swatches + '</div>' +
-        '</div>';
-      }).join('');
-
-      return '<div class="selected-dino-card" data-card="' + esc(name) + '">' +
-        '<div class="selected-dino-top">' +
-          '<span class="selected-dino-name">' + esc(name) + '</span>' +
-          '<div style="display:flex;align-items:center;gap:0.5rem;">' +
-            '<div class="dino-type-toggle">' +
-              '<button class="type-btn' + (d.type === 'single' ? ' active' : '') + '" data-type="single" data-dino="' + esc(name) + '">Single</button>' +
-              '<button class="type-btn' + (d.type === 'pair'   ? ' active' : '') + '" data-type="pair"   data-dino="' + esc(name) + '">Breeding Pair</button>' +
-            '</div>' +
-            '<button class="remove-dino-btn" data-dino="' + esc(name) + '" title="Remove">✕</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="color-regions">' + regionsHtml + '</div>' +
-      '</div>';
-    }).join('');
-
-    // Bind type toggle
-    selectedList.querySelectorAll('.type-btn').forEach(btn => {
-      btn.addEventListener('click', () => setDinoType(btn.dataset.dino, btn.dataset.type));
-    });
-
-    // Bind remove
-    selectedList.querySelectorAll('.remove-dino-btn').forEach(btn => {
-      btn.addEventListener('click', () => removeDino(btn.dataset.dino));
-    });
-
-    // Bind color swatches
-    selectedList.querySelectorAll('.swatch').forEach(btn => {
-      const card = btn.closest('[data-card]');
-      const row  = btn.closest('.color-swatches');
-      if (!card || !row) return;
-      btn.addEventListener('click', () => setColor(card.dataset.card, +row.dataset.region, btn.dataset.color));
-    });
-
-    updateDinoField();
-  }
-
-  function updateDinoField() {
-    const names = Object.keys(selectedDinos);
-    if (!names.length) { formDinoField.value = '(none selected)'; return; }
-    formDinoField.value = names.map(name => {
-      const d = selectedDinos[name];
-      const typeStr  = d.type === 'pair' ? 'Breeding Pair' : 'Single';
-      const colorParts = d.colors.map((c, i) => c ? 'R' + i + ':' + c : null).filter(Boolean);
-      return '• ' + name + ' (' + typeStr + ')' + (colorParts.length ? ' | Colors: ' + colorParts.join(', ') : '');
-    }).join('\n');
-  }
-
-  function esc(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  // ── Search / Filter ──
-  dinoSearch.addEventListener('input',  renderDinoList);
-  catFilter.addEventListener('change',  renderDinoList);
-
-  // ── Pay Buttons ──
-  document.querySelectorAll('.pay-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const card = btn.closest('[data-package]');
-      openModal(
-        card ? card.dataset.package : 'Unknown Package',
-        btn.dataset.payment
-      );
-    });
-  });
-
-  // ── Form Submit ──
-  orderForm.addEventListener('submit', async e => {
-    e.preventDefault();
-    updateDinoField();
-    const ingame = document.getElementById('f-ingame').value;
-    formSubject.value = 'ARK Order — ' + formPkg.value + ' — ' + ingame;
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending…';
-
-    try {
-      const res = await fetch(orderForm.action, {
-        method: 'POST',
-        body: new FormData(orderForm),
-        headers: { Accept: 'application/json' }
-      });
-      if (res.ok) {
-        orderForm.hidden = true;
-        formSuccess.hidden = false;
-      } else {
-        alert('Submission failed — please try again or contact us on Discord.');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Order →';
-      }
-    } catch {
-      alert('Network error — check your connection and try again.');
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit Order →';
-    }
-  });
   </script>
 
 </body>
