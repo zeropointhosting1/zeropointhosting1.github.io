@@ -8,7 +8,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
-      --border: #22222e; --accent: #00e676;
+      --border: #22222e; --accent: #ff4d94;
       --text: #e8e8f0; --muted: #7a7a90; --radius: 10px;
       --line: rgba(255,255,255,0.08);
     }
@@ -60,7 +60,7 @@
     }
     .page-header::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(0,230,118,0.05) 0%, transparent 70%);
+      background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(255,77,148,0.05) 0%, transparent 70%);
       pointer-events: none;
     }
     .page-eyebrow { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; opacity: 0.85; }
@@ -93,7 +93,7 @@
     }
     .admin-card:hover {
       border-color: var(--accent);
-      box-shadow: 0 0 22px rgba(0,230,118,0.08);
+      box-shadow: 0 0 22px rgba(255,77,148,0.08);
     }
     .card-founder  { border-top: 2px solid var(--accent); max-width: 320px; }
     .card-cofounder{ border-top: 2px solid var(--accent); max-width: 280px; }
@@ -106,8 +106,8 @@
       font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em;
       flex-shrink: 0; margin-bottom: 0.1rem;
     }
-    .av-founder   { background: rgba(0,230,118,0.13); color: var(--accent); border: 1.5px solid rgba(0,230,118,0.4); }
-    .av-cofounder { background: rgba(0,230,118,0.13); color: var(--accent); border: 1.5px solid rgba(0,230,118,0.4); }
+    .av-founder   { background: rgba(255,77,148,0.13); color: var(--accent); border: 1.5px solid rgba(255,77,148,0.4); }
+    .av-cofounder { background: rgba(255,77,148,0.13); color: var(--accent); border: 1.5px solid rgba(255,77,148,0.4); }
     .av-pve       { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
 
     .admin-name { font-weight: 700; }
@@ -120,8 +120,8 @@
       font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
       padding: 0.18rem 0.55rem; border-radius: 4px; font-weight: 600;
     }
-    .b-founder   { background: rgba(0,230,118,0.12); color: var(--accent); border: 1px solid rgba(0,230,118,0.25); }
-    .b-cofounder { background: rgba(0,230,118,0.12); color: var(--accent); border: 1px solid rgba(0,230,118,0.25); }
+    .b-founder   { background: rgba(255,77,148,0.12); color: var(--accent); border: 1px solid rgba(255,77,148,0.25); }
+    .b-cofounder { background: rgba(255,77,148,0.12); color: var(--accent); border: 1px solid rgba(255,77,148,0.25); }
     .b-pve       { background: var(--surface2); color: var(--muted);      border: 1px solid var(--border); }
     .b-asa       { background: rgba(255,160,50,0.1); color: #ffb347;       border: 1px solid rgba(255,160,50,0.28); }
     .av-asa      { background: rgba(255,160,50,0.1); color: #ffb347;       border: 1.5px solid rgba(255,160,50,0.4); }
@@ -133,7 +133,7 @@
     .stem {
       width: 1px;
       height: 36px;
-      background: linear-gradient(to bottom, rgba(0,230,118,0.5), var(--line));
+      background: linear-gradient(to bottom, rgba(255,77,148,0.5), var(--line));
       flex-shrink: 0;
     }
     .stem-plain {
@@ -190,8 +190,8 @@
     }
     .branch-label-ase {
       color: var(--accent);
-      border-color: rgba(0,230,118,0.25);
-      background: rgba(0,230,118,0.06);
+      border-color: rgba(255,77,148,0.25);
+      background: rgba(255,77,148,0.06);
     }
     .branch-label-asa {
       color: #ffb347;
@@ -241,10 +241,12 @@
       .dual-branch { grid-template-columns: 1fr; gap: 1.5rem; }
       .dual-branch::before { display: none; }
       .dual-drop { display: none; }
+      .card-founder, .card-cofounder, .card-asa { max-width: 100%; }
     }
     @media (max-width: 380px) {
       .pve-grid { grid-template-columns: 1fr; }
       .pve-grid-bar::after { display: none; }
+      .admin-card { padding: 1.2rem 1rem; }
     }
 
     /* ── FOOTER ── */
@@ -262,8 +264,8 @@
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="servers.html">Servers</a></li>
-      <li><a href="ark.html">ARK</a></li>
-      <li><a href="bbs.html">BBS Shop</a></li>
+      <li><a href="ark.html">Ark Donations</a></li>
+      <li><a href="bbs.html">Admin Shop</a></li>
       <li><a href="discord.html">Discord</a></li>
       <li><a href="aboutus.html">About</a></li>
       <li><a href="admin.html">Admin</a></li>
