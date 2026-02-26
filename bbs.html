@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zeropoint | BBS Dino Shop</title>
+  <title>Zeropoint | Admin Shop</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     button { touch-action: manipulation; }
     :root {
       --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
-      --border: #22222e; --accent: #00e676;
+      --border: #22222e; --accent: #ff4d94;
       --text: #e8e8f0; --muted: #7a7a90; --radius: 10px;
     }
     html { scroll-behavior: smooth; }
@@ -19,13 +19,13 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       line-height: 1.6; min-height: 100vh; overflow-x: hidden;
     }
+    body.modal-open { overflow: hidden; }
 
     /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: center; padding: 0 1.5rem;
-      background: rgba(10,10,15,0.88);
-      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      background: rgba(10,10,15,0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border); height: 60px;
     }
     nav ul { display: flex; align-items: center; gap: 0.25rem; list-style: none; flex-wrap: nowrap; }
@@ -49,36 +49,19 @@
 
     /* ── PAGE HEADER ── */
     .page-header { padding: 120px 1.5rem 3rem; text-align: center; position: relative; }
-    .page-header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(0,230,118,0.05) 0%, transparent 70%); pointer-events: none; }
+    .page-header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(255,77,148,0.05) 0%, transparent 70%); pointer-events: none; }
     .page-eyebrow { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; opacity: 0.85; }
     .page-header h1 { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; background: linear-gradient(160deg, #ffffff 0%, #a0a0b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.75rem; }
     .page-header p { font-size: 1rem; color: var(--muted); max-width: 520px; margin: 0 auto; }
     .bbs-icon { font-size: 2.5rem; margin-bottom: 0.75rem; display: block; }
 
-    /* ── PRICE CARDS ── */
-    .price-section { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 3rem; }
-    .price-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-    @media (max-width: 700px) { .price-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 380px) { .price-grid { grid-template-columns: 1fr; } }
-    .price-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-top: 2px solid var(--accent); border-radius: var(--radius);
-      padding: 1.25rem 1rem; text-align: center;
-    }
-    .price-size { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
-    .price-bbs { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.03em; color: var(--text); line-height: 1; margin-bottom: 0.2rem; }
-    .price-sym { color: var(--accent); }
-    .price-unit { font-size: 0.68rem; color: var(--muted); }
-    .price-examples { font-size: 0.7rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.4; }
-
-    /* ── SHOP LAYOUT ── */
-    .shop-wrap { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+    /* ── WRAP ── */
+    .shop-wrap { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem 6rem; }
 
     /* ── RUNNING TOTAL BAR ── */
     .total-bar {
-      background: var(--surface); border: 1px solid rgba(0,230,118,0.25);
-      border-radius: 10px; padding: 1rem 1.25rem;
-      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface); border: 1px solid rgba(255,77,148,0.25); border-radius: 10px;
+      padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between;
       gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;
     }
     .total-bar[hidden] { display: none; }
@@ -87,176 +70,288 @@
     .total-amount { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.03em; color: var(--text); }
     .total-sym { color: var(--accent); }
     .total-count { font-size: 0.75rem; color: var(--muted); }
-    .scroll-to-form-btn {
-      background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.3);
-      color: var(--accent); border-radius: 7px; padding: 0.5rem 1rem;
-      font-size: 0.78rem; font-weight: 700; cursor: pointer;
-      transition: background 0.15s; white-space: nowrap; letter-spacing: 0.03em;
+    .checkout-bar-btn {
+      background: var(--accent); color: #000; border: none; border-radius: 7px;
+      padding: 0.6rem 1.25rem; font-size: 0.82rem; font-weight: 800; cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s; white-space: nowrap; font-family: inherit;
     }
-    .scroll-to-form-btn:hover { background: rgba(0,230,118,0.18); }
+    .checkout-bar-btn:hover { opacity: 0.88; transform: translateY(-1px); }
 
-    /* ── SEARCH & FILTER ── */
-    .shop-controls { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; margin-bottom: 0.75rem; }
-    @media (max-width: 480px) { .shop-controls { grid-template-columns: 1fr; } }
-    .shop-controls input,
-    .shop-controls select {
+    /* ── CATEGORY LANDING CARDS (ark.html pkg-card style) ── */
+    .cat-landing-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem;
+      max-width: 780px; margin: 0 auto;
+    }
+    @media (max-width: 560px) { .cat-landing-grid { grid-template-columns: 1fr; } }
+
+    .cat-landing-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-top: 2px solid var(--accent); border-radius: var(--radius);
+      padding: 1.75rem 1.5rem 1.5rem; display: flex; flex-direction: column; gap: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.22s;
+    }
+    .cat-landing-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 28px rgba(255,77,148,0.09), 0 6px 28px rgba(0,0,0,0.45);
+      transform: translateY(-4px);
+    }
+    .cat-landing-icon { font-size: 1.7rem; color: var(--accent); opacity: 0.85; }
+    .cat-landing-name { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .cat-landing-price { font-size: 2rem; font-weight: 800; letter-spacing: -0.04em; color: var(--text); line-height: 1; }
+    .cat-landing-price span { font-size: 0.85rem; font-weight: 600; color: var(--accent); margin-left: 0.35rem; }
+    .cat-landing-desc { font-size: 0.84rem; color: var(--muted); flex: 1; }
+    .cat-landing-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .cat-landing-tag {
+      font-size: 0.65rem; letter-spacing: 0.09em; text-transform: uppercase;
+      padding: 0.2rem 0.55rem; border-radius: 4px;
+      background: rgba(255,77,148,0.08); color: var(--accent);
+      border: 1px solid rgba(255,77,148,0.2); font-weight: 600;
+    }
+    .cat-shop-btn {
+      width: 100%; padding: 0.65rem; border-radius: 7px; font-size: 0.85rem; font-weight: 800;
+      color: #000; background: var(--accent); border: none; cursor: pointer;
+      letter-spacing: 0.02em; margin-top: 0.25rem;
+      transition: opacity 0.15s, transform 0.15s; font-family: inherit;
+    }
+    .cat-shop-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    /* item count pill on card */
+    .cat-card-pill {
+      display: none; background: rgba(255,77,148,0.12); border: 1px solid rgba(255,77,148,0.3);
+      color: var(--accent); font-size: 0.7rem; font-weight: 800; border-radius: 20px;
+      padding: 0.15rem 0.6rem; align-self: flex-start;
+    }
+    .cat-card-pill.visible { display: inline-block; }
+
+    /* ══════════════════════════════════
+       SHOP MODAL (item picker)
+    ══════════════════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.78); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 1rem; overflow-y: auto;
+      -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+    }
+    .modal-overlay[hidden] { display: none; }
+
+    .modal-panel {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      width: 100%; max-width: 860px; margin: auto; position: relative;
+      display: flex; flex-direction: column; max-height: calc(100vh - 2rem);
+    }
+
+    /* Modal header */
+    .modal-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .modal-header-icon { font-size: 1.3rem; color: var(--accent); }
+    .modal-header-title { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; flex: 1; }
+    .modal-header-count {
+      background: var(--accent); color: #000; font-size: 0.65rem; font-weight: 800;
+      padding: 0.15rem 0.5rem; border-radius: 10px; min-width: 22px; text-align: center;
+      display: none;
+    }
+    .modal-header-count.visible { display: inline-block; }
+    .modal-close-btn {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--muted);
+      border-radius: 7px; width: 34px; height: 34px; font-size: 1rem; cursor: pointer;
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      transition: color 0.15s, background 0.15s; font-family: inherit;
+    }
+    .modal-close-btn:hover { color: var(--text); background: #2a2a38; }
+
+    /* Modal search/filter bar — stays at top, doesn't scroll */
+    .modal-controls {
+      padding: 0.85rem 1.5rem; border-bottom: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; flex-shrink: 0;
+    }
+    .modal-controls.single { grid-template-columns: 1fr; }
+    @media (max-width: 480px) { .modal-controls { grid-template-columns: 1fr; } }
+    .modal-controls input, .modal-controls select {
       background: var(--surface2); border: 1px solid var(--border); color: var(--text);
-      border-radius: 7px; padding: 0.6rem 0.9rem; font-size: 0.875rem;
+      border-radius: 7px; padding: 0.55rem 0.85rem; font-size: 0.875rem;
       font-family: inherit; outline: none; transition: border-color 0.15s;
     }
-    .shop-controls input:focus, .shop-controls select:focus { border-color: var(--accent); }
-    .shop-controls select { background-color: var(--surface2); }
+    .modal-controls input:focus, .modal-controls select:focus { border-color: var(--accent); }
+    .modal-controls select { background-color: var(--surface2); }
 
-    /* ── DINO LIST ── */
-    .dino-shop-list {
-      border: 1px solid var(--border); border-radius: 10px;
-      background: var(--bg); overflow-x: hidden; overflow-y: auto;
+    /* Modal body — scrolls */
+    .modal-body {
+      overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+      flex: 1; padding: 1.25rem 1.5rem;
+    }
+
+    /* Modal footer — always visible */
+    .modal-footer {
+      padding: 1rem 1.5rem; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-shrink: 0; flex-wrap: wrap;
+    }
+    .modal-footer-info { font-size: 0.82rem; color: var(--muted); }
+    .modal-footer-info strong { color: var(--accent); font-weight: 800; }
+    .modal-done-btn {
+      background: var(--accent); color: #000; border: none; border-radius: 8px;
+      padding: 0.65rem 1.5rem; font-size: 0.875rem; font-weight: 800; cursor: pointer;
+      letter-spacing: 0.02em; transition: opacity 0.15s, transform 0.15s; font-family: inherit;
+      white-space: nowrap;
+    }
+    .modal-done-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ══════════════════════════════════
+       ADD MORE MODAL
+    ══════════════════════════════════ */
+    .addmore-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.78); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .addmore-overlay[hidden] { display: none; }
+    .addmore-panel {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      width: 100%; max-width: 600px; max-height: calc(100vh - 2rem);
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
+    }
+    .addmore-header {
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 1rem 1.25rem 0;
+    }
+    .addmore-body { padding: 0.5rem 1.5rem 1.75rem; }
+    .addmore-callout {
+      background: rgba(255,77,148,0.08); border: 1px solid rgba(255,77,148,0.2);
+      border-radius: 8px; padding: 0.8rem 1rem; margin-bottom: 1.25rem;
+      font-size: 0.9rem; font-weight: 600; color: var(--text); text-align: center;
+    }
+    .addmore-callout strong { color: var(--accent); }
+    .addmore-heading {
+      font-size: 1.4rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.3rem;
+    }
+    .addmore-sub { font-size: 0.84rem; color: var(--muted); margin-bottom: 1.25rem; }
+    .addmore-cat-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.25rem;
+    }
+    @media (max-width: 400px) { .addmore-cat-grid { grid-template-columns: 1fr; } }
+    .addmore-cat-btn {
+      background: var(--surface2); border: 1px solid var(--border); border-top: 2px solid var(--accent);
+      border-radius: var(--radius); padding: 1rem; display: flex; align-items: center; gap: 0.75rem;
+      cursor: pointer; text-align: left; transition: border-color 0.2s, box-shadow 0.2s, transform 0.18s;
+      font-family: inherit; width: 100%;
+    }
+    .addmore-cat-btn:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 18px rgba(255,77,148,0.1), 0 4px 16px rgba(0,0,0,0.3);
+      transform: translateY(-2px);
+    }
+    .addmore-cat-icon { font-size: 1.3rem; color: var(--accent); flex-shrink: 0; }
+    .addmore-cat-name { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .addmore-cat-price { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+    .addmore-cat-added { color: var(--accent); font-weight: 700; }
+    .addmore-checkout-btn {
+      width: 100%; background: var(--accent); color: #000; border: none; border-radius: 8px;
+      padding: 0.85rem; font-size: 0.95rem; font-weight: 800; cursor: pointer; letter-spacing: 0.02em;
+      transition: opacity 0.15s, transform 0.15s; font-family: inherit;
+    }
+    .addmore-checkout-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ══════════════════════════════════
+       CHECKOUT MODAL
+    ══════════════════════════════════ */
+    .checkout-modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.78); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 1rem; overflow-y: auto;
       -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
-      max-height: 420px; margin-bottom: 2.5rem;
     }
-    .shop-row {
-      display: flex; align-items: center; gap: 0.75rem; justify-content: space-between;
-      padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); transition: background 0.12s;
+    .checkout-modal-overlay[hidden] { display: none; }
+    .checkout-modal-panel {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      width: 100%; max-width: 720px; margin: auto; position: relative;
+      display: flex; flex-direction: column; max-height: calc(100vh - 2rem);
     }
-    .shop-row:last-child { border-bottom: none; }
-    .shop-row:hover { background: var(--surface2); }
-    .shop-row-left { display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 0; }
-    .shop-dino-name { font-size: 0.875rem; font-weight: 600; }
-    .shop-added-count { font-size: 0.65rem; color: var(--accent); font-weight: 700; }
-    .size-badge {
-      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 0.15rem 0.45rem; border-radius: 4px; flex-shrink: 0;
+    .checkout-modal-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
+    .checkout-modal-title { font-size: 1.1rem; font-weight: 800; }
+    .checkout-modal-body { overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1; padding: 1.5rem; }
+
+    /* ── BBS ITEM CARDS ── */
+    .bbs-card-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+    }
+    @media (max-width: 700px) { .bbs-card-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 400px) { .bbs-card-grid { grid-template-columns: 1fr; } }
+
+    .bbs-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-top: 2px solid var(--accent); border-radius: var(--radius);
+      padding: 1rem 0.9rem 0.85rem; display: flex; flex-direction: column; gap: 0.45rem;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.18s;
+    }
+    .bbs-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 18px rgba(255,77,148,0.08), 0 4px 18px rgba(0,0,0,0.35);
+      transform: translateY(-2px);
+    }
+    .bbs-card.is-added { background: rgba(255,77,148,0.06); }
+    .bbs-card-icon { font-size: 1.3rem; line-height: 1; }
+    .bbs-card-name { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+    .bbs-card-badges { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+    .bbs-card-price { font-size: 1.2rem; font-weight: 900; letter-spacing: -0.03em; color: var(--text); line-height: 1; }
+    .bbs-price-sym { color: var(--accent); }
+    .bbs-card-unit { font-size: 0.65rem; color: var(--muted); }
+    .bbs-card-desc { font-size: 0.74rem; color: var(--muted); flex: 1; line-height: 1.35; }
+    .bbs-card-added-count { font-size: 0.7rem; font-weight: 800; color: var(--accent); }
+    .bbs-card-actions { display: flex; gap: 0.35rem; margin-top: auto; padding-top: 0.35rem; }
+    .bbs-card-add {
+      flex: 1; background: rgba(255,77,148,0.1); border: 1px solid rgba(255,77,148,0.25);
+      color: var(--accent); border-radius: 6px; padding: 0.4rem 0.3rem;
+      font-size: 0.7rem; font-weight: 700; cursor: pointer; letter-spacing: 0.04em;
+      text-transform: uppercase; transition: background 0.15s; font-family: inherit;
+    }
+    .bbs-card-add:hover { background: rgba(255,77,148,0.18); }
+    .bbs-card-remove {
+      background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.25);
+      color: #ff5252; border-radius: 6px; padding: 0.4rem 0.45rem;
+      font-size: 0.7rem; font-weight: 700; cursor: pointer;
+      text-transform: uppercase; transition: background 0.15s; font-family: inherit;
+    }
+    .bbs-card-remove:hover { background: rgba(255,82,82,0.18); }
+
+    /* BP quality select */
+    .bp-quality-select {
+      background: var(--bg); border: 1px solid var(--border); color: var(--text);
+      border-radius: 5px; padding: 0.25rem 0.4rem; font-size: 0.76rem;
+      font-family: inherit; outline: none; cursor: pointer; width: 100%;
+      transition: border-color 0.15s;
+    }
+    .bp-quality-select:focus { border-color: var(--accent); }
+
+    /* Badges */
+    .size-badge { font-size: 0.56rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.12rem 0.4rem; border-radius: 4px; flex-shrink: 0; }
     .size-badge.Small  { background: rgba(100,180,255,0.12); color: #7ab8ff; border: 1px solid rgba(100,180,255,0.25); }
     .size-badge.Medium { background: rgba(255,200,80,0.12);  color: #ffd060; border: 1px solid rgba(255,200,80,0.25); }
     .size-badge.Large  { background: rgba(255,120,60,0.12);  color: #ff9060; border: 1px solid rgba(255,120,60,0.25); }
     .size-badge.XL     { background: rgba(200,60,255,0.12);  color: #d880ff; border: 1px solid rgba(200,60,255,0.25); }
-    .shop-row-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
-    .shop-price { font-size: 0.78rem; font-weight: 700; color: var(--text); white-space: nowrap; }
-    .shop-price-sym { color: var(--accent); }
-    .shop-add-btn {
-      background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.25);
-      color: var(--accent); border-radius: 5px; padding: 0.28rem 0.65rem;
-      font-size: 0.7rem; font-weight: 700; cursor: pointer; letter-spacing: 0.04em;
-      text-transform: uppercase; transition: background 0.15s; white-space: nowrap;
-    }
-    .shop-add-btn:hover { background: rgba(0,230,118,0.18); }
-    .shop-remove-btn {
-      background: rgba(255,82,82,0.1); border: 1px solid rgba(255,82,82,0.25);
-      color: #ff5252; border-radius: 5px; padding: 0.28rem 0.65rem;
-      font-size: 0.7rem; font-weight: 700; cursor: pointer; letter-spacing: 0.04em;
-      text-transform: uppercase; transition: background 0.15s; white-space: nowrap;
-    }
-    .shop-remove-btn:hover { background: rgba(255,82,82,0.18); }
-    .no-results { padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
-
-    /* ── BLUEPRINT SECTION ── */
-    .shop-section-title {
-      font-size: 0.73rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase;
-      color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;
-      margin-bottom: 1rem; margin-top: 2.5rem;
-    }
-    .cat-badge {
-      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 0.15rem 0.45rem; border-radius: 4px; flex-shrink: 0;
-      background: rgba(120,120,160,0.12); color: #9090b0; border: 1px solid rgba(120,120,160,0.25);
-    }
-    .quality-badge {
-      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 0.15rem 0.45rem; border-radius: 4px; flex-shrink: 0;
-    }
+    .cat-badge { font-size: 0.56rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.12rem 0.4rem; border-radius: 4px; flex-shrink: 0; background: rgba(120,120,160,0.12); color: #9090b0; border: 1px solid rgba(120,120,160,0.25); }
+    .quality-badge { font-size: 0.56rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.12rem 0.4rem; border-radius: 4px; flex-shrink: 0; }
     .quality-badge.Common      { background: rgba(160,160,180,0.12); color: #a0a0b8; border: 1px solid rgba(160,160,180,0.25); }
     .quality-badge.Journeyman  { background: rgba(100,180,255,0.12); color: #7ab8ff; border: 1px solid rgba(100,180,255,0.25); }
     .quality-badge.Mastercraft { background: rgba(255,200,80,0.12);  color: #ffd060; border: 1px solid rgba(255,200,80,0.25); }
-    .quality-badge.Ascendant   { background: rgba(0,230,118,0.12);   color: #00e676; border: 1px solid rgba(0,230,118,0.25); }
-    .bp-quality-select {
-      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
-      border-radius: 5px; padding: 0.22rem 0.45rem; font-size: 0.72rem;
-      font-family: inherit; outline: none; cursor: pointer; transition: border-color 0.15s;
-    }
-    .bp-quality-select:focus { border-color: var(--accent); }
+    .quality-badge.Ascendant   { background: rgba(255,77,148,0.12);  color: #ff4d94; border: 1px solid rgba(255,77,148,0.25); }
 
-    /* ── COLOR SERVICE ── */
-    .color-job-panel {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; margin-bottom: 2.5rem; overflow: hidden;
-    }
-    .color-job-toggle {
-      width: 100%; display: flex; align-items: center; justify-content: space-between;
-      gap: 0.75rem; padding: 1rem 1.25rem; background: none; border: none; cursor: pointer;
-      color: var(--text); text-align: left;
-    }
-    .color-job-toggle:hover { background: var(--surface2); }
-    .color-job-toggle-left { display: flex; flex-direction: column; gap: 0.15rem; }
-    .color-job-toggle-title { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
-    .color-job-toggle-sub { font-size: 0.72rem; color: var(--muted); }
-    .color-job-chevron { width: 16px; height: 16px; stroke: var(--muted); stroke-width: 2.5; fill: none; flex-shrink: 0; transition: transform 0.2s; }
-    .color-job-panel.open .color-job-chevron { transform: rotate(180deg); }
-    .color-job-body {
-      display: none; padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--border);
-    }
-    .color-job-panel.open .color-job-body { display: block; }
-    .color-job-body-inner { padding-top: 1rem; }
-    .color-job-info {
-      background: rgba(0,230,118,0.05); border: 1px solid rgba(0,230,118,0.15);
-      border-radius: 8px; padding: 0.7rem 1rem; margin-bottom: 1rem;
-      font-size: 0.82rem; color: var(--muted);
-    }
-    .color-job-info strong { color: var(--accent); }
+    .no-results { padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; grid-column: 1 / -1; }
 
-    /* ── ORDER SUMMARY ── */
-    .order-summary-section { margin-bottom: 2rem; }
-    .order-summary-section[hidden] { display: none; }
-    .order-summary-title { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem; }
-    .order-items-list { display: flex; flex-direction: column; gap: 0.75rem; }
-
-    .order-item-card {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-left: 3px solid var(--accent); border-radius: 8px; padding: 0.9rem 1rem;
+    /* ── COLOR FORM (inside modal) ── */
+    .color-service-info {
+      background: rgba(255,77,148,0.05); border: 1px solid rgba(255,77,148,0.15);
+      border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1rem;
+      font-size: 0.83rem; color: var(--muted); line-height: 1.5;
     }
-    .order-item-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
-    .order-item-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-    .order-item-name { font-size: 0.9rem; font-weight: 700; }
-    .order-item-price { font-size: 0.8rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
-    .order-item-controls { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
-    .type-btn {
-      padding: 0.26rem 0.6rem; border-radius: 5px; font-size: 0.68rem; font-weight: 700;
-      letter-spacing: 0.04em; cursor: pointer; border: 1px solid var(--border);
-      background: transparent; color: var(--muted); transition: all 0.15s; text-transform: uppercase;
-    }
-    .type-btn.active { background: rgba(0,230,118,0.15); border-color: rgba(0,230,118,0.4); color: var(--accent); }
-    .remove-item-btn {
-      background: none; border: none; color: var(--muted); cursor: pointer;
-      font-size: 1rem; line-height: 1; padding: 0.1rem 0.3rem; border-radius: 4px; transition: color 0.15s;
-    }
-    .remove-item-btn:hover { color: #ff5555; }
-
-    /* Color regions */
-    .color-regions { display: flex; flex-direction: column; gap: 0.4rem; }
-    .region-row { display: flex; align-items: flex-start; gap: 0.65rem; }
-    .region-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); min-width: 50px; padding-top: 0.25rem; flex-shrink: 0; }
-    .color-swatches { display: flex; flex-wrap: wrap; gap: 0.25rem; }
-    .swatch { width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; outline: none; transition: transform 0.12s, border-color 0.12s; padding: 0; flex-shrink: 0; }
-    .swatch:hover { transform: scale(1.25); }
-    .swatch.active { border-color: #fff; transform: scale(1.18); box-shadow: 0 0 0 1px rgba(255,255,255,0.25); }
-    .swatch.skip { background: var(--surface); border: 2px solid var(--border); color: var(--muted); font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-    .swatch.skip.active { border-color: var(--accent); color: var(--accent); }
-
-    /* Order total row */
-    .order-total-row {
-      display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem;
-      padding: 0.9rem 0 0; border-top: 1px solid var(--border); margin-top: 0.75rem;
-    }
-    .order-total-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-    .order-total-value { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.03em; }
-    .order-total-sym { color: var(--accent); }
-
-    /* ── ORDER FORM ── */
-    .order-form-section { border-top: 1px solid var(--border); padding-top: 2rem; }
-    .section-title { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    @media (max-width: 520px) { .form-row { grid-template-columns: 1fr; } }
-    .form-group { display: flex; flex-direction: column; gap: 0.38rem; margin-bottom: 0.75rem; }
+    .color-service-info strong { color: var(--text); }
+    .color-service-price-line { font-size: 1.3rem; font-weight: 900; color: var(--text); margin-bottom: 0.75rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.38rem; margin-bottom: 0.85rem; }
     .form-group label { font-size: 0.77rem; font-weight: 600; color: var(--text); }
     .form-group input, .form-group textarea {
       background: var(--surface2); border: 1px solid var(--border); color: var(--text);
@@ -265,46 +360,74 @@
     }
     .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
     .form-group textarea { resize: vertical; min-height: 80px; }
+    .color-add-btn {
+      background: var(--accent); color: #000; border: none; border-radius: 7px;
+      padding: 0.6rem 1.25rem; font-size: 0.85rem; font-weight: 800;
+      cursor: pointer; transition: opacity 0.15s; font-family: inherit;
+    }
+    .color-add-btn:hover { opacity: 0.88; }
+    .color-jobs-added-note { font-size: 0.8rem; color: var(--accent); font-weight: 700; margin-top: 0.75rem; }
+
+    /* Color regions */
+    .color-regions { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+    .region-row { display: flex; align-items: flex-start; gap: 0.65rem; }
+    .region-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); min-width: 46px; padding-top: 0.25rem; flex-shrink: 0; }
+    .color-swatches { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+    .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; outline: none; transition: transform 0.12s, border-color 0.12s; padding: 0; flex-shrink: 0; }
+    .swatch:hover { transform: scale(1.25); }
+    .swatch.active { border-color: #fff; transform: scale(1.18); box-shadow: 0 0 0 1px rgba(255,255,255,0.25); }
+    .swatch.skip { background: var(--surface); border: 2px solid var(--border); color: var(--muted); font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .swatch.skip.active { border-color: var(--accent); color: var(--accent); }
+
+    /* ── CHECKOUT MODAL CONTENT ── */
+    .section-title { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+    .order-items-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; }
+    .order-item-card { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 0.8rem 0.9rem; }
+    .order-item-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+    .order-item-meta { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
+    .order-item-name { font-size: 0.88rem; font-weight: 700; }
+    .order-item-price { font-size: 0.78rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+    .order-item-controls { display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0; }
+    .type-btn { padding: 0.22rem 0.55rem; border-radius: 5px; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.04em; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); transition: all 0.15s; text-transform: uppercase; }
+    .type-btn.active { background: rgba(255,77,148,0.15); border-color: rgba(255,77,148,0.4); color: var(--accent); }
+    .remove-item-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.95rem; line-height: 1; padding: 0.1rem 0.3rem; border-radius: 4px; transition: color 0.15s; }
+    .remove-item-btn:hover { color: #ff5555; }
+    .order-total-row { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; padding: 0.75rem 0 0; border-top: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .order-total-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .order-total-value { font-size: 1.45rem; font-weight: 900; letter-spacing: -0.03em; }
+    .order-total-sym { color: var(--accent); }
     .form-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
     .form-note { font-size: 0.78rem; color: var(--muted); flex: 1; }
-    .submit-btn {
-      background: var(--accent); color: #000; border: none; border-radius: 8px;
-      padding: 0.75rem 1.75rem; font-size: 0.9rem; font-weight: 800;
-      cursor: pointer; letter-spacing: 0.02em; transition: opacity 0.15s, transform 0.15s; white-space: nowrap;
-    }
+    .submit-btn { background: var(--accent); color: #000; border: none; border-radius: 8px; padding: 0.7rem 1.5rem; font-size: 0.9rem; font-weight: 800; cursor: pointer; letter-spacing: 0.02em; transition: opacity 0.15s, transform 0.15s; white-space: nowrap; font-family: inherit; }
     .submit-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
     .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* Success */
-    .form-success { text-align: center; padding: 3rem 1rem; }
+    .form-success { text-align: center; padding: 2.5rem 1rem; }
     .form-success[hidden] { display: none; }
-    .success-icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(0,230,118,0.12); border: 2px solid var(--accent); color: var(--accent); font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
-    .form-success h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
-    .form-success p { color: var(--muted); margin-bottom: 1.5rem; }
+    .success-icon { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,77,148,0.12); border: 2px solid var(--accent); color: var(--accent); font-size: 1.4rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.1rem; }
+    .form-success h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .form-success p { color: var(--muted); margin-bottom: 1.25rem; font-size: 0.9rem; }
 
-    /* ── CATEGORY TABS ── */
-    .cat-tabs {
-      display: flex; gap: 0.3rem; margin-bottom: 1.5rem;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 0.3rem; flex-wrap: wrap;
-    }
-    .cat-tab {
-      flex: 1; min-width: 0; padding: 0.5rem 0.6rem; border: none; border-radius: 7px;
-      background: transparent; color: var(--muted); font-size: 0.8rem; font-weight: 700;
-      cursor: pointer; letter-spacing: 0.02em; transition: color 0.15s, background 0.15s;
-      white-space: nowrap; text-align: center; font-family: inherit;
-    }
-    .cat-tab:hover { color: var(--text); background: var(--surface2); }
-    .cat-tab.active { background: var(--surface2); color: var(--accent); }
-    .cat-section { display: none; animation: catFade 0.18s ease; }
-    .cat-section.active { display: block; }
-    @keyframes catFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    /* ── EMPTY CART NOTE ── */
+    .empty-cart-note { text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: 0.85rem; }
 
     /* ── FOOTER ── */
     footer { border-top: 1px solid var(--border); padding: 2.5rem 1.5rem; text-align: center; }
     footer p { color: var(--muted); font-size: 0.82rem; }
     footer a { color: var(--accent); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 520px) {
+      .swatch { width: 26px; height: 26px; }
+      .total-bar { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .checkout-bar-btn { width: 100%; text-align: center; }
+      .modal-footer { flex-direction: column; align-items: stretch; }
+      .modal-done-btn { text-align: center; }
+      .modal-header { padding: 1rem; }
+      .modal-body { padding: 1rem; }
+      .modal-controls { padding: 0.75rem 1rem; }
+      .modal-footer { padding: 0.85rem 1rem; }
+    }
   </style>
 </head>
 <body>
@@ -315,8 +438,8 @@
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="servers.html">Servers</a></li>
-      <li><a href="ark.html">ARK</a></li>
-      <li><a href="bbs.html">BBS Shop</a></li>
+      <li><a href="ark.html">Ark Donations</a></li>
+      <li><a href="bbs.html">Admin Shop</a></li>
       <li><a href="discord.html">Discord</a></li>
       <li><a href="aboutus.html">About</a></li>
       <li><a href="admin.html">Admin</a></li>
@@ -330,44 +453,13 @@
   <div class="page-header">
     <span class="bbs-icon">🍓</span>
     <p class="page-eyebrow">In-Game Currency</p>
-    <h1>BBS Shop</h1>
-    <p>Spend your in-game BBS to buy tamed dinos, get existing dinos painted, or pick up high-quality blueprints. An admin will verify your balance before delivery.</p>
+    <h1>Admin Shop</h1>
+    <p>Spend your in-game BBS on tamed dinos, custom paint jobs, high-quality blueprints, and exclusive cosmetic skins.</p>
   </div>
 
-  <!-- PRICE GUIDE -->
-  <div class="price-section">
-    <div class="price-grid">
-      <div class="price-card">
-        <div class="price-size">Small</div>
-        <div class="price-bbs">250,000 <span class="price-sym">🍓</span></div>
-        <div class="price-unit">per dino</div>
-        <div class="price-examples">Raptor, Otter, Dodo &amp; more</div>
-      </div>
-      <div class="price-card">
-        <div class="price-size">Medium</div>
-        <div class="price-bbs">400,000 <span class="price-sym">🍓</span></div>
-        <div class="price-unit">per dino</div>
-        <div class="price-examples">Argentavis, Carnotaurus &amp; more</div>
-      </div>
-      <div class="price-card">
-        <div class="price-size">Large</div>
-        <div class="price-bbs">800,000 <span class="price-sym">🍓</span></div>
-        <div class="price-unit">per dino</div>
-        <div class="price-examples">Rex, Wyvern, Griffin &amp; more</div>
-      </div>
-      <div class="price-card">
-        <div class="price-size">XL</div>
-        <div class="price-bbs">900,000 <span class="price-sym">🍓</span></div>
-        <div class="price-unit">per dino</div>
-        <div class="price-examples">Giga, Mosasaurus &amp; more</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SHOP -->
   <div class="shop-wrap">
 
-    <!-- Running total bar -->
+    <!-- Running total bar (hidden until items added) -->
     <div class="total-bar" id="total-bar" hidden>
       <div class="total-bar-left">
         <div>
@@ -376,127 +468,174 @@
         </div>
         <div class="total-count" id="total-count-label"></div>
       </div>
-      <button class="scroll-to-form-btn" id="go-to-form-btn">Place Order ↓</button>
+      <button class="checkout-bar-btn" id="open-checkout-btn">Checkout →</button>
     </div>
 
-    <!-- Category Tabs -->
-    <div class="cat-tabs">
-      <button class="cat-tab active" data-cat="dinos">🦕 Dinos</button>
-      <button class="cat-tab" data-cat="blueprints">📋 Blueprints</button>
-      <button class="cat-tab" data-cat="colors">🎨 Colors</button>
-      <button class="cat-tab" data-cat="review">🛒 Review</button>
-    </div>
+    <!-- 4 Category Cards -->
+    <div class="cat-landing-grid">
 
-    <!-- DINOS -->
-    <div id="cat-dinos" class="cat-section active">
-      <div class="shop-controls">
-        <input type="text" id="shop-search" placeholder="Search dinos..." autocomplete="off">
-        <select id="shop-size-filter">
-          <option value="">All Sizes</option>
-          <option value="Small">Small — 250k</option>
-          <option value="Medium">Medium — 400k</option>
-          <option value="Large">Large — 800k</option>
-          <option value="XL">XL — 900k</option>
-        </select>
+      <div class="cat-landing-card">
+        <i class="cat-landing-icon fas fa-dragon"></i>
+        <div>
+          <div class="cat-landing-name">Tamed Dinos</div>
+          <div class="cat-landing-price">250k – 900k <span>🍓</span></div>
+        </div>
+        <p class="cat-landing-desc">Any PvE dino, tamed and server-balanced. Single or breeding pair, with custom color options per region.</p>
+        <div class="cat-landing-tags">
+          <span class="cat-landing-tag">Any Size</span>
+          <span class="cat-landing-tag">Breeding Pairs</span>
+          <span class="cat-landing-tag">Custom Paint</span>
+        </div>
+        <span class="cat-card-pill" id="pill-dinos"></span>
+        <button class="cat-shop-btn" data-modal="dinos">Shop Dinos →</button>
       </div>
-      <div class="dino-shop-list" id="dino-shop-list"></div>
-    </div>
 
-    <!-- BLUEPRINTS -->
-    <div id="cat-blueprints" class="cat-section">
-      <div class="price-grid" style="margin-bottom:1rem;">
-        <div class="price-card">
-          <div class="price-size">Common</div>
-          <div class="price-bbs">10,000 <span class="price-sym">🍓</span></div>
-          <div class="price-unit">per blueprint</div>
+      <div class="cat-landing-card">
+        <i class="cat-landing-icon fas fa-palette"></i>
+        <div>
+          <div class="cat-landing-name">Color Jobs</div>
+          <div class="cat-landing-price">50,000 <span>🍓</span></div>
         </div>
-        <div class="price-card">
-          <div class="price-size">Journeyman</div>
-          <div class="price-bbs">20,000 <span class="price-sym">🍓</span></div>
-          <div class="price-unit">per blueprint</div>
+        <p class="cat-landing-desc">Already own a dino and want it repainted? Pick up to 6 region colors — an admin will paint it in-game.</p>
+        <div class="cat-landing-tags">
+          <span class="cat-landing-tag">6 Regions</span>
+          <span class="cat-landing-tag">Any Owned Dino</span>
+          <span class="cat-landing-tag">Per Dino</span>
         </div>
-        <div class="price-card">
-          <div class="price-size">Mastercraft</div>
-          <div class="price-bbs">30,000 <span class="price-sym">🍓</span></div>
-          <div class="price-unit">per blueprint</div>
-        </div>
-        <div class="price-card">
-          <div class="price-size">Ascendant</div>
-          <div class="price-bbs">50,000 <span class="price-sym">🍓</span></div>
-          <div class="price-unit">per blueprint</div>
-        </div>
+        <span class="cat-card-pill" id="pill-colors"></span>
+        <button class="cat-shop-btn" data-modal="colors">Shop Colors →</button>
       </div>
-      <div class="shop-controls">
-        <input type="text" id="bp-search" placeholder="Search blueprints..." autocomplete="off">
-        <select id="bp-cat-filter">
-          <option value="">All Categories</option>
-          <option value="Saddle">Saddles</option>
-          <option value="Weapon">Weapons</option>
-          <option value="Armor">Armor</option>
-        </select>
-      </div>
-      <div class="dino-shop-list" id="bp-shop-list"></div>
-    </div>
 
-    <!-- COLORS -->
-    <div id="cat-colors" class="cat-section">
-      <div class="color-job-info" style="margin-bottom:1.25rem;">
-        This service is for <strong>dinos you already own</strong> in-game. An admin will paint your existing tamed dino. Pick colors for up to 6 regions. <strong>50,000 🍓 per dino.</strong>
+      <div class="cat-landing-card">
+        <i class="cat-landing-icon fas fa-file-alt"></i>
+        <div>
+          <div class="cat-landing-name">Blueprints</div>
+          <div class="cat-landing-price">10k – 50k <span>🍓</span></div>
+        </div>
+        <p class="cat-landing-desc">High-quality crafting blueprints for saddles, weapons, and armor. Common through Ascendant quality.</p>
+        <div class="cat-landing-tags">
+          <span class="cat-landing-tag">Saddles</span>
+          <span class="cat-landing-tag">Weapons</span>
+          <span class="cat-landing-tag">Armor</span>
+          <span class="cat-landing-tag">Ascendant</span>
+        </div>
+        <span class="cat-card-pill" id="pill-blueprints"></span>
+        <button class="cat-shop-btn" data-modal="blueprints">Shop Blueprints →</button>
       </div>
-      <div class="form-group">
-        <label for="color-dino-name">Dino Name *</label>
-        <input id="color-dino-name" type="text" placeholder="e.g. Rex, Argy, Wyvern...">
-      </div>
-      <div id="color-job-regions"></div>
-      <button type="button" id="color-job-add-btn" class="shop-add-btn" style="margin-top:0.75rem;">+ Add Color Job</button>
-    </div>
 
-    <!-- REVIEW -->
-    <div id="cat-review" class="cat-section">
-      <div class="order-summary-section" id="order-summary-section" hidden>
-        <h3 class="order-summary-title">Your Order <span id="order-item-count" style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;"></span></h3>
-        <div class="order-items-list" id="order-items-list"></div>
-        <div class="order-total-row">
-          <span class="order-total-label">Total</span>
-          <span class="order-total-value"><span id="order-total-display">0</span> <span class="order-total-sym">🍓</span></span>
+      <div class="cat-landing-card">
+        <i class="cat-landing-icon fas fa-tshirt"></i>
+        <div>
+          <div class="cat-landing-name">Skins &amp; Cosmetics</div>
+          <div class="cat-landing-price">10k – 40k <span>🍓</span></div>
         </div>
+        <p class="cat-landing-desc">Bone costumes for your dinos, Chibi companions, and cosmetic skins for armor and weapons.</p>
+        <div class="cat-landing-tags">
+          <span class="cat-landing-tag">Dino Costumes</span>
+          <span class="cat-landing-tag">Chibi Pets</span>
+          <span class="cat-landing-tag">Weapon Skins</span>
+        </div>
+        <span class="cat-card-pill" id="pill-skins"></span>
+        <button class="cat-shop-btn" data-modal="skins">Shop Skins →</button>
       </div>
-      <div class="order-form-section" id="order-form-section">
-        <h3 class="section-title">Place Your Order</h3>
-        <form id="bbs-order-form">
-          <div class="form-group">
-            <label for="f-ingame">In-Game Name *</label>
-            <input id="f-ingame" type="text" name="ingame_name" required placeholder="Your survivor name">
-          </div>
-          <div class="form-group">
-            <label for="f-teleporter">Teleporter Name / Delivery Location *</label>
-            <input id="f-teleporter" type="text" name="teleporter" required placeholder="e.g. Bob's TP, Green Obelisk, base coords...">
-          </div>
-          <div class="form-group">
-            <label for="f-discord">Discord Username</label>
-            <input id="f-discord" type="text" name="discord" placeholder="e.g. username or username#0000">
-          </div>
-          <div class="form-group">
-            <label for="f-notes">Additional Notes</label>
-            <textarea id="f-notes" name="notes" rows="3" placeholder="Stat preferences, mutations, anything else..."></textarea>
-          </div>
-          <div class="form-footer">
-            <p class="form-note">An admin will verify your BBS balance in-game before delivering your dinos.</p>
-            <button type="submit" class="submit-btn" id="bbs-submit-btn">Submit Order →</button>
-          </div>
-        </form>
-        <div class="form-success" id="bbs-success" hidden>
-          <div class="success-icon">✓</div>
-          <h3>Order Received!</h3>
-          <p>An admin will check your BBS balance and deliver your dinos. Watch Discord for updates.</p>
-          <button class="submit-btn" onclick="document.getElementById('bbs-success').hidden=true; document.getElementById('bbs-order-form').hidden=false;">New Order</button>
-        </div>
+
+    </div>
+  </div><!-- /shop-wrap -->
+
+  <!-- ══════════ SHOP MODAL ══════════ -->
+  <div class="modal-overlay" id="shop-modal" hidden>
+    <div class="modal-panel">
+      <!-- Header -->
+      <div class="modal-header">
+        <i class="modal-header-icon" id="modal-icon"></i>
+        <span class="modal-header-title" id="modal-title"></span>
+        <span class="modal-header-count" id="modal-count-badge"></span>
+        <button class="modal-close-btn" id="modal-close-btn" aria-label="Close">✕</button>
+      </div>
+      <!-- Controls (search/filter) -->
+      <div class="modal-controls" id="modal-controls"></div>
+      <!-- Scrollable item grid -->
+      <div class="modal-body" id="modal-body"></div>
+      <!-- Sticky footer -->
+      <div class="modal-footer">
+        <div class="modal-footer-info" id="modal-footer-info">Add items above to your order.</div>
+        <button class="modal-done-btn" id="modal-done-btn">Done →</button>
       </div>
     </div>
-
   </div>
 
-  <!-- FOOTER -->
+  <!-- ══════════ CHECKOUT MODAL ══════════ -->
+  <div class="checkout-modal-overlay" id="checkout-modal" hidden>
+    <div class="checkout-modal-panel">
+      <div class="checkout-modal-header">
+        <span class="checkout-modal-title">🛒 Your Order</span>
+        <button class="modal-close-btn" id="checkout-close-btn" aria-label="Close">✕</button>
+      </div>
+      <div class="checkout-modal-body">
+
+        <!-- Order summary -->
+        <div id="order-summary-section">
+          <h3 class="section-title">Order Summary <span id="order-item-count" style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;font-size:0.9em;"></span></h3>
+          <div class="order-items-list" id="order-items-list"></div>
+          <div class="order-total-row">
+            <span class="order-total-label">Total</span>
+            <span class="order-total-value"><span id="order-total-display">0</span> <span class="order-total-sym">🍓</span></span>
+          </div>
+        </div>
+
+        <!-- Delivery form -->
+        <div id="checkout-form-wrap">
+          <h3 class="section-title">Delivery Details</h3>
+          <form id="bbs-order-form">
+            <div class="form-group">
+              <label for="f-ingame">In-Game Name *</label>
+              <input id="f-ingame" type="text" name="ingame_name" required placeholder="Your survivor name">
+            </div>
+            <div class="form-group">
+              <label for="f-teleporter">Teleporter / Delivery Location *</label>
+              <input id="f-teleporter" type="text" name="teleporter" required placeholder="e.g. Bob's TP, Green Obelisk, coords…">
+            </div>
+            <div class="form-group">
+              <label for="f-discord">Discord Username</label>
+              <input id="f-discord" type="text" name="discord" placeholder="e.g. username#0000">
+            </div>
+            <div class="form-group">
+              <label for="f-notes">Additional Notes</label>
+              <textarea id="f-notes" name="notes" rows="3" placeholder="Stat preferences, mutations, anything else…"></textarea>
+            </div>
+            <div class="form-footer">
+              <p class="form-note">An admin will verify your BBS balance before delivering.</p>
+              <button type="submit" class="submit-btn" id="bbs-submit-btn">Submit Order →</button>
+            </div>
+          </form>
+          <div class="form-success" id="bbs-success" hidden>
+            <div class="success-icon">✓</div>
+            <h3>Order Received!</h3>
+            <p>An admin will check your BBS balance and deliver your order. Watch Discord for updates.</p>
+            <button class="submit-btn" onclick="resetShop()">Start New Order</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ ADD MORE MODAL ══════════ -->
+  <div class="addmore-overlay" id="addmore-modal" hidden>
+    <div class="addmore-panel">
+      <div class="addmore-header">
+        <button class="modal-close-btn" id="addmore-close-btn" aria-label="Close">✕</button>
+      </div>
+      <div class="addmore-body">
+        <div class="addmore-callout" id="addmore-callout"></div>
+        <h2 class="addmore-heading">Want to add anything else?</h2>
+        <p class="addmore-sub">Shop another category or head straight to checkout.</p>
+        <div class="addmore-cat-grid" id="addmore-cat-grid"></div>
+        <button class="addmore-checkout-btn" id="addmore-checkout-btn">Proceed to Checkout →</button>
+      </div>
+    </div>
+  </div>
+
   <footer>
     <p>&copy; 2026 Zeropoint &mdash; <a href="discord.html">Join our Discord</a> &mdash; <a href="rules.html">Community Rules</a></p>
   </footer>
@@ -510,18 +649,7 @@
     });
   })();
 
-  // ── COLOR SERVICE TOGGLE ──
-  (function () {
-    const panel  = document.getElementById('color-job-panel');
-    const toggle = document.getElementById('color-job-toggle');
-    if (!panel || !toggle) return;
-    toggle.addEventListener('click', function () {
-      const open = panel.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', open);
-    });
-  })();
-
-  // ── MOBILE NAV TOGGLE ──
+  // ── MOBILE NAV ──
   (function () {
     var t = document.querySelector('.nav-toggle');
     var m = document.querySelector('nav ul');
@@ -536,133 +664,97 @@
   })();
 
   // ══════════════════════════════════════
-  //  BBS SHOP
+  //  DATA
   // ══════════════════════════════════════
 
-  const BBS_PRICES = { Small: 250000, Medium: 400000, Large: 800000, XL: 900000 };
+  const BBS_PRICES  = { Small: 250000, Medium: 400000, Large: 800000, XL: 900000 };
   const BP_PRICES   = { Common: 10000, Journeyman: 20000, Mastercraft: 30000, Ascendant: 50000 };
   const COLOR_PRICE = 50000;
+  const SIZE_ICONS  = { Small: '🦎', Medium: '🦅', Large: '🐉', XL: '💀' };
 
   const DINOS = [
-    // Small
-    { name: 'Archaeopteryx',   size: 'Small'  },
-    { name: 'Desmodus',        size: 'Small'  },
-    { name: 'Dilophosaurus',   size: 'Small'  },
-    { name: 'Dimorphodon',     size: 'Small'  },
-    { name: 'Dodo',            size: 'Small'  },
-    { name: 'Electrophorus',   size: 'Small'  },
-    { name: 'Fjordhawk',       size: 'Small'  },
-    { name: 'Jerboa',          size: 'Small'  },
-    { name: 'Lystrosaurus',    size: 'Small'  },
-    { name: 'Mesopithecus',    size: 'Small'  },
-    { name: 'Otter',           size: 'Small'  },
-    { name: 'Oviraptor',       size: 'Small'  },
-    { name: 'Parasaur',        size: 'Small'  },
-    { name: 'Pegomastax',      size: 'Small'  },
-    { name: 'Pteranodon',      size: 'Small'  },
-    { name: 'Troodon',         size: 'Small'  },
-    // Medium
-    { name: 'Argentavis',      size: 'Medium' },
-    { name: 'Baryonyx',        size: 'Medium' },
-    { name: 'Carnotaurus',     size: 'Medium' },
-    { name: 'Castoroides',     size: 'Medium' },
-    { name: 'Daeodon',         size: 'Medium' },
-    { name: 'Deinonychus',     size: 'Medium' },
-    { name: 'Doedicurus',      size: 'Medium' },
-    { name: 'Gallimimus',      size: 'Medium' },
-    { name: 'Iguanodon',       size: 'Medium' },
-    { name: 'Kaprosuchus',     size: 'Medium' },
-    { name: 'Maewing',         size: 'Medium' },
-    { name: 'Mammoth',         size: 'Medium' },
-    { name: 'Megaloceros',     size: 'Medium' },
-    { name: 'Megalosaurus',    size: 'Medium' },
-    { name: 'Moschops',        size: 'Medium' },
-    { name: 'Pachycephalosaurus', size: 'Medium' },
-    { name: 'Pelagornis',      size: 'Medium' },
-    { name: 'Procoptodon',     size: 'Medium' },
-    { name: 'Raptor',          size: 'Medium' },
-    { name: 'Sarcosuchus',     size: 'Medium' },
-    { name: 'Snow Owl',        size: 'Medium' },
-    { name: 'Stegosaurus',     size: 'Medium' },
-    { name: 'Tapejara',        size: 'Medium' },
-    { name: 'Thylacoleo',      size: 'Medium' },
-    { name: 'Velonasaur',      size: 'Medium' },
-    { name: 'Woolly Rhino',    size: 'Medium' },
-    // Large
-    { name: 'Allosaurus',                size: 'Large' },
-    { name: 'Ankylosaurus',              size: 'Large' },
-    { name: 'Astrodelphis',              size: 'Large' },
-    { name: 'Basilosaurus',              size: 'Large' },
-    { name: 'Brontosaurus',              size: 'Large' },
-    { name: 'Crystal Wyvern (Blood)',    size: 'Large' },
-    { name: 'Crystal Wyvern (Ember)',    size: 'Large' },
-    { name: 'Crystal Wyvern (Heart)',    size: 'Large' },
-    { name: 'Diplodocus',                size: 'Large' },
-    { name: 'Gacha',                     size: 'Large' },
-    { name: 'Griffin',                   size: 'Large' },
-    { name: 'Magmasaur',                 size: 'Large' },
-    { name: 'Managarmr',                 size: 'Large' },
-    { name: 'Megalodon',                 size: 'Large' },
-    { name: 'Paraceratherium',           size: 'Large' },
-    { name: 'Plesiosaur',                size: 'Large' },
-    { name: 'Quetzal',                   size: 'Large' },
-    { name: 'Rex',                       size: 'Large' },
-    { name: 'Rock Drake',                size: 'Large' },
-    { name: 'Shadowmane',                size: 'Large' },
-    { name: 'Spinosaurus',               size: 'Large' },
-    { name: 'Stryder',                   size: 'Large' },
-    { name: 'Therizinosaurus',           size: 'Large' },
-    { name: 'Triceratops',               size: 'Large' },
-    { name: 'Tropeognathus',             size: 'Large' },
-    { name: 'Wyvern (Fire)',             size: 'Large' },
-    { name: 'Wyvern (Ice)',              size: 'Large' },
-    { name: 'Wyvern (Lightning)',        size: 'Large' },
-    { name: 'Wyvern (Poison)',           size: 'Large' },
-    { name: 'Yutyrannus',                size: 'Large' },
-    // XL
-    { name: 'Astrocetus',     size: 'XL' },
-    { name: 'Giganotosaurus', size: 'XL' },
-    { name: 'Mosasaurus',     size: 'XL' },
+    { name: 'Archaeopteryx',      size: 'Small'  }, { name: 'Desmodus',           size: 'Small'  },
+    { name: 'Dilophosaurus',      size: 'Small'  }, { name: 'Dimorphodon',        size: 'Small'  },
+    { name: 'Dodo',               size: 'Small'  }, { name: 'Electrophorus',      size: 'Small'  },
+    { name: 'Fjordhawk',          size: 'Small'  }, { name: 'Jerboa',             size: 'Small'  },
+    { name: 'Lystrosaurus',       size: 'Small'  }, { name: 'Mesopithecus',       size: 'Small'  },
+    { name: 'Otter',              size: 'Small'  }, { name: 'Oviraptor',          size: 'Small'  },
+    { name: 'Parasaur',           size: 'Small'  }, { name: 'Pegomastax',         size: 'Small'  },
+    { name: 'Pteranodon',         size: 'Small'  }, { name: 'Troodon',            size: 'Small'  },
+    { name: 'Argentavis',         size: 'Medium' }, { name: 'Baryonyx',           size: 'Medium' },
+    { name: 'Carnotaurus',        size: 'Medium' }, { name: 'Castoroides',        size: 'Medium' },
+    { name: 'Daeodon',            size: 'Medium' }, { name: 'Deinonychus',        size: 'Medium' },
+    { name: 'Doedicurus',         size: 'Medium' }, { name: 'Gallimimus',         size: 'Medium' },
+    { name: 'Iguanodon',          size: 'Medium' }, { name: 'Kaprosuchus',        size: 'Medium' },
+    { name: 'Maewing',            size: 'Medium' }, { name: 'Mammoth',            size: 'Medium' },
+    { name: 'Megaloceros',        size: 'Medium' }, { name: 'Megalosaurus',       size: 'Medium' },
+    { name: 'Moschops',           size: 'Medium' }, { name: 'Pachycephalosaurus', size: 'Medium' },
+    { name: 'Pelagornis',         size: 'Medium' }, { name: 'Procoptodon',        size: 'Medium' },
+    { name: 'Raptor',             size: 'Medium' }, { name: 'Sarcosuchus',        size: 'Medium' },
+    { name: 'Snow Owl',           size: 'Medium' }, { name: 'Stegosaurus',        size: 'Medium' },
+    { name: 'Tapejara',           size: 'Medium' }, { name: 'Thylacoleo',         size: 'Medium' },
+    { name: 'Velonasaur',         size: 'Medium' }, { name: 'Woolly Rhino',       size: 'Medium' },
+    { name: 'Allosaurus',              size: 'Large' }, { name: 'Ankylosaurus',            size: 'Large' },
+    { name: 'Astrodelphis',            size: 'Large' }, { name: 'Basilosaurus',            size: 'Large' },
+    { name: 'Brontosaurus',            size: 'Large' }, { name: 'Crystal Wyvern (Blood)',  size: 'Large' },
+    { name: 'Crystal Wyvern (Ember)',  size: 'Large' }, { name: 'Crystal Wyvern (Heart)',  size: 'Large' },
+    { name: 'Diplodocus',              size: 'Large' }, { name: 'Gacha',                   size: 'Large' },
+    { name: 'Griffin',                 size: 'Large' }, { name: 'Magmasaur',               size: 'Large' },
+    { name: 'Managarmr',               size: 'Large' }, { name: 'Megalodon',               size: 'Large' },
+    { name: 'Paraceratherium',         size: 'Large' }, { name: 'Plesiosaur',              size: 'Large' },
+    { name: 'Quetzal',                 size: 'Large' }, { name: 'Rex',                     size: 'Large' },
+    { name: 'Rock Drake',              size: 'Large' }, { name: 'Shadowmane',              size: 'Large' },
+    { name: 'Spinosaurus',             size: 'Large' }, { name: 'Stryder',                 size: 'Large' },
+    { name: 'Therizinosaurus',         size: 'Large' }, { name: 'Triceratops',             size: 'Large' },
+    { name: 'Tropeognathus',           size: 'Large' }, { name: 'Wyvern (Fire)',           size: 'Large' },
+    { name: 'Wyvern (Ice)',            size: 'Large' }, { name: 'Wyvern (Lightning)',      size: 'Large' },
+    { name: 'Wyvern (Poison)',         size: 'Large' }, { name: 'Yutyrannus',              size: 'Large' },
+    { name: 'Astrocetus',     size: 'XL' }, { name: 'Giganotosaurus', size: 'XL' }, { name: 'Mosasaurus', size: 'XL' },
   ];
 
   const BLUEPRINTS = [
-    // Saddles
-    { name: 'Argy Saddle',        cat: 'Saddle' },
-    { name: 'Bary Saddle',        cat: 'Saddle' },
-    { name: 'Bronto Saddle',      cat: 'Saddle' },
-    { name: 'Carno Saddle',       cat: 'Saddle' },
-    { name: 'Mammoth Saddle',     cat: 'Saddle' },
-    { name: 'Paracer Saddle',     cat: 'Saddle' },
-    { name: 'Quetzal Saddle',     cat: 'Saddle' },
-    { name: 'Rex Saddle',         cat: 'Saddle' },
-    { name: 'Spino Saddle',       cat: 'Saddle' },
-    { name: 'Stego Saddle',       cat: 'Saddle' },
-    { name: 'Theri Saddle',       cat: 'Saddle' },
-    { name: 'Trike Saddle',       cat: 'Saddle' },
-    { name: 'Wyvern Saddle',      cat: 'Saddle' },
-    // Weapons
-    { name: 'Assault Rifle',            cat: 'Weapon' },
-    { name: 'Compound Bow',             cat: 'Weapon' },
-    { name: 'Crossbow',                 cat: 'Weapon' },
-    { name: 'Fabricated Pistol',        cat: 'Weapon' },
-    { name: 'Fabricated Sniper Rifle',  cat: 'Weapon' },
-    { name: 'Longneck Rifle',           cat: 'Weapon' },
-    { name: 'Pike',                     cat: 'Weapon' },
-    { name: 'Pump-Action Shotgun',      cat: 'Weapon' },
-    { name: 'Sword',                    cat: 'Weapon' },
-    // Armor
-    { name: 'Flak Helmet',     cat: 'Armor' },
-    { name: 'Flak Chestpiece', cat: 'Armor' },
-    { name: 'Flak Leggings',   cat: 'Armor' },
-    { name: 'Flak Gauntlets',  cat: 'Armor' },
-    { name: 'Flak Boots',      cat: 'Armor' },
-    { name: 'Riot Helmet',     cat: 'Armor' },
-    { name: 'Riot Chestpiece', cat: 'Armor' },
-    { name: 'Riot Leggings',   cat: 'Armor' },
-    { name: 'Riot Gauntlets',  cat: 'Armor' },
-    { name: 'Riot Boots',      cat: 'Armor' },
-    { name: 'Ghillie Suit',    cat: 'Armor' },
-    { name: 'Hazard Suit',     cat: 'Armor' },
+    { name: 'Argy Saddle',             cat: 'Saddle', icon: '🏇' }, { name: 'Bary Saddle',             cat: 'Saddle', icon: '🏇' },
+    { name: 'Bronto Saddle',           cat: 'Saddle', icon: '🏇' }, { name: 'Carno Saddle',            cat: 'Saddle', icon: '🏇' },
+    { name: 'Mammoth Saddle',          cat: 'Saddle', icon: '🏇' }, { name: 'Paracer Saddle',          cat: 'Saddle', icon: '🏇' },
+    { name: 'Quetzal Saddle',          cat: 'Saddle', icon: '🏇' }, { name: 'Rex Saddle',              cat: 'Saddle', icon: '🏇' },
+    { name: 'Spino Saddle',            cat: 'Saddle', icon: '🏇' }, { name: 'Stego Saddle',            cat: 'Saddle', icon: '🏇' },
+    { name: 'Theri Saddle',            cat: 'Saddle', icon: '🏇' }, { name: 'Trike Saddle',            cat: 'Saddle', icon: '🏇' },
+    { name: 'Wyvern Saddle',           cat: 'Saddle', icon: '🏇' }, { name: 'Assault Rifle',           cat: 'Weapon', icon: '🔫' },
+    { name: 'Compound Bow',            cat: 'Weapon', icon: '🏹' }, { name: 'Crossbow',                cat: 'Weapon', icon: '🏹' },
+    { name: 'Fabricated Pistol',       cat: 'Weapon', icon: '🔫' }, { name: 'Fabricated Sniper Rifle', cat: 'Weapon', icon: '🔫' },
+    { name: 'Longneck Rifle',          cat: 'Weapon', icon: '🔫' }, { name: 'Pike',                    cat: 'Weapon', icon: '⚔️'  },
+    { name: 'Pump-Action Shotgun',     cat: 'Weapon', icon: '🔫' }, { name: 'Sword',                   cat: 'Weapon', icon: '⚔️'  },
+    { name: 'Flak Helmet',     cat: 'Armor', icon: '🛡️' }, { name: 'Flak Chestpiece', cat: 'Armor', icon: '🛡️' },
+    { name: 'Flak Leggings',   cat: 'Armor', icon: '🛡️' }, { name: 'Flak Gauntlets',  cat: 'Armor', icon: '🛡️' },
+    { name: 'Flak Boots',      cat: 'Armor', icon: '🛡️' }, { name: 'Riot Helmet',     cat: 'Armor', icon: '🛡️' },
+    { name: 'Riot Chestpiece', cat: 'Armor', icon: '🛡️' }, { name: 'Riot Leggings',   cat: 'Armor', icon: '🛡️' },
+    { name: 'Riot Gauntlets',  cat: 'Armor', icon: '🛡️' }, { name: 'Riot Boots',      cat: 'Armor', icon: '🛡️' },
+    { name: 'Ghillie Suit',    cat: 'Armor', icon: '🛡️' }, { name: 'Hazard Suit',     cat: 'Armor', icon: '🛡️' },
+  ];
+
+  const SKINS = [
+    { name: 'Rex Bone Costume',       cat: 'Dino Costume', icon: '🦴', price: 40000, desc: 'Skeletal overlay for a Rex' },
+    { name: 'Raptor Bone Costume',    cat: 'Dino Costume', icon: '🦴', price: 25000, desc: 'Skeletal overlay for a Raptor' },
+    { name: 'Trike Bone Costume',     cat: 'Dino Costume', icon: '🦴', price: 30000, desc: 'Skeletal overlay for a Trike' },
+    { name: 'Stego Bone Costume',     cat: 'Dino Costume', icon: '🦴', price: 30000, desc: 'Skeletal overlay for a Stego' },
+    { name: 'Carno Bone Costume',     cat: 'Dino Costume', icon: '🦴', price: 30000, desc: 'Skeletal overlay for a Carno' },
+    { name: 'Bronto Bone Costume',    cat: 'Dino Costume', icon: '🦴', price: 35000, desc: 'Skeletal overlay for a Bronto' },
+    { name: 'Spino Bone Costume',     cat: 'Dino Costume', icon: '🦴', price: 35000, desc: 'Skeletal overlay for a Spino' },
+    { name: 'Ankylo Bone Costume',    cat: 'Dino Costume', icon: '🦴', price: 25000, desc: 'Skeletal overlay for an Ankylo' },
+    { name: 'Chibi-Dino',             cat: 'Chibi',        icon: '🐣', price: 15000, desc: 'Adorable mini companion' },
+    { name: 'Chibi-Rex',              cat: 'Chibi',        icon: '🐣', price: 20000, desc: 'Tiny Rex companion' },
+    { name: 'Chibi-Wyvern',           cat: 'Chibi',        icon: '🐣', price: 25000, desc: 'Tiny Wyvern companion' },
+    { name: 'Chibi-Raptor',           cat: 'Chibi',        icon: '🐣', price: 15000, desc: 'Tiny Raptor companion' },
+    { name: 'Chibi-Giga',             cat: 'Chibi',        icon: '🐣', price: 25000, desc: 'Tiny Giga companion' },
+    { name: 'Witch Hat Skin',         cat: 'Armor Skin',   icon: '🎩', price: 10000, desc: 'Spooky cosmetic hat overlay' },
+    { name: 'Top Hat Skin',           cat: 'Armor Skin',   icon: '🎩', price: 10000, desc: 'Dapper cosmetic hat overlay' },
+    { name: 'Bone Helmet Skin',       cat: 'Armor Skin',   icon: '💀', price: 15000, desc: 'Skeletal helmet cosmetic' },
+    { name: 'Corrupted Helmet Skin',  cat: 'Armor Skin',   icon: '💀', price: 20000, desc: 'Tek-corrupted helmet cosmetic' },
+    { name: 'Dino Glasses Skin',      cat: 'Armor Skin',   icon: '🕶️', price: 10000, desc: 'Stylish glasses overlay' },
+    { name: 'Dragon Bone Sword Skin', cat: 'Weapon Skin',  icon: '⚔️', price: 15000, desc: 'Cosmetic skin for any sword' },
+    { name: 'Dragon Bone Bow Skin',   cat: 'Weapon Skin',  icon: '🏹', price: 15000, desc: 'Cosmetic skin for any bow' },
+    { name: 'Dragon Bone Club Skin',  cat: 'Weapon Skin',  icon: '🪃', price: 12000, desc: 'Cosmetic skin for a club' },
+    { name: 'Torch Skin',             cat: 'Weapon Skin',  icon: '🔦', price: 10000, desc: 'Cosmetic torch overlay' },
   ];
 
   const COLORS = [
@@ -678,106 +770,372 @@
     { name: 'Brown',      hex: '#7A4520' }, { name: 'Tan',        hex: '#C8A870' },
   ];
 
-  // State
-  let orderItems      = [];
-  let nextId          = 0;
-  let bpRowQualities      = {}; // tracks selected quality per BP name in the shop list
-  let colorJobDraftColors = ['','','','','','']; // 6 region colors for the draft color job
+  // ══ STATE ══
+  let orderItems          = [];
+  let nextId              = 0;
+  let bpRowQualities      = {};
+  let colorJobDraftColors = ['','','','','',''];
+  let currentModalCat     = null;
 
-  // DOM refs
-  const shopList        = document.getElementById('dino-shop-list');
-  const orderSummary    = document.getElementById('order-summary-section');
-  const orderItemsList  = document.getElementById('order-items-list');
-  const orderItemCount  = document.getElementById('order-item-count');
-  const orderTotalDisp  = document.getElementById('order-total-display');
-  const totalBar        = document.getElementById('total-bar');
-  const totalDisplay    = document.getElementById('total-display');
-  const totalCountLabel = document.getElementById('total-count-label');
-  const shopSearch      = document.getElementById('shop-search');
-  const shopSizeFilter  = document.getElementById('shop-size-filter');
-  const bpList          = document.getElementById('bp-shop-list');
-  const bpSearch        = document.getElementById('bp-search');
-  const bpCatFilter     = document.getElementById('bp-cat-filter');
-  const bbsForm         = document.getElementById('bbs-order-form');
-  const bbsSuccess      = document.getElementById('bbs-success');
-  const bbsSubmitBtn    = document.getElementById('bbs-submit-btn');
+  // ══ DOM ══
+  const totalBar       = document.getElementById('total-bar');
+  const totalDisplay   = document.getElementById('total-display');
+  const totalCountLbl  = document.getElementById('total-count-label');
+  const shopModal      = document.getElementById('shop-modal');
+  const modalIcon      = document.getElementById('modal-icon');
+  const modalTitle     = document.getElementById('modal-title');
+  const modalCountBadge= document.getElementById('modal-count-badge');
+  const modalControls  = document.getElementById('modal-controls');
+  const modalBody      = document.getElementById('modal-body');
+  const modalFooterInfo= document.getElementById('modal-footer-info');
+  const checkoutModal  = document.getElementById('checkout-modal');
+  const orderItemsList = document.getElementById('order-items-list');
+  const orderItemCount = document.getElementById('order-item-count');
+  const orderTotalDisp = document.getElementById('order-total-display');
+  const bbsForm        = document.getElementById('bbs-order-form');
+  const bbsSuccess     = document.getElementById('bbs-success');
+  const bbsSubmitBtn   = document.getElementById('bbs-submit-btn');
 
-  // ── CATEGORY TABS ──
-  function switchTab(cat) {
-    document.querySelectorAll('.cat-tab').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
-    document.querySelectorAll('.cat-section').forEach(s => s.classList.toggle('active', s.id === 'cat-' + cat));
-  }
-  document.querySelectorAll('.cat-tab').forEach(btn => {
-    btn.addEventListener('click', () => switchTab(btn.dataset.cat));
-  });
-
-  // "Place Order" button → jump to Review tab
-  document.getElementById('go-to-form-btn').addEventListener('click', () => {
-    switchTab('review');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  // ── Formatting ──
+  // ══ HELPERS ══
   function fmt(n) { return n.toLocaleString(); }
-
+  function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function calcItemBBS(item) {
     if (item.kind === 'bp')    return BP_PRICES[item.quality];
     if (item.kind === 'color') return COLOR_PRICE;
+    if (item.kind === 'skin')  return item.price;
     return BBS_PRICES[item.size] * (item.type === 'pair' ? 2 : 1);
   }
+  function calcTotal() { return orderItems.reduce((s, i) => s + calcItemBBS(i), 0); }
 
-  function calcTotal() {
-    return orderItems.reduce((sum, item) => sum + calcItemBBS(item), 0);
+  // ══ MODAL MANAGEMENT ══
+  const MODAL_META = {
+    dinos:      { icon: 'fas fa-dragon',   title: 'Tamed Dinos' },
+    colors:     { icon: 'fas fa-palette',  title: 'Color Jobs'  },
+    blueprints: { icon: 'fas fa-file-alt', title: 'Blueprints'  },
+    skins:      { icon: 'fas fa-tshirt',   title: 'Skins & Cosmetics' },
+  };
+
+  function openShopModal(cat) {
+    currentModalCat = cat;
+    const meta = MODAL_META[cat];
+    modalIcon.className = 'modal-header-icon ' + meta.icon;
+    modalTitle.textContent = meta.title;
+    renderModalContent(cat);
+    shopModal.removeAttribute('hidden');
+    document.body.classList.add('modal-open');
   }
 
-  function esc(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  function closeShopModal() {
+    shopModal.setAttribute('hidden', '');
+    document.body.classList.remove('modal-open');
+    currentModalCat = null;
+    updateTotals();
   }
 
-  // ── Add / Remove ──
-  function addDino(name, size) {
-    orderItems.push({ id: nextId++, name, size, type: 'single', colors: ['','','','','',''] });
-    render();
+  function openCheckout() {
+    renderOrderSummary();
+    checkoutModal.removeAttribute('hidden');
+    document.body.classList.add('modal-open');
   }
 
-  function removeItem(id) {
-    orderItems = orderItems.filter(i => i.id !== id);
-    render();
+  function closeCheckout() {
+    checkoutModal.setAttribute('hidden', '');
+    document.body.classList.remove('modal-open');
   }
 
-  function removeLastDino(name) {
-    for (let i = orderItems.length - 1; i >= 0; i--) {
-      if (orderItems[i].name === name) { orderItems.splice(i, 1); break; }
+  // Clicking the backdrop closes the modal
+  shopModal.addEventListener('click', e => { if (e.target === shopModal) closeShopModal(); });
+  checkoutModal.addEventListener('click', e => { if (e.target === checkoutModal) closeCheckout(); });
+
+  document.getElementById('modal-close-btn').addEventListener('click', closeShopModal);
+  document.getElementById('checkout-close-btn').addEventListener('click', closeCheckout);
+  document.getElementById('modal-done-btn').addEventListener('click', doneWithCategory);
+  document.getElementById('open-checkout-btn').addEventListener('click', openCheckout);
+
+  // Category card buttons
+  document.querySelectorAll('.cat-shop-btn').forEach(btn => {
+    btn.addEventListener('click', () => openShopModal(btn.dataset.modal));
+  });
+
+  // ESC key closes modals
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeShopModal(); closeAddMore(); closeCheckout(); }
+  });
+
+  // ══ ADD MORE MODAL ══
+  const addmoreModal = document.getElementById('addmore-modal');
+
+  function openAddMore() {
+    renderAddMore();
+    addmoreModal.removeAttribute('hidden');
+    document.body.classList.add('modal-open');
+  }
+  function closeAddMore() {
+    addmoreModal.setAttribute('hidden', '');
+    document.body.classList.remove('modal-open');
+  }
+  function renderAddMore() {
+    const total = calcTotal();
+    const count = orderItems.length;
+    document.getElementById('addmore-callout').innerHTML =
+      'You have <strong>' + count + ' item' + (count !== 1 ? 's' : '') + '</strong> — <strong>' + fmt(total) + ' 🍓</strong> total so far';
+
+    const catDefs = [
+      { cat: 'dinos',      icon: 'fas fa-dragon',   name: 'Tamed Dinos',    price: '250k – 900k 🍓' },
+      { cat: 'colors',     icon: 'fas fa-palette',  name: 'Color Jobs',     price: '50,000 🍓 each' },
+      { cat: 'blueprints', icon: 'fas fa-file-alt', name: 'Blueprints',     price: '10k – 50k 🍓'   },
+      { cat: 'skins',      icon: 'fas fa-tshirt',   name: 'Skins',          price: '10k – 40k 🍓'   },
+    ];
+    const grid = document.getElementById('addmore-cat-grid');
+    grid.innerHTML = catDefs.map(c => {
+      const n = countForCat(c.cat);
+      return '<button class="addmore-cat-btn" data-cat="' + c.cat + '">' +
+        '<i class="addmore-cat-icon ' + c.icon + '"></i>' +
+        '<div><div class="addmore-cat-name">' + c.name + '</div>' +
+        '<div class="addmore-cat-price">' + c.price +
+          (n ? ' <span class="addmore-cat-added">· ' + n + ' added</span>' : '') +
+        '</div></div>' +
+      '</button>';
+    }).join('');
+    grid.querySelectorAll('.addmore-cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => { closeAddMore(); openShopModal(btn.dataset.cat); });
+    });
+  }
+
+  function doneWithCategory() {
+    closeShopModal();
+    if (orderItems.length > 0) openAddMore();
+  }
+
+  document.getElementById('addmore-close-btn').addEventListener('click', closeAddMore);
+  addmoreModal.addEventListener('click', e => { if (e.target === addmoreModal) closeAddMore(); });
+  document.getElementById('addmore-checkout-btn').addEventListener('click', () => { closeAddMore(); openCheckout(); });
+
+  // ══ RENDER MODAL CONTENT ══
+  function renderModalContent(cat) {
+    if (cat === 'dinos')      renderDinoModal();
+    else if (cat === 'blueprints') renderBPModal();
+    else if (cat === 'skins') renderSkinsModal();
+    else if (cat === 'colors') renderColorsModal();
+    updateModalFooter();
+  }
+
+  function updateModalFooter() {
+    if (!currentModalCat) return;
+    const total = calcTotal();
+    const count = orderItems.length;
+    if (count > 0) {
+      modalFooterInfo.innerHTML = '<strong>' + count + ' item' + (count !== 1 ? 's' : '') + '</strong> in order &mdash; <strong>' + fmt(total) + ' 🍓</strong>';
+    } else {
+      modalFooterInfo.textContent = 'Add items above to your order.';
     }
-    render();
+    // Update count badge in header
+    const catCount = countForCat(currentModalCat);
+    modalCountBadge.textContent = catCount;
+    modalCountBadge.className = 'modal-header-count' + (catCount ? ' visible' : '');
   }
 
-  function addBP(name, quality, cat) {
-    orderItems.push({ id: nextId++, name, quality, cat, kind: 'bp' });
-    render();
+  function countForCat(cat) {
+    if (cat === 'dinos')      return orderItems.filter(i => !i.kind).length;
+    if (cat === 'colors')     return orderItems.filter(i => i.kind === 'color').length;
+    if (cat === 'blueprints') return orderItems.filter(i => i.kind === 'bp').length;
+    if (cat === 'skins')      return orderItems.filter(i => i.kind === 'skin').length;
+    return 0;
   }
 
-  function removeLastBP(name, quality) {
-    for (let i = orderItems.length - 1; i >= 0; i--) {
-      if (orderItems[i].kind === 'bp' && orderItems[i].name === name && orderItems[i].quality === quality) {
-        orderItems.splice(i, 1); break;
-      }
-    }
-    render();
+  // ── Dino modal ──
+  function renderDinoModal() {
+    modalControls.className = 'modal-controls';
+    modalControls.innerHTML =
+      '<input type="text" id="m-dino-search" placeholder="Search dinos…" autocomplete="off">' +
+      '<select id="m-dino-size"><option value="">All Sizes</option>' +
+      ['Small','Medium','Large','XL'].map(s => '<option value="' + s + '">' + s + ' — ' + fmt(BBS_PRICES[s]) + ' 🍓</option>').join('') +
+      '</select>';
+
+    document.getElementById('m-dino-search').addEventListener('input', renderDinoGrid);
+    document.getElementById('m-dino-size').addEventListener('change', renderDinoGrid);
+    renderDinoGrid();
   }
 
-  function renderColorJobForm() {
-    const container = document.getElementById('color-job-regions');
+  function renderDinoGrid() {
+    const q    = (document.getElementById('m-dino-search') || {}).value || '';
+    const size = (document.getElementById('m-dino-size')   || {}).value || '';
+    const qLow = q.trim().toLowerCase();
+    const filtered = DINOS.filter(d => (!qLow || d.name.toLowerCase().includes(qLow)) && (!size || d.size === size));
+
+    if (!filtered.length) { modalBody.innerHTML = '<div class="no-results">No dinos match your search.</div>'; return; }
+
+    const counts = {};
+    orderItems.forEach(i => { if (!i.kind) counts[i.name] = (counts[i.name] || 0) + 1; });
+
+    modalBody.innerHTML = '<div class="bbs-card-grid">' + filtered.map(d => {
+      const count = counts[d.name] || 0;
+      const price = BBS_PRICES[d.size];
+      return '<div class="bbs-card' + (count ? ' is-added' : '') + '">' +
+        '<span class="bbs-card-icon">' + SIZE_ICONS[d.size] + '</span>' +
+        '<div class="bbs-card-name">' + esc(d.name) + '</div>' +
+        '<div class="bbs-card-badges"><span class="size-badge ' + d.size + '">' + d.size + '</span></div>' +
+        '<div class="bbs-card-price">' + fmt(price) + ' <span class="bbs-price-sym">🍓</span></div>' +
+        '<div class="bbs-card-unit">per dino · pair doubles cost</div>' +
+        (count ? '<div class="bbs-card-added-count">×' + count + ' in order</div>' : '') +
+        '<div class="bbs-card-actions">' +
+          (count ? '<button class="bbs-card-remove" data-name="' + esc(d.name) + '">– 1</button>' : '') +
+          '<button class="bbs-card-add" data-name="' + esc(d.name) + '" data-size="' + d.size + '">+ Add</button>' +
+        '</div></div>';
+    }).join('') + '</div>';
+
+    modalBody.querySelectorAll('.bbs-card-add').forEach(btn => {
+      btn.addEventListener('click', () => { addDino(btn.dataset.name, btn.dataset.size); renderDinoGrid(); updateModalFooter(); });
+    });
+    modalBody.querySelectorAll('.bbs-card-remove').forEach(btn => {
+      btn.addEventListener('click', () => { removeLastDino(btn.dataset.name); renderDinoGrid(); updateModalFooter(); });
+    });
+  }
+
+  // ── Blueprint modal ──
+  function renderBPModal() {
+    modalControls.className = 'modal-controls';
+    modalControls.innerHTML =
+      '<input type="text" id="m-bp-search" placeholder="Search blueprints…" autocomplete="off">' +
+      '<select id="m-bp-cat"><option value="">All Categories</option><option value="Saddle">Saddles</option><option value="Weapon">Weapons</option><option value="Armor">Armor</option></select>';
+
+    document.getElementById('m-bp-search').addEventListener('input', renderBPGrid);
+    document.getElementById('m-bp-cat').addEventListener('change', renderBPGrid);
+    renderBPGrid();
+  }
+
+  function renderBPGrid() {
+    const q   = ((document.getElementById('m-bp-search') || {}).value || '').trim().toLowerCase();
+    const cat = (document.getElementById('m-bp-cat') || {}).value || '';
+    const filtered = BLUEPRINTS.filter(d => (!q || d.name.toLowerCase().includes(q)) && (!cat || d.cat === cat));
+
+    if (!filtered.length) { modalBody.innerHTML = '<div class="no-results">No blueprints match your search.</div>'; return; }
+
+    const counts = {};
+    orderItems.filter(i => i.kind === 'bp').forEach(i => {
+      const key = i.name + '||' + i.quality; counts[key] = (counts[key] || 0) + 1;
+    });
+
+    modalBody.innerHTML = '<div class="bbs-card-grid">' + filtered.map(d => {
+      const sel      = bpRowQualities[d.name] || 'Ascendant';
+      const price    = BP_PRICES[sel];
+      const countKey = d.name + '||' + sel;
+      const count    = counts[countKey] || 0;
+      return '<div class="bbs-card' + (count ? ' is-added' : '') + '">' +
+        '<span class="bbs-card-icon">' + d.icon + '</span>' +
+        '<div class="bbs-card-name">' + esc(d.name) + ' BP</div>' +
+        '<div class="bbs-card-badges"><span class="cat-badge">' + d.cat + '</span></div>' +
+        '<select class="bp-quality-select" data-bp="' + esc(d.name) + '">' +
+          ['Common','Journeyman','Mastercraft','Ascendant'].map(q =>
+            '<option value="' + q + '"' + (sel === q ? ' selected' : '') + '>' + q + ' — ' + fmt(BP_PRICES[q]) + ' 🍓</option>'
+          ).join('') +
+        '</select>' +
+        '<div class="bbs-card-price">' + fmt(price) + ' <span class="bbs-price-sym">🍓</span></div>' +
+        (count ? '<div class="bbs-card-added-count">×' + count + ' in order</div>' : '') +
+        '<div class="bbs-card-actions">' +
+          (count ? '<button class="bbs-card-remove" data-bp="' + esc(d.name) + '" data-quality="' + sel + '">– 1</button>' : '') +
+          '<button class="bbs-card-add" data-bp="' + esc(d.name) + '" data-cat="' + esc(d.cat) + '">+ Add</button>' +
+        '</div></div>';
+    }).join('') + '</div>';
+
+    modalBody.querySelectorAll('.bp-quality-select').forEach(sel => {
+      sel.addEventListener('change', () => { bpRowQualities[sel.dataset.bp] = sel.value; renderBPGrid(); });
+    });
+    modalBody.querySelectorAll('.bbs-card-add').forEach(btn => {
+      btn.addEventListener('click', () => { addBP(btn.dataset.bp, bpRowQualities[btn.dataset.bp] || 'Ascendant', btn.dataset.cat); renderBPGrid(); updateModalFooter(); });
+    });
+    modalBody.querySelectorAll('.bbs-card-remove').forEach(btn => {
+      btn.addEventListener('click', () => { removeLastBP(btn.dataset.bp, btn.dataset.quality); renderBPGrid(); updateModalFooter(); });
+    });
+  }
+
+  // ── Skins modal ──
+  function renderSkinsModal() {
+    modalControls.className = 'modal-controls';
+    modalControls.innerHTML =
+      '<input type="text" id="m-skins-search" placeholder="Search skins…" autocomplete="off">' +
+      '<select id="m-skins-cat"><option value="">All Types</option><option value="Dino Costume">Dino Costumes</option><option value="Chibi">Chibi Pets</option><option value="Armor Skin">Armor Skins</option><option value="Weapon Skin">Weapon Skins</option></select>';
+
+    document.getElementById('m-skins-search').addEventListener('input', renderSkinsGrid);
+    document.getElementById('m-skins-cat').addEventListener('change', renderSkinsGrid);
+    renderSkinsGrid();
+  }
+
+  function renderSkinsGrid() {
+    const q   = ((document.getElementById('m-skins-search') || {}).value || '').trim().toLowerCase();
+    const cat = (document.getElementById('m-skins-cat') || {}).value || '';
+    const filtered = SKINS.filter(s => (!q || s.name.toLowerCase().includes(q)) && (!cat || s.cat === cat));
+
+    if (!filtered.length) { modalBody.innerHTML = '<div class="no-results">No skins match your search.</div>'; return; }
+
+    const counts = {};
+    orderItems.filter(i => i.kind === 'skin').forEach(i => { counts[i.name] = (counts[i.name] || 0) + 1; });
+
+    modalBody.innerHTML = '<div class="bbs-card-grid">' + filtered.map(s => {
+      const count = counts[s.name] || 0;
+      return '<div class="bbs-card' + (count ? ' is-added' : '') + '">' +
+        '<span class="bbs-card-icon">' + s.icon + '</span>' +
+        '<div class="bbs-card-name">' + esc(s.name) + '</div>' +
+        '<div class="bbs-card-badges"><span class="cat-badge">' + esc(s.cat) + '</span></div>' +
+        '<div class="bbs-card-price">' + fmt(s.price) + ' <span class="bbs-price-sym">🍓</span></div>' +
+        '<div class="bbs-card-desc">' + esc(s.desc) + '</div>' +
+        (count ? '<div class="bbs-card-added-count">×' + count + ' in order</div>' : '') +
+        '<div class="bbs-card-actions">' +
+          (count ? '<button class="bbs-card-remove" data-skin="' + esc(s.name) + '">– 1</button>' : '') +
+          '<button class="bbs-card-add" data-skin="' + esc(s.name) + '" data-cat="' + esc(s.cat) + '" data-price="' + s.price + '">+ Add</button>' +
+        '</div></div>';
+    }).join('') + '</div>';
+
+    modalBody.querySelectorAll('.bbs-card-add').forEach(btn => {
+      btn.addEventListener('click', () => { addSkin(btn.dataset.skin, btn.dataset.cat, +btn.dataset.price); renderSkinsGrid(); updateModalFooter(); });
+    });
+    modalBody.querySelectorAll('.bbs-card-remove').forEach(btn => {
+      btn.addEventListener('click', () => { removeLastSkin(btn.dataset.skin); renderSkinsGrid(); updateModalFooter(); });
+    });
+  }
+
+  // ── Colors modal ──
+  function renderColorsModal() {
+    modalControls.className = 'modal-controls single';
+    modalControls.innerHTML = '<input type="text" id="m-color-dino-name" placeholder="Dino name — e.g. Rex, Argy, Wyvern…" autocomplete="off">';
+
+    modalBody.innerHTML =
+      '<div class="color-service-info">For <strong>dinos you already own</strong> in-game. Pick up to 6 region colors — leave any region blank for any/random. Add multiple jobs for different dinos.</div>' +
+      '<div class="color-service-price-line">50,000 <span style="color:var(--accent)">🍓</span> <span style="font-size:0.75rem;font-weight:500;color:var(--muted)">per dino</span></div>' +
+      '<div class="color-regions" id="m-color-regions"></div>' +
+      '<button type="button" class="color-add-btn" id="m-color-add-btn">+ Add This Color Job</button>' +
+      '<div class="color-jobs-added-note" id="m-color-note" style="display:none;"></div>';
+
+    renderColorSwatches();
+
+    document.getElementById('m-color-add-btn').addEventListener('click', () => {
+      const nameInput = document.getElementById('m-color-dino-name');
+      const name = nameInput.value.trim();
+      if (!name) { nameInput.focus(); return; }
+      orderItems.push({ id: nextId++, name, colors: colorJobDraftColors.slice(), kind: 'color' });
+      nameInput.value = '';
+      colorJobDraftColors = ['','','','','',''];
+      renderColorSwatches();
+      updateModalFooter();
+      updateTotals();
+      const colorCount = orderItems.filter(i => i.kind === 'color').length;
+      const note = document.getElementById('m-color-note');
+      note.style.display = 'block';
+      note.textContent = colorCount + ' color job' + (colorCount !== 1 ? 's' : '') + ' added to order ✓';
+    });
+  }
+
+  function renderColorSwatches() {
+    const container = document.getElementById('m-color-regions');
     if (!container) return;
     container.innerHTML = [0,1,2,3,4,5].map(r => {
       const swatches =
-        '<button type="button" class="swatch skip' + (colorJobDraftColors[r] === '' ? ' active' : '') + '" data-cjr="' + r + '" data-color="" title="Any / Skip">–</button>' +
+        '<button type="button" class="swatch skip' + (colorJobDraftColors[r] === '' ? ' active' : '') + '" data-cjr="' + r + '" data-color="" title="Any/Skip">–</button>' +
         COLORS.map(c =>
           '<button type="button" class="swatch' + (colorJobDraftColors[r] === c.name ? ' active' : '') + '" style="background:' + c.hex + '" data-cjr="' + r + '" data-color="' + esc(c.name) + '" title="' + esc(c.name) + '"></button>'
         ).join('');
-      return '<div class="region-row"><span class="region-label">Reg ' + r + '</span><div class="color-swatches">' + swatches + '</div></div>';
+      return '<div class="region-row" style="margin-top:0.45rem"><span class="region-label">Reg ' + r + '</span><div class="color-swatches">' + swatches + '</div></div>';
     }).join('');
-
     container.querySelectorAll('.swatch').forEach(btn => {
       btn.addEventListener('click', () => {
         const r = +btn.dataset.cjr;
@@ -789,250 +1147,49 @@
     });
   }
 
-  document.getElementById('color-job-add-btn').addEventListener('click', () => {
-    const nameInput = document.getElementById('color-dino-name');
-    const name = nameInput.value.trim();
-    if (!name) { nameInput.focus(); return; }
-    orderItems.push({ id: nextId++, name, colors: colorJobDraftColors.slice(), kind: 'color' });
-    nameInput.value = '';
-    colorJobDraftColors = ['','','','','',''];
-    renderColorJobForm();
-    render();
-  });
-
-  function renderBPList() {
-    const q   = bpSearch.value.trim().toLowerCase();
-    const cat = bpCatFilter.value;
-    const filtered = BLUEPRINTS.filter(d =>
-      (!q   || d.name.toLowerCase().includes(q)) &&
-      (!cat || d.cat === cat)
-    );
-
-    if (!filtered.length) {
-      bpList.innerHTML = '<div class="no-results">No blueprints match your search.</div>';
-      return;
-    }
-
-    // Count how many of each bp+quality in the order
-    const counts = {};
-    orderItems.filter(i => i.kind === 'bp').forEach(i => {
-      const key = i.name + '||' + i.quality;
-      counts[key] = (counts[key] || 0) + 1;
-    });
-
-    bpList.innerHTML = filtered.map(d => {
-      const sel      = bpRowQualities[d.name] || 'Ascendant';
-      const price    = BP_PRICES[sel];
-      const countKey = d.name + '||' + sel;
-      const count    = counts[countKey] || 0;
-      return '<div class="shop-row">' +
-        '<div class="shop-row-left">' +
-          '<span class="shop-dino-name">' + esc(d.name) + ' BP</span>' +
-          (count ? '<span class="shop-added-count">×' + count + ' added</span>' : '') +
-        '</div>' +
-        '<div class="shop-row-right">' +
-          '<span class="cat-badge">' + d.cat + '</span>' +
-          '<select class="bp-quality-select" data-bp="' + esc(d.name) + '">' +
-            ['Common','Journeyman','Mastercraft','Ascendant'].map(q =>
-              '<option value="' + q + '"' + (sel === q ? ' selected' : '') + '>' + q + '</option>'
-            ).join('') +
-          '</select>' +
-          '<span class="shop-price">' + fmt(price) + ' <span class="shop-price-sym">🍓</span></span>' +
-          (count ? '<button class="shop-remove-btn" data-bp="' + esc(d.name) + '" data-quality="' + sel + '">– 1</button>' : '') +
-          '<button class="shop-add-btn" data-bp="' + esc(d.name) + '" data-cat="' + esc(d.cat) + '">+ Add</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-
-    // Quality select → re-render to update price + remove btn
-    bpList.querySelectorAll('.bp-quality-select').forEach(sel => {
-      sel.addEventListener('change', () => {
-        bpRowQualities[sel.dataset.bp] = sel.value;
-        renderBPList();
-      });
-    });
-
-    bpList.querySelectorAll('.shop-add-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const name    = btn.dataset.bp;
-        const quality = bpRowQualities[name] || 'Ascendant';
-        addBP(name, quality, btn.dataset.cat);
-      });
-    });
-
-    bpList.querySelectorAll('.shop-remove-btn').forEach(btn => {
-      btn.addEventListener('click', () => removeLastBP(btn.dataset.bp, btn.dataset.quality));
-    });
-  }
-
-  function setItemType(id, type) {
-    const item = orderItems.find(i => i.id === id);
-    if (!item) return;
-    item.type = type;
+  // ══ ADD / REMOVE ══
+  function addDino(name, size) {
+    orderItems.push({ id: nextId++, name, size, type: 'single', colors: ['','','','','',''] });
     updateTotals();
-    updateFormFields();
-    // Refresh type button active states
-    const card = orderItemsList.querySelector('[data-item-id="' + id + '"]');
-    if (card) card.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
-    // Refresh price display
-    const priceEl = card && card.querySelector('.order-item-price');
-    if (priceEl) priceEl.textContent = fmt(calcItemBBS(item)) + ' 🍓';
   }
-
-  function setColor(id, region, color) {
-    const item = orderItems.find(i => i.id === id);
-    if (!item) return;
-    item.colors[region] = color;
-    updateFormFields();
-    const card = orderItemsList.querySelector('[data-item-id="' + id + '"]');
-    if (!card) return;
-    const row = card.querySelector('.color-swatches[data-region="' + region + '"]');
-    if (!row) return;
-    row.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.color === color));
-  }
-
-  // ── Render ──
-  function render() {
-    renderShopList();
-    renderBPList();
-    renderOrderSummary();
-    updateTotals();
-    updateFormFields();
-  }
-
-  function renderShopList() {
-    const q    = shopSearch.value.trim().toLowerCase();
-    const size = shopSizeFilter.value;
-    const filtered = DINOS.filter(d =>
-      (!q    || d.name.toLowerCase().includes(q)) &&
-      (!size || d.size === size)
-    );
-
-    if (!filtered.length) {
-      shopList.innerHTML = '<div class="no-results">No dinos match your search.</div>';
-      return;
+  function removeLastDino(name) {
+    for (let i = orderItems.length - 1; i >= 0; i--) {
+      if (orderItems[i].name === name && !orderItems[i].kind) { orderItems.splice(i, 1); break; }
     }
-
-    // Count how many of each dino name in the order
-    const counts = {};
-    orderItems.forEach(i => { counts[i.name] = (counts[i.name] || 0) + 1; });
-
-    shopList.innerHTML = filtered.map(d => {
-      const count = counts[d.name] || 0;
-      const price = BBS_PRICES[d.size];
-      return '<div class="shop-row">' +
-        '<div class="shop-row-left">' +
-          '<span class="shop-dino-name">' + esc(d.name) + '</span>' +
-          (count ? '<span class="shop-added-count">×' + count + ' added</span>' : '') +
-        '</div>' +
-        '<div class="shop-row-right">' +
-          '<span class="size-badge ' + d.size + '">' + d.size + '</span>' +
-          '<span class="shop-price">' + fmt(price) + ' <span class="shop-price-sym">🍓</span></span>' +
-          (count ? '<button class="shop-remove-btn" data-name="' + esc(d.name) + '">– 1</button>' : '') +
-          '<button class="shop-add-btn" data-name="' + esc(d.name) + '" data-size="' + d.size + '">+ Add</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-
-    shopList.querySelectorAll('.shop-add-btn').forEach(btn => {
-      btn.addEventListener('click', () => addDino(btn.dataset.name, btn.dataset.size));
-    });
-    shopList.querySelectorAll('.shop-remove-btn').forEach(btn => {
-      btn.addEventListener('click', () => removeLastDino(btn.dataset.name));
-    });
+    updateTotals();
+  }
+  function removeItem(id) { orderItems = orderItems.filter(i => i.id !== id); updateTotals(); renderOrderSummary(); }
+  function addBP(name, quality, cat) {
+    orderItems.push({ id: nextId++, name, quality, cat, kind: 'bp' });
+    updateTotals();
+  }
+  function removeLastBP(name, quality) {
+    for (let i = orderItems.length - 1; i >= 0; i--) {
+      if (orderItems[i].kind === 'bp' && orderItems[i].name === name && orderItems[i].quality === quality) {
+        orderItems.splice(i, 1); break;
+      }
+    }
+    updateTotals();
+  }
+  function addSkin(name, cat, price) {
+    orderItems.push({ id: nextId++, name, cat, price, kind: 'skin' });
+    updateTotals();
+  }
+  function removeLastSkin(name) {
+    for (let i = orderItems.length - 1; i >= 0; i--) {
+      if (orderItems[i].kind === 'skin' && orderItems[i].name === name) { orderItems.splice(i, 1); break; }
+    }
+    updateTotals();
   }
 
-  function renderOrderSummary() {
-    const hasItems = orderItems.length > 0;
-    orderSummary.hidden = !hasItems;
-    if (!hasItems) { orderItemsList.innerHTML = ''; return; }
-
-    orderItemCount.textContent = '(' + orderItems.length + ' item' + (orderItems.length !== 1 ? 's' : '') + ')';
-
-    orderItemsList.innerHTML = orderItems.map(item => {
-      if (item.kind === 'color') {
-        const colorParts = item.colors.map((c, i) => c ? 'R' + i + ': ' + c : null).filter(Boolean);
-        return '<div class="order-item-card" data-item-id="' + item.id + '">' +
-          '<div class="order-item-top">' +
-            '<div class="order-item-meta">' +
-              '<span class="order-item-name">' + esc(item.name) + '</span>' +
-              '<span class="cat-badge">Color Job</span>' +
-            '</div>' +
-            '<div class="order-item-controls">' +
-              '<span class="order-item-price">' + fmt(COLOR_PRICE) + ' 🍓</span>' +
-              '<button class="remove-item-btn" data-id="' + item.id + '" title="Remove">✕</button>' +
-            '</div>' +
-          '</div>' +
-          '<div style="font-size:0.75rem;color:var(--muted);margin-top:0.25rem;">' +
-            (colorParts.length ? 'Colors: ' + colorParts.join(', ') : 'No specific colors (any/random)') +
-          '</div>' +
-        '</div>';
-      }
-      if (item.kind === 'bp') {
-        return '<div class="order-item-card" data-item-id="' + item.id + '">' +
-          '<div class="order-item-top">' +
-            '<div class="order-item-meta">' +
-              '<span class="order-item-name">' + esc(item.name) + ' BP</span>' +
-              '<span class="quality-badge ' + item.quality + '">' + item.quality + '</span>' +
-              '<span class="cat-badge">' + item.cat + '</span>' +
-            '</div>' +
-            '<div class="order-item-controls">' +
-              '<span class="order-item-price">' + fmt(calcItemBBS(item)) + ' 🍓</span>' +
-              '<button class="remove-item-btn" data-id="' + item.id + '" title="Remove">✕</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-      }
-      const itemBBS = calcItemBBS(item);
-      const regionsHtml = [0,1,2,3,4,5].map(r => {
-        const swatches =
-          '<button class="swatch skip' + (item.colors[r] === '' ? ' active' : '') + '" data-color="" title="Any / Skip">–</button>' +
-          COLORS.map(c =>
-            '<button class="swatch' + (item.colors[r] === c.name ? ' active' : '') + '" style="background:' + c.hex + '" data-color="' + esc(c.name) + '" title="' + esc(c.name) + '"></button>'
-          ).join('');
-        return '<div class="region-row"><span class="region-label">Reg ' + r + '</span><div class="color-swatches" data-region="' + r + '">' + swatches + '</div></div>';
-      }).join('');
-
-      return '<div class="order-item-card" data-item-id="' + item.id + '">' +
-        '<div class="order-item-top">' +
-          '<div class="order-item-meta">' +
-            '<span class="order-item-name">' + esc(item.name) + '</span>' +
-            '<span class="size-badge ' + item.size + '">' + item.size + '</span>' +
-          '</div>' +
-          '<div class="order-item-controls">' +
-            '<span class="order-item-price">' + fmt(itemBBS) + ' 🍓</span>' +
-            '<div style="display:flex;gap:0.3rem;">' +
-              '<button class="type-btn' + (item.type === 'single' ? ' active' : '') + '" data-type="single" data-id="' + item.id + '">Single</button>' +
-              '<button class="type-btn' + (item.type === 'pair'   ? ' active' : '') + '" data-type="pair"   data-id="' + item.id + '">Pair</button>' +
-            '</div>' +
-            '<button class="remove-item-btn" data-id="' + item.id + '" title="Remove">✕</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="color-regions">' + regionsHtml + '</div>' +
-      '</div>';
-    }).join('');
-
-    // Bind events
-    orderItemsList.querySelectorAll('.type-btn').forEach(btn => {
-      btn.addEventListener('click', () => setItemType(+btn.dataset.id, btn.dataset.type));
-    });
-    orderItemsList.querySelectorAll('.remove-item-btn').forEach(btn => {
-      btn.addEventListener('click', () => removeItem(+btn.dataset.id));
-    });
-    orderItemsList.querySelectorAll('.swatch').forEach(btn => {
-      const card = btn.closest('[data-item-id]');
-      const row  = btn.closest('.color-swatches');
-      if (!card || !row) return;
-      btn.addEventListener('click', () => setColor(+card.dataset.itemId, +row.dataset.region, btn.dataset.color));
-    });
-  }
-
+  // ══ TOTALS ══
   function updateTotals() {
     const total      = calcTotal();
     const hasItems   = orderItems.length > 0;
     const dinoCount  = orderItems.filter(i => !i.kind).length;
     const bpCount    = orderItems.filter(i => i.kind === 'bp').length;
     const colorCount = orderItems.filter(i => i.kind === 'color').length;
+    const skinCount  = orderItems.filter(i => i.kind === 'skin').length;
 
     totalBar.hidden = !hasItems;
     if (hasItems) {
@@ -1041,20 +1198,109 @@
       if (dinoCount)  parts.push(dinoCount  + ' dino'      + (dinoCount  !== 1 ? 's' : ''));
       if (bpCount)    parts.push(bpCount    + ' BP'        + (bpCount    !== 1 ? 's' : ''));
       if (colorCount) parts.push(colorCount + ' color job' + (colorCount !== 1 ? 's' : ''));
-      totalCountLabel.textContent = parts.join(', ');
+      if (skinCount)  parts.push(skinCount  + ' skin'      + (skinCount  !== 1 ? 's' : ''));
+      totalCountLbl.textContent = parts.join(', ');
     }
-    orderTotalDisp.textContent = fmt(total);
+    // Update pills on landing cards
+    const catCounts = { dinos: dinoCount, blueprints: bpCount, colors: colorCount, skins: skinCount };
+    Object.entries(catCounts).forEach(([cat, n]) => {
+      const pill = document.getElementById('pill-' + cat);
+      if (!pill) return;
+      pill.textContent = n + ' added';
+      pill.classList.toggle('visible', n > 0);
+    });
   }
 
-  function updateFormFields() { /* totals are now Discord-only */ }
+  // ══ ORDER SUMMARY (in checkout modal) ══
+  function renderOrderSummary() {
+    const hasItems = orderItems.length > 0;
+    const summarySection = document.getElementById('order-summary-section');
 
-  // ── Search / Filter ──
-  shopSearch.addEventListener('input',     () => renderShopList());
-  shopSizeFilter.addEventListener('change',() => renderShopList());
-  bpSearch.addEventListener('input',       () => renderBPList());
-  bpCatFilter.addEventListener('change',   () => renderBPList());
+    if (!hasItems) {
+      summarySection.innerHTML = '<div class="empty-cart-note">Your cart is empty. Close this and pick a category to get started.</div>';
+      orderTotalDisp.textContent = '0';
+      return;
+    }
 
-  // ── Discord Webhooks ──
+    orderItemCount.textContent = '(' + orderItems.length + ' item' + (orderItems.length !== 1 ? 's' : '') + ')';
+    orderTotalDisp.textContent = fmt(calcTotal());
+
+    orderItemsList.innerHTML = orderItems.map(item => {
+      if (item.kind === 'color') {
+        const colorParts = item.colors.map((c, i) => c ? 'R' + i + ': ' + c : null).filter(Boolean);
+        return '<div class="order-item-card" data-item-id="' + item.id + '">' +
+          '<div class="order-item-top">' +
+            '<div class="order-item-meta"><span class="order-item-name">' + esc(item.name) + '</span><span class="cat-badge">Color Job</span></div>' +
+            '<div class="order-item-controls"><span class="order-item-price">' + fmt(COLOR_PRICE) + ' 🍓</span><button class="remove-item-btn" data-id="' + item.id + '" title="Remove">✕</button></div>' +
+          '</div>' +
+          '<div style="font-size:0.74rem;color:var(--muted)">' + (colorParts.length ? 'Colors: ' + colorParts.join(', ') : 'No specific colors (any/random)') + '</div>' +
+        '</div>';
+      }
+      if (item.kind === 'bp') {
+        return '<div class="order-item-card" data-item-id="' + item.id + '">' +
+          '<div class="order-item-top">' +
+            '<div class="order-item-meta"><span class="order-item-name">' + esc(item.name) + ' BP</span><span class="quality-badge ' + item.quality + '">' + item.quality + '</span><span class="cat-badge">' + item.cat + '</span></div>' +
+            '<div class="order-item-controls"><span class="order-item-price">' + fmt(calcItemBBS(item)) + ' 🍓</span><button class="remove-item-btn" data-id="' + item.id + '" title="Remove">✕</button></div>' +
+          '</div>' +
+        '</div>';
+      }
+      if (item.kind === 'skin') {
+        return '<div class="order-item-card" data-item-id="' + item.id + '">' +
+          '<div class="order-item-top">' +
+            '<div class="order-item-meta"><span class="order-item-name">' + esc(item.name) + '</span><span class="cat-badge">' + esc(item.cat) + '</span></div>' +
+            '<div class="order-item-controls"><span class="order-item-price">' + fmt(item.price) + ' 🍓</span><button class="remove-item-btn" data-id="' + item.id + '" title="Remove">✕</button></div>' +
+          '</div>' +
+        '</div>';
+      }
+      // Dino — color picker + single/pair toggle
+      const regionsHtml = [0,1,2,3,4,5].map(r => {
+        const swatches =
+          '<button class="swatch skip' + (item.colors[r] === '' ? ' active' : '') + '" data-color="" title="Any/Skip">–</button>' +
+          COLORS.map(c => '<button class="swatch' + (item.colors[r] === c.name ? ' active' : '') + '" style="background:' + c.hex + '" data-color="' + esc(c.name) + '" title="' + esc(c.name) + '"></button>').join('');
+        return '<div class="region-row"><span class="region-label">Reg ' + r + '</span><div class="color-swatches" data-region="' + r + '">' + swatches + '</div></div>';
+      }).join('');
+      return '<div class="order-item-card" data-item-id="' + item.id + '">' +
+        '<div class="order-item-top">' +
+          '<div class="order-item-meta"><span class="order-item-name">' + esc(item.name) + '</span><span class="size-badge ' + item.size + '">' + item.size + '</span></div>' +
+          '<div class="order-item-controls"><span class="order-item-price">' + fmt(calcItemBBS(item)) + ' 🍓</span>' +
+            '<div style="display:flex;gap:0.25rem"><button class="type-btn' + (item.type === 'single' ? ' active' : '') + '" data-type="single" data-id="' + item.id + '">Single</button><button class="type-btn' + (item.type === 'pair' ? ' active' : '') + '" data-type="pair" data-id="' + item.id + '">Pair</button></div>' +
+            '<button class="remove-item-btn" data-id="' + item.id + '" title="Remove">✕</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="color-regions">' + regionsHtml + '</div>' +
+      '</div>';
+    }).join('');
+
+    orderItemsList.querySelectorAll('.type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = orderItems.find(i => i.id === +btn.dataset.id);
+        if (!item) return;
+        item.type = btn.dataset.type;
+        updateTotals();
+        const card = orderItemsList.querySelector('[data-item-id="' + item.id + '"]');
+        if (card) card.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === item.type));
+        const priceEl = card && card.querySelector('.order-item-price');
+        if (priceEl) priceEl.textContent = fmt(calcItemBBS(item)) + ' 🍓';
+        document.getElementById('order-total-display').textContent = fmt(calcTotal());
+      });
+    });
+    orderItemsList.querySelectorAll('.remove-item-btn').forEach(btn => {
+      btn.addEventListener('click', () => removeItem(+btn.dataset.id));
+    });
+    orderItemsList.querySelectorAll('.swatch').forEach(btn => {
+      const card = btn.closest('[data-item-id]');
+      const row  = btn.closest('.color-swatches');
+      if (!card || !row) return;
+      btn.addEventListener('click', () => {
+        const item = orderItems.find(i => i.id === +card.dataset.itemId);
+        if (!item) return;
+        item.colors[+row.dataset.region] = btn.dataset.color;
+        row.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.color === btn.dataset.color));
+      });
+    });
+  }
+
+  // ══ DISCORD WEBHOOKS ══
   const DISCORD_WEBHOOK       = 'https://discord.com/api/webhooks/1474841263294517433/h_8duaJjzmRQ4NQQo9B1tnpTEUArqCoD_UKl4RHXe7qZSZ0JF7NXLeLrtMt0P7DImpnk';
   const DISCORD_WEBHOOK_ADMIN = 'https://discord.com/api/webhooks/1474846554300092506/AlxQXWBdsMWSl1he9UFuFNHPIvnCz0rDhfQE8MbeT4QcquX4sJ6AOtxaYKTeX4fTzq_2';
   const ARK_ADMIN_ROLE        = '1474505890827866175';
@@ -1063,13 +1309,7 @@
     const dinoItems  = orderItems.filter(i => !i.kind);
     const bpItems    = orderItems.filter(i => i.kind === 'bp');
     const colorItems = orderItems.filter(i => i.kind === 'color');
-
-    const colorLines = colorItems.map(item => {
-      const colorParts = item.colors.map((c, i) => c ? 'R' + i + ': ' + c : null).filter(Boolean);
-      let line = '• **' + item.name + '** — ' + fmt(COLOR_PRICE) + ' 🍓';
-      if (colorParts.length) line += '\n  Colors: ' + colorParts.join(', ');
-      return line;
-    }).join('\n');
+    const skinItems  = orderItems.filter(i => i.kind === 'skin');
 
     const dinoLines = dinoItems.map(item => {
       const typeStr    = item.type === 'pair' ? 'Breeding Pair' : 'Single';
@@ -1078,68 +1318,49 @@
       if (colorParts.length) line += '\n  Colors: ' + colorParts.join(', ');
       return line;
     }).join('\n');
-
-    const bpLines = bpItems.map(item =>
-      '• **' + item.name + ' BP** (' + item.quality + ') — ' + fmt(calcItemBBS(item)) + ' 🍓'
-    ).join('\n');
+    const bpLines    = bpItems.map(i => '• **' + i.name + ' BP** (' + i.quality + ') — ' + fmt(calcItemBBS(i)) + ' 🍓').join('\n');
+    const colorLines = colorItems.map(item => {
+      const colorParts = item.colors.map((c, i) => c ? 'R' + i + ': ' + c : null).filter(Boolean);
+      let line = '• **' + item.name + '** — ' + fmt(COLOR_PRICE) + ' 🍓';
+      if (colorParts.length) line += '\n  Colors: ' + colorParts.join(', ');
+      return line;
+    }).join('\n');
+    const skinLines  = skinItems.map(i => '• **' + i.name + '** (' + i.cat + ') — ' + fmt(i.price) + ' 🍓').join('\n');
 
     const fields = [
-      { name: 'PLAYER',     value: ingame,                      inline: true  },
-      { name: 'TELEPORTER', value: teleporter,                  inline: true  },
-      { name: 'DISCORD',    value: discord || '_not provided_', inline: true  },
-      { name: 'TOTAL BBS',  value: fmt(total) + ' 🍓',          inline: true  },
-      { name: '# ITEMS',    value: String(orderItems.length),   inline: true  },
+      { name: 'PLAYER',     value: ingame,                      inline: true },
+      { name: 'TELEPORTER', value: teleporter,                  inline: true },
+      { name: 'DISCORD',    value: discord || '_not provided_', inline: true },
+      { name: 'TOTAL BBS',  value: fmt(total) + ' 🍓',          inline: true },
+      { name: '# ITEMS',    value: String(orderItems.length),   inline: true },
     ];
-    if (dinoLines)  fields.push({ name: 'DINOS ORDERED', value: dinoLines,  inline: false });
-    if (bpLines)    fields.push({ name: 'BLUEPRINTS',    value: bpLines,    inline: false });
-    if (colorLines) fields.push({ name: 'COLOR JOBS',    value: colorLines, inline: false });
+    if (dinoLines)  fields.push({ name: 'DINOS',      value: dinoLines,  inline: false });
+    if (bpLines)    fields.push({ name: 'BLUEPRINTS', value: bpLines,    inline: false });
+    if (colorLines) fields.push({ name: 'COLOR JOBS', value: colorLines, inline: false });
+    if (skinLines)  fields.push({ name: 'SKINS',      value: skinLines,  inline: false });
     if (notes && notes.trim()) fields.push({ name: 'NOTES', value: notes.trim(), inline: false });
     return fields;
   }
 
   async function sendWebhook(url, payload) {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) {
-      const err = await res.text();
-      console.error('Discord webhook failed (' + url.slice(-6) + '):', res.status, err);
-    }
+    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    if (!res.ok) console.error('Webhook failed:', res.status, await res.text());
   }
 
   async function postToDiscord(ingame, teleporter, discord, notes, total) {
     const fields = buildOrderFields(ingame, teleporter, discord, notes, total);
-
-    // ── Public channel: community notification ──
     await sendWebhook(DISCORD_WEBHOOK, {
       content: '<@&' + ARK_ADMIN_ROLE + '> 🍓 New BBS order incoming!',
       allowed_mentions: { roles: [ARK_ADMIN_ROLE] },
-      embeds: [{
-        title: '🍓 New BBS Order',
-        color: 58998, // #00e676
-        fields,
-        footer: { text: 'BBS Shop' },
-        timestamp: new Date().toISOString(),
-      }],
+      embeds: [{ title: '🍓 New BBS Order', color: 58998, fields, footer: { text: 'BBS Shop' }, timestamp: new Date().toISOString() }],
     });
-
-    // ── Admin channel: action-focused ──
     await sendWebhook(DISCORD_WEBHOOK_ADMIN, {
       content: '<@&' + ARK_ADMIN_ROLE + '> 📋 New order to fulfil — react ✅ when delivered',
       allowed_mentions: { roles: [ARK_ADMIN_ROLE] },
-      embeds: [{
-        title: '📋 BBS Order — Action Required',
-        color: 16753920, // orange #FFB300
-        fields,
-        footer: { text: 'BBS Shop • React ✅ when delivered, ❌ if declined' },
-        timestamp: new Date().toISOString(),
-      }],
+      embeds: [{ title: '📋 BBS Order — Action Required', color: 16753920, fields, footer: { text: 'BBS Shop • React ✅ when delivered, ❌ if declined' }, timestamp: new Date().toISOString() }],
     });
   }
 
-  // ── Form Submit ──
   bbsForm.addEventListener('submit', async e => {
     e.preventDefault();
     const ingame     = document.getElementById('f-ingame').value;
@@ -1147,10 +1368,8 @@
     const discord    = document.getElementById('f-discord').value;
     const notes      = document.getElementById('f-notes').value;
     const total      = calcTotal();
-
     bbsSubmitBtn.disabled = true;
     bbsSubmitBtn.textContent = 'Sending…';
-
     try {
       await postToDiscord(ingame, teleporter, discord, notes, total);
       bbsForm.hidden = true;
@@ -1162,10 +1381,14 @@
     }
   });
 
-  // ── Init ──
-  renderShopList();
-  renderBPList();
-  renderColorJobForm();
+  function resetShop() {
+    orderItems = []; nextId = 0; bpRowQualities = {}; colorJobDraftColors = ['','','','','',''];
+    bbsSuccess.hidden = true; bbsForm.hidden = false;
+    bbsSubmitBtn.disabled = false; bbsSubmitBtn.textContent = 'Submit Order →';
+    bbsForm.reset();
+    updateTotals();
+    closeCheckout();
+  }
   </script>
 
 </body>
