@@ -8,8 +8,9 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
-      --border: #22222e; --accent: #00e676;
+      --border: #22222e; --accent: #ff4d94;
       --text: #e8e8f0; --muted: #7a7a90; --radius: 10px;
+      --banner-h: 36px;
     }
     html { scroll-behavior: smooth; }
     body {
@@ -19,8 +20,46 @@
     }
 
     /* ── NAV ── */
+    /* ── BETA BANNER ── */
+    .beta-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 101;
+      height: var(--banner-h); overflow: hidden;
+      background: rgba(255,77,148,0.10); border-bottom: 1px solid rgba(255,77,148,0.25);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 2.5rem 0 0.75rem;
+      font-size: 0.78rem; font-weight: 500; color: var(--text);
+      gap: 0.45rem; white-space: nowrap;
+      transition: height 0.3s ease, opacity 0.3s ease;
+    }
+    .beta-banner.hidden { height: 0; opacity: 0; pointer-events: none; border-bottom-color: transparent; }
+    .beta-badge {
+      font-size: 0.6rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+      background: rgba(255,77,148,0.18); color: var(--accent);
+      border: 1px solid rgba(255,77,148,0.35); border-radius: 4px;
+      padding: 0.12rem 0.45rem; flex-shrink: 0;
+    }
+    .beta-banner a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .beta-banner a:hover { text-decoration: underline; }
+    .beta-dismiss {
+      position: absolute; right: 0.6rem;
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      font-size: 1rem; line-height: 1; padding: 0.25rem 0.4rem; border-radius: 4px;
+      transition: color 0.15s; display: flex; align-items: center;
+    }
+    .beta-dismiss:hover { color: var(--text); }
+    /* Mobile: swap to short text */
+    .banner-short { display: none; }
+    @media (max-width: 560px) {
+      .banner-long { display: none; }
+      .banner-short { display: inline; }
+      .beta-banner { font-size: 0.72rem; gap: 0.35rem; }
+    }
+
+    /* ── NAV ── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      position: fixed; top: var(--banner-h); left: 0; right: 0; z-index: 100;
+      transition: top 0.3s ease;
       display: flex; align-items: center; justify-content: center; padding: 0 1.5rem;
       background: rgba(10,10,15,0.88);
       backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
@@ -42,7 +81,7 @@
       .nav-brand { display: block; }
       .nav-toggle { display: flex; }
       nav ul {
-        display: none; position: fixed; top: 60px; left: 0; right: 0;
+        display: none; position: fixed; top: calc(var(--banner-h) + 60px); left: 0; right: 0;
         background: rgba(10,10,15,0.97); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
         border-bottom: 1px solid var(--border); flex-direction: column; align-items: stretch;
         padding: 0.5rem 1rem 1rem; gap: 0.15rem; z-index: 99;
@@ -52,28 +91,28 @@
     }
 
     /* ── HERO ── */
-    .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 1.5rem 4rem; position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(0,230,118,0.08) 0%, transparent 70%), radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0,100,255,0.05) 0%, transparent 60%); pointer-events: none; }
+    .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: calc(var(--banner-h) + 80px) 1.5rem 4rem; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(255,77,148,0.08) 0%, transparent 70%), radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0,100,255,0.05) 0%, transparent 60%); pointer-events: none; }
     #hero-particles { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
     .hero-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; }
     .hero-eyebrow { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; opacity: 0.9; }
-    .hero h1 { font-size: clamp(3.5rem,11vw,8rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; background: linear-gradient(160deg,#ffffff 0%,#b0b0c8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1.1rem; filter: drop-shadow(0 0 48px rgba(0,230,118,0.12)); }
+    .hero h1 { font-size: clamp(3.5rem,11vw,8rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; background: linear-gradient(160deg,#ffffff 0%,#b0b0c8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1.1rem; filter: drop-shadow(0 0 48px rgba(255,77,148,0.12)); }
     .hero-content > p { font-size: clamp(0.95rem,2.2vw,1.1rem); color: var(--muted); max-width: 440px; margin: 0 auto 1.75rem; }
     .hero-stats { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem; }
     .hero-stat { font-size: 0.8rem; color: var(--muted); font-weight: 500; display: flex; align-items: center; gap: 0.4rem; }
-    .hero-stat-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 5px rgba(0,230,118,0.5); flex-shrink: 0; }
+    .hero-stat-dot { width: 7px; height: 7px; border-radius: 50%; background: #00e676; box-shadow: 0 0 5px rgba(0,230,118,0.5); flex-shrink: 0; }
     .hero-stat-sep { color: var(--border); }
     /* game cards */
     .game-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; width: 100%; max-width: 580px; margin-bottom: 1.75rem; }
     @media (max-width: 480px) { .game-cards { grid-template-columns: 1fr; } }
     .game-card { display: flex; flex-direction: column; align-items: flex-start; gap: 0.7rem; padding: 1.15rem 1.2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; color: var(--text); transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; text-align: left; }
     .game-card:active { transform: scale(0.98); }
-    .game-card-ark:hover  { border-color: var(--accent); box-shadow: 0 0 28px rgba(0,230,118,0.14); }
+    .game-card-ark:hover  { border-color: var(--accent); box-shadow: 0 0 28px rgba(255,77,148,0.14); }
     .game-card-hytale:hover { border-color: #a78bfa; box-shadow: 0 0 28px rgba(167,139,250,0.14); }
     .game-card-head { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 0.5rem; }
     .game-card-title { font-size: 0.88rem; font-weight: 700; }
     .game-badge { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.18rem 0.48rem; border-radius: 4px; flex-shrink: 0; }
-    .badge-live { background: rgba(0,230,118,0.14); color: var(--accent); border: 1px solid rgba(0,230,118,0.28); }
+    .badge-live { background: rgba(255,77,148,0.14); color: var(--accent); border: 1px solid rgba(255,77,148,0.28); }
     .badge-soon { background: rgba(167,139,250,0.1); color: #a78bfa; border: 1px solid rgba(167,139,250,0.22); }
     .game-card-sub { font-size: 0.73rem; color: var(--muted); line-height: 1.4; }
     .game-card-btn { margin-top: 0.2rem; display: inline-flex; align-items: center; gap: 0.32rem; font-size: 0.73rem; font-weight: 700; }
@@ -132,21 +171,21 @@
     .ark-panel-title { display: flex; flex-direction: column; gap: 0.15rem; }
     .ark-panel-h2 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
     .ark-total { display: flex; align-items: center; gap: 0.45rem; font-size: 0.82rem; color: var(--muted); font-weight: 500; }
-    .ark-total strong { color: var(--accent); font-variant-numeric: tabular-nums; }
-    .ark-total-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 5px rgba(0,230,118,0.6); flex-shrink: 0; animation: tpulse 1.6s ease-in-out infinite; }
+    .ark-total strong { color: #00e676; font-variant-numeric: tabular-nums; }
+    .ark-total-dot { width: 7px; height: 7px; border-radius: 50%; background: #00e676; box-shadow: 0 0 5px rgba(0,230,118,0.6); flex-shrink: 0; animation: tpulse 1.6s ease-in-out infinite; }
     @keyframes tpulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
     .ark-row { display: flex; align-items: center; gap: 1rem; padding: 0.95rem 1.5rem; border-bottom: 1px solid var(--border); transition: background 0.18s; }
     .ark-row:hover { background: var(--surface2); }
-    .ark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 6px rgba(0,230,118,0.7); flex-shrink: 0; animation: tpulse 1.6s ease-in-out infinite; }
+    .ark-dot { width: 8px; height: 8px; border-radius: 50%; background: #00e676; box-shadow: 0 0 6px rgba(0,230,118,0.7); flex-shrink: 0; animation: tpulse 1.6s ease-in-out infinite; }
     .ark-row-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.3rem; }
     .ark-map { font-size: 0.97rem; font-weight: 700; }
     .ark-tags { display: flex; gap: 0.3rem; flex-wrap: wrap; }
     .ark-tag { font-size: 0.62rem; letter-spacing: 0.07em; text-transform: uppercase; padding: 0.13rem 0.42rem; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-weight: 600; }
     .ark-row-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
     .ark-bar-wrap { width: 72px; height: 3px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
-    .ark-bar { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.9s ease; box-shadow: 0 0 4px rgba(0,230,118,0.5); }
+    .ark-bar { height: 100%; background: #00e676; border-radius: 2px; width: 0%; transition: width 0.9s ease; box-shadow: 0 0 4px rgba(0,230,118,0.5); }
     .ark-count { font-size: 0.82rem; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; transition: color 0.3s; }
-    .ark-count.pc-live { color: var(--accent); }
+    .ark-count.pc-live { color: #00e676; }
     .ark-count.pc-offline { color: #ff5252; }
     .ark-row-soon { display: flex; align-items: center; gap: 1rem; padding: 0.95rem 1.5rem; border-bottom: 1px solid var(--border); opacity: 0.65; }
     .ark-dot-soon { width: 8px; height: 8px; border-radius: 50%; background: #ffb347; box-shadow: 0 0 6px rgba(255,179,71,0.5); flex-shrink: 0; }
@@ -184,7 +223,7 @@
     .restart-dot {
       width: 7px; height: 7px; border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 6px rgba(0,230,118,0.7);
+      box-shadow: 0 0 6px rgba(255,77,148,0.7);
       animation: restart-pulse 1.4s ease-in-out infinite;
       flex-shrink: 0;
     }
@@ -229,7 +268,7 @@
       content: ''; position: absolute; inset: 0;
       background:
         radial-gradient(ellipse 80% 120% at 20% 50%, rgba(88,101,242,0.28) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 100% at 80% 50%, rgba(0,230,118,0.1) 0%, transparent 55%);
+        radial-gradient(ellipse 60% 100% at 80% 50%, rgba(255,77,148,0.1) 0%, transparent 55%);
     }
     .dc-mini-banner::after {
       content: ''; position: absolute; inset: 0;
@@ -242,7 +281,7 @@
     .dc-mini-icon {
       width: 48px; height: 48px; border-radius: 50%;
       border: 3px solid var(--surface); object-fit: cover; display: block;
-      box-shadow: 0 0 0 1px rgba(0,230,118,0.2);
+      box-shadow: 0 0 0 1px rgba(255,77,148,0.2);
     }
     .dc-mini-body { padding: 8px 16px 16px; }
     .dc-mini-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.85rem; }
@@ -251,7 +290,7 @@
     .dc-mini-stats { display: flex; gap: 0.9rem; }
     .dc-mini-stat { display: flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; color: var(--muted); }
     .dc-mini-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-    .dot-on  { background: var(--accent); box-shadow: 0 0 4px rgba(0,230,118,0.6); }
+    .dot-on  { background: var(--accent); box-shadow: 0 0 4px rgba(255,77,148,0.6); }
     .dot-off { background: #4d4d6a; }
     .dc-mini-btn {
       display: inline-flex; align-items: center; gap: 0.45rem;
@@ -270,9 +309,31 @@
     footer p { color: var(--muted); font-size: 0.82rem; }
     footer a { color: var(--accent); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 520px) {
+      /* ARK panel rows: stack count right-side neatly */
+      .ark-row { gap: 0.65rem; padding: 0.85rem 1rem; }
+      .ark-bar-wrap { width: 50px; }
+      /* Restart bar in panel footer stacks */
+      .ark-panel-footer { flex-direction: column; align-items: flex-start; gap: 0.5rem; padding: 0.85rem 1rem; }
+      .restart-timer { font-size: 1.1rem; }
+      /* Globe section: shrink canvas */
+      #globe-canvas { width: 200px !important; height: 200px !important; }
+      /* Hero stats: tighter */
+      .hero-stats { gap: 0.35rem; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- BETA BANNER -->
+  <div class="beta-banner" id="beta-banner">
+    <span class="beta-badge">Beta</span>
+    <span class="banner-long">Website is a work in progress — spot something off? <a href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener">Let us know on Discord</a></span>
+    <span class="banner-short"><a href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener">Report any issues on Discord</a></span>
+    <button class="beta-dismiss" id="beta-dismiss" aria-label="Dismiss">✕</button>
+  </div>
 
   <!-- NAV -->
   <nav>
@@ -280,8 +341,8 @@
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="servers.html">Servers</a></li>
-      <li><a href="ark.html">ARK</a></li>
-      <li><a href="bbs.html">BBS Shop</a></li>
+      <li><a href="ark.html">Ark Donations</a></li>
+      <li><a href="bbs.html">Admin Shop</a></li>
       <li><a href="discord.html">Discord</a></li>
       <li><a href="aboutus.html">About</a></li>
       <li><a href="admin.html">Admin</a></li>
@@ -301,7 +362,7 @@
       <div class="hero-stats">
         <span class="hero-stat"><span class="hero-stat-dot"></span>3 Live Servers</span>
         <span class="hero-stat-sep">·</span>
-        <span class="hero-stat">71 Members</span>
+        <span class="hero-stat"><span id="hero-member-count">50</span> Members</span>
         <span class="hero-stat-sep">·</span>
         <span class="hero-stat">Free to Join</span>
       </div>
@@ -334,7 +395,7 @@
         <span style="color:var(--border)">·</span>
         <a href="servers.html" class="hero-link">View Servers <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
         <span style="color:var(--border)">·</span>
-        <a href="bbs.html" class="hero-link">BBS Shop <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
+        <a href="bbs.html" class="hero-link">Admin Shop <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
       </div>
     </div>
   </section>
@@ -480,7 +541,7 @@
                 <span class="dc-mini-name">Zeropoint</span>
                 <div class="dc-mini-stats">
                   <span class="dc-mini-stat"><span class="dc-mini-dot dot-on"></span>10 Online</span>
-                  <span class="dc-mini-stat"><span class="dc-mini-dot dot-off"></span>71 Members</span>
+                  <span class="dc-mini-stat"><span class="dc-mini-dot dot-off"></span><span id="dc-member-count">50</span> Members</span>
                 </div>
               </div>
               <a class="dc-mini-btn" href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener">
@@ -534,7 +595,7 @@
       for (const p of particles) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0,230,118,${p.alpha})`;
+        ctx.fillStyle = `rgba(255,77,148,${p.alpha})`;
         ctx.fill();
         p.x += p.vx;
         p.y += p.vy;
@@ -715,8 +776,8 @@
         if (p.z < 0.08) continue;
         const pulse = 0.5 + 0.5 * Math.sin(pulseT + s.lon * 0.02);
         const halo  = ctx.createRadialGradient(p.x, p.y, 1, p.x, p.y, 10 + pulse * 7);
-        halo.addColorStop(0, 'rgba(0,230,118,0.5)');
-        halo.addColorStop(1, 'rgba(0,230,118,0)');
+        halo.addColorStop(0, 'rgba(255,77,148,0.5)');
+        halo.addColorStop(1, 'rgba(255,77,148,0)');
         ctx.beginPath(); ctx.arc(p.x, p.y, 10 + pulse * 7, 0, Math.PI*2);
         ctx.fillStyle = halo; ctx.fill();
         ctx.beginPath(); ctx.arc(p.x, p.y, 3.8, 0, Math.PI*2);
@@ -875,6 +936,22 @@
     });
   })();
 
+  // ── BETA BANNER ──
+  (function () {
+    const banner = document.getElementById('beta-banner');
+    if (!banner) return;
+    function dismiss() {
+      banner.classList.add('hidden');
+      document.documentElement.style.setProperty('--banner-h', '0px');
+      sessionStorage.setItem('beta-dismissed', '1');
+    }
+    if (sessionStorage.getItem('beta-dismissed')) {
+      banner.classList.add('hidden');
+      document.documentElement.style.setProperty('--banner-h', '0px');
+    }
+    document.getElementById('beta-dismiss').addEventListener('click', dismiss);
+  })();
+
   // ── MOBILE NAV TOGGLE ──
   (function () {
     var t = document.querySelector('.nav-toggle');
@@ -896,6 +973,24 @@
         m.classList.remove('nav-open');
       }
     });
+  })();
+
+  // ── MEMBER COUNT ANIMATION ──
+  (function () {
+    const FROM = 50, TO = 100, DURATION = 1800;
+    const ids = ['hero-member-count', 'dc-member-count'];
+    const start = performance.now();
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+    function step(now) {
+      const t = Math.min((now - start) / DURATION, 1);
+      const val = Math.round(FROM + (TO - FROM) * easeOut(t));
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      });
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
   })();
 
   // ── LIVE PLAYER COUNTS ──
