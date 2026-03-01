@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zeropoint | Place Your Order</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     button { touch-action: manipulation; }
@@ -117,31 +118,38 @@
       margin-bottom: 0.5rem; text-align: center; font-weight: 600;
     }
 
-    .dino-list {
-      max-height: 320px; overflow-y: auto; -webkit-overflow-scrolling: touch;
-      border: 1px solid var(--border); border-radius: 8px; background: var(--bg);
+    .dino-grid-wrap {
+      max-height: 440px; overflow-y: auto; -webkit-overflow-scrolling: touch;
     }
-    .dino-list::-webkit-scrollbar { width: 5px; }
-    .dino-list::-webkit-scrollbar-track { background: transparent; }
-    .dino-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    .dino-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--border); transition: background 0.12s;
+    .dino-grid-wrap::-webkit-scrollbar { width: 5px; }
+    .dino-grid-wrap::-webkit-scrollbar-track { background: transparent; }
+    .dino-grid-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    .dino-card-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 0.6rem; padding: 0.15rem 0;
     }
-    .dino-row:last-child { border-bottom: none; }
-    .dino-row:hover { background: var(--surface2); }
-    .dino-row.is-added { background: rgba(255,77,148,0.04); }
-    .dino-info { display: flex; flex-direction: column; gap: 0.05rem; }
-    .dino-name-text { font-size: 0.875rem; font-weight: 600; }
-    .dino-cat-label { font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-    .dino-add-btn {
+    .dino-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-top: 2px solid var(--accent); border-radius: var(--radius);
+      padding: 0.75rem 0.7rem 0.65rem; display: flex; flex-direction: column; gap: 0.3rem;
+    }
+    .dino-card.is-added {
+      background: rgba(255,77,148,0.06); border-color: rgba(255,77,148,0.3);
+    }
+    .dino-card-icon { font-size: 1.25rem; line-height: 1; }
+    .dino-card-name { font-size: 0.78rem; font-weight: 700; line-height: 1.25; }
+    .dino-card-cat {
+      font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); flex: 1;
+    }
+    .dino-card-btn {
+      margin-top: 0.35rem; width: 100%;
       background: rgba(255,77,148,0.1); border: 1px solid rgba(255,77,148,0.25);
-      color: var(--accent); border-radius: 5px; padding: 0.26rem 0.65rem;
-      font-size: 0.7rem; font-weight: 700; cursor: pointer; letter-spacing: 0.04em;
-      text-transform: uppercase; transition: background 0.15s; white-space: nowrap; flex-shrink: 0;
+      color: var(--accent); border-radius: 6px; padding: 0.3rem 0;
+      font-size: 0.68rem; font-weight: 700; cursor: pointer; letter-spacing: 0.04em;
+      text-transform: uppercase; transition: background 0.15s; font-family: inherit;
     }
-    .dino-add-btn:hover:not(:disabled) { background: rgba(255,77,148,0.18); }
-    .dino-add-btn:disabled { background: rgba(255,255,255,0.04); border-color: var(--border); color: var(--muted); cursor: default; }
+    .dino-card-btn:hover:not(:disabled) { background: rgba(255,77,148,0.18); }
+    .dino-card-btn:disabled { background: rgba(255,255,255,0.04); border-color: var(--border); color: var(--muted); cursor: default; }
     .no-results { padding: 2rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
 
     /* ── SELECTED DINOS ── */
@@ -163,6 +171,7 @@
       font-family: inherit;
     }
     .type-btn.active { background: rgba(255,77,148,0.15); border-color: rgba(255,77,148,0.4); color: var(--accent); }
+    .type-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     .remove-dino-btn {
       background: none; border: none; color: var(--muted); cursor: pointer;
       font-size: 1rem; line-height: 1; padding: 0.1rem 0.3rem; border-radius: 4px; transition: color 0.15s;
@@ -223,6 +232,18 @@
       .order-badges { gap: 0.35rem; }
       .order-badge { font-size: 0.65rem; padding: 0.22rem 0.5rem; }
     }
+
+    /* ── PvP ORANGE THEME ── */
+    body.pvp-order { --accent: #f97316; }
+    body.pvp-order .page-header::before {
+      background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(249,115,22,0.06) 0%, transparent 70%);
+    }
+    body.pvp-order .order-badge {
+      background: rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.28);
+    }
+    body.pvp-order .success-icon {
+      background: rgba(249,115,22,0.12); border-color: var(--accent);
+    }
   </style>
 </head>
 <body>
@@ -237,7 +258,6 @@
       <li><a href="bbs.html">Admin Shop</a></li>
       <li><a href="discord.html">Discord</a></li>
       <li><a href="aboutus.html">About</a></li>
-      <li><a href="admin.html">Admin</a></li>
     </ul>
     <button class="nav-toggle" aria-label="Toggle navigation">
       <span></span><span></span><span></span>
@@ -247,7 +267,7 @@
   <!-- PAGE HEADER -->
   <div class="page-header">
     <a class="back-link" href="ark.html">← Back to Packages</a>
-    <p class="page-eyebrow">Step 1 of 2 — Choose Your Dinos</p>
+    <p class="page-eyebrow" id="page-eyebrow">Step 1 of 2 — Choose Your Dinos</p>
     <h1>Place Your Order</h1>
     <div class="order-badges">
       <span class="order-badge"           id="badge-pkg"></span>
@@ -278,7 +298,7 @@
       </div>
 
       <!-- DINO PICKER -->
-      <div class="form-section">
+      <div class="form-section" id="dino-picker-section">
         <h3 class="section-title">Dino Selection</h3>
         <p class="section-desc" id="dino-section-desc"></p>
 
@@ -304,7 +324,7 @@
         </div>
 
         <div id="dino-limit-banner" class="dino-limit-banner" style="display:none;"></div>
-        <div class="dino-list" id="dino-list"></div>
+        <div class="dino-grid-wrap" id="dino-list"></div>
       </div>
 
       <!-- NOTES -->
@@ -313,6 +333,10 @@
           <label for="f-notes">Additional Notes</label>
           <textarea id="f-notes" name="notes" rows="3" placeholder="Stat preferences, mutations, anything else..."></textarea>
         </div>
+      </div>
+
+      <div style="background:rgba(255,77,148,0.06);border:1px solid rgba(255,77,148,0.2);border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.8rem;color:var(--muted);">
+        ⚠️ <strong style="color:var(--text);">All donations are non-refundable.</strong> By submitting this order you acknowledge that payments are final and support server hosting costs.
       </div>
 
       <div class="form-footer">
@@ -357,6 +381,11 @@
     });
   })();
 
+  // ── SUPABASE ──
+  const SUPABASE_URL  = 'https://cairclbnutqouejtlhks.supabase.co';
+  const SUPABASE_ANON = 'sb_publishable_25_ecIfEwCQ1BdXof_ZonQ_Bi2x1CDU';
+  const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
   // ── PAYMENT CONFIG ──
   const PAYMENT_CONFIG = {
     'PayPal':   { baseUrl: 'https://paypal.me/ZeropointHosting' },
@@ -373,6 +402,15 @@
   document.getElementById('badge-pkg').textContent = PKG;
   document.getElementById('badge-pay').textContent = PAY;
 
+  // Detect PvP vs PvE
+  const IS_PVP = PKG.includes('PvP');
+
+  if (IS_PVP) {
+    document.body.classList.add('pvp-order');
+    document.getElementById('page-eyebrow').textContent    = 'PvP Resource Pack Order';
+    document.getElementById('dino-picker-section').style.display = 'none';
+  }
+
   // Update button label and form note with payment method name
   document.getElementById('submit-btn').textContent   = 'Submit & Pay with ' + PAY + ' →';
   document.getElementById('pay-method-name').textContent = PAY;
@@ -381,9 +419,11 @@
   const limitMatch     = PKG.match(/\((\d+)\s*Dino/i);
   const currentDinoLimit = limitMatch ? parseInt(limitMatch[1]) : 1;
 
-  document.getElementById('dino-section-desc').innerHTML =
-    'You can select up to <strong>' + currentDinoLimit + ' dino' + (currentDinoLimit > 1 ? 's' : '') +
-    '</strong> for this package. Hit <strong>+ Add</strong>, choose Single or Breeding Pair, and optionally pick colors for each region.';
+  if (!IS_PVP) {
+    document.getElementById('dino-section-desc').innerHTML =
+      'You can select up to <strong>' + currentDinoLimit + ' dino' + (currentDinoLimit > 1 ? 's' : '') +
+      '</strong> for this package. Hit <strong>+ Add</strong>, choose Single or Breeding Pair, and optionally pick colors for each region.';
+  }
 
   // ── DATA ──
   const DINOS = [
@@ -481,6 +521,11 @@
   let selectedDinos = {};
   let dinoOrderText = '(none selected)';
 
+  // A breeding pair counts as 2 dino slots, single = 1
+  function usedSlots() {
+    return Object.values(selectedDinos).reduce((sum, d) => sum + (d.type === 'pair' ? 2 : 1), 0);
+  }
+
   const dinoListEl    = document.getElementById('dino-list');
   const selectedWrap  = document.getElementById('selected-dinos-wrap');
   const selectedList  = document.getElementById('selected-dinos-list');
@@ -492,16 +537,19 @@
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  const CAT_ICON = { Flyer: '🦅', Carnivore: '🦖', Herbivore: '🌿', Aquatic: '🐟', Special: '⭐', Small: '🐾' };
+
   // ── DINO LIST ──
   function renderDinoList() {
     const q       = dinoSearch.value.trim().toLowerCase();
     const cat     = catFilter.value;
-    const atLimit = Object.keys(selectedDinos).length >= currentDinoLimit;
+    const slots   = usedSlots();
+    const atLimit = slots >= currentDinoLimit;
     const banner  = document.getElementById('dino-limit-banner');
 
     banner.style.display = atLimit ? 'block' : 'none';
     banner.textContent   = atLimit
-      ? '✓ Dino limit reached (' + currentDinoLimit + '/' + currentDinoLimit + ') — remove a dino to swap.'
+      ? '✓ Dino limit reached (' + slots + '/' + currentDinoLimit + ') — remove a dino or switch a breeding pair to single to free up a slot.'
       : '';
 
     const filtered = DINOS.filter(d =>
@@ -514,27 +562,27 @@
       return;
     }
 
-    dinoListEl.innerHTML = filtered.map(d => {
+    dinoListEl.innerHTML = '<div class="dino-card-grid">' + filtered.map(d => {
       const added    = !!selectedDinos[d.name];
       const disabled = added || atLimit;
-      return '<div class="dino-row' + (added ? ' is-added' : '') + '">' +
-        '<div class="dino-info">' +
-          '<span class="dino-name-text">' + esc(d.name) + '</span>' +
-          '<span class="dino-cat-label">' + d.cat + '</span>' +
-        '</div>' +
-        '<button type="button" class="dino-add-btn"' + (disabled ? ' disabled' : '') + ' data-dino="' + esc(d.name) + '">' +
+      const icon     = CAT_ICON[d.cat] || '🦕';
+      return '<div class="dino-card' + (added ? ' is-added' : '') + '">' +
+        '<div class="dino-card-icon">' + icon + '</div>' +
+        '<div class="dino-card-name">' + esc(d.name) + '</div>' +
+        '<div class="dino-card-cat">' + d.cat + '</div>' +
+        '<button type="button" class="dino-card-btn"' + (disabled ? ' disabled' : '') + ' data-dino="' + esc(d.name) + '">' +
           (added ? '✓ Added' : '+ Add') +
         '</button>' +
       '</div>';
-    }).join('');
+    }).join('') + '</div>';
 
-    dinoListEl.querySelectorAll('.dino-add-btn:not([disabled])').forEach(btn => {
+    dinoListEl.querySelectorAll('.dino-card-btn:not([disabled])').forEach(btn => {
       btn.addEventListener('click', () => addDino(btn.dataset.dino));
     });
   }
 
   function addDino(name) {
-    if (selectedDinos[name] || Object.keys(selectedDinos).length >= currentDinoLimit) return;
+    if (selectedDinos[name] || usedSlots() >= currentDinoLimit) return;
     selectedDinos[name] = { type: 'single', colors: ['','','','','',''] };
     renderSelectedDinos();
     renderDinoList();
@@ -548,9 +596,11 @@
 
   function setDinoType(name, type) {
     if (!selectedDinos[name]) return;
+    // Switching to pair costs 1 extra slot — block if already at limit
+    if (type === 'pair' && selectedDinos[name].type === 'single' && usedSlots() + 1 > currentDinoLimit) return;
     selectedDinos[name].type = type;
-    const card = selectedList.querySelector('[data-card="' + name + '"]');
-    if (card) card.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+    renderSelectedDinos(); // re-render to update count badge + pair button states
+    renderDinoList();       // re-render to update limit banner + add button states
   }
 
   function setColor(name, region, color) {
@@ -565,11 +615,14 @@
 
   function renderSelectedDinos() {
     const names = Object.keys(selectedDinos);
-    selectedCount.textContent  = names.length + ' / ' + currentDinoLimit;
+    const slots = usedSlots();
+    selectedCount.textContent  = slots + ' / ' + currentDinoLimit;
     selectedWrap.style.display = names.length ? 'block' : 'none';
 
     selectedList.innerHTML = names.map(name => {
       const d = selectedDinos[name];
+      // Can switch to breeding pair only if currently single AND there's a free slot
+      const canBePair = d.type === 'pair' || slots + 1 <= currentDinoLimit;
       const regionsHtml = [0,1,2,3,4,5].map(r => {
         const swatches =
           '<button type="button" class="swatch skip' + (d.colors[r] === '' ? ' active' : '') + '" data-color="" title="Any / Skip">–</button>' +
@@ -585,7 +638,7 @@
           '<div style="display:flex;align-items:center;gap:0.5rem;">' +
             '<div class="dino-type-toggle">' +
               '<button type="button" class="type-btn' + (d.type === 'single' ? ' active' : '') + '" data-type="single" data-dino="' + esc(name) + '">Single</button>' +
-              '<button type="button" class="type-btn' + (d.type === 'pair' ? ' active' : '') + '" data-type="pair" data-dino="' + esc(name) + '">Breeding Pair</button>' +
+              '<button type="button" class="type-btn' + (d.type === 'pair' ? ' active' : '') + '"' + (!canBePair ? ' disabled title="Not enough dino slots remaining for a breeding pair"' : '') + ' data-type="pair" data-dino="' + esc(name) + '">Breeding Pair</button>' +
             '</div>' +
             '<button type="button" class="remove-dino-btn" data-dino="' + esc(name) + '" title="Remove">✕</button>' +
           '</div>' +
@@ -628,30 +681,97 @@
   const DISCORD_WEBHOOK_ADMIN = 'https://discord.com/api/webhooks/1474854852327637164/y-sCCMBqPcj-H_uRWAAlhkNB0LlS5G0bmOVGKEx8CHkshfDy4N-VJHJLL0OkMVt19Ak-';
   const ARK_ADMIN_ROLE        = '1474505890827866175';
 
+  // Resource contents for each PvP pack (used in the webhook embed)
+  const PVP_RESOURCES = {
+    'Starter Donation Pack (PvP) — $5': [
+      '5,000 Wood', '2,500 Stone', '1,500 Metal Ingots', '300 Crystal', '1,000 Fiber',
+    ],
+    'Beginner Donation Pack (PvP) — $10': [
+      '10,000 Wood', '5,000 Stone', '3,000 Metal Ingots', '500 Crystal', '2,000 Fiber', '100 Sparkpowder',
+    ],
+    'Standard Donation Pack (PvP) — $15': [
+      '15,000 Wood', '8,000 Stone', '5,000 Metal Ingots', '1,000 Crystal', '4,000 Fiber',
+      '200 Cementing Paste', '500 Rare Mushrooms',
+    ],
+    'Advanced Donation Pack (PvP) — $20': [
+      '20,000 Wood', '12,000 Stone', '7,000 Metal Ingots', '2,000 Crystal', '5,000 Fiber',
+      '400 Cementing Paste', '1,000 Rare Mushrooms', '100 Gunpowder',
+    ],
+    'Mega Donation Pack (PvP) — $30': [
+      '25,000 Wood', '15,000 Stone', '10,000 Metal Ingots', '3,000 Crystal', '7,000 Fiber',
+      '800 Cementing Paste', '1,500 Rare Mushrooms', '300 Gunpowder', '200 Metal Tools',
+    ],
+  };
+
+  async function saveOrderToSupabase(ingame, discord, teleporter, notes) {
+    const dinosPayload = IS_PVP ? null : Object.entries(selectedDinos).map(([name, d]) => ({
+      name, type: d.type, colors: d.colors,
+    }));
+    const { error } = await _supabase.from('ark_orders').insert({
+      package:    PKG,
+      pay_method: PAY,
+      amount:     AMOUNT || null,
+      ingame_name: ingame,
+      discord:    discord || null,
+      teleporter,
+      is_pvp:     IS_PVP,
+      dinos:      dinosPayload,
+      notes:      notes || null,
+    });
+    if (error) throw new Error('Order could not be saved: ' + error.message);
+  }
+
   async function postDonationToDiscord(ingame, discord, teleporter, notes) {
-    const dinoCount = Object.keys(selectedDinos).length;
+    let embed;
+
+    if (IS_PVP) {
+      const resources = PVP_RESOURCES[PKG];
+      const resourceList = resources
+        ? resources.map(r => '▸ ' + r).join('\n')
+        : '—';
+
+      embed = {
+        title: '⚔️ PvP Resource Pack Order',
+        description: '**$' + (AMOUNT || '?') + '** payment via **' + PAY + '** — awaiting confirmation',
+        color: 16746496, // orange
+        fields: [
+          { name: '👤 Player',           value: ingame     || '—', inline: true  },
+          { name: '💬 Discord',          value: discord    || '—', inline: true  },
+          { name: '📦 Package',          value: PKG        || '—', inline: false },
+          { name: '📍 Delivery Location',value: teleporter || '—', inline: false },
+          { name: '🗃️ Resources to Deliver', value: resourceList,  inline: false },
+          { name: '📝 Notes',            value: notes      || '—', inline: false },
+        ],
+        footer: { text: 'React ✅ when delivered  •  React ❌ to cancel' },
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      const dinoCount = usedSlots();
+      embed = {
+        title: '📋 ARK Dino Donation Order',
+        description: '**$' + (AMOUNT || '?') + '** payment via **' + PAY + '** — awaiting confirmation',
+        color: 16737280, // yellow-orange
+        fields: [
+          { name: '👤 Player',           value: ingame     || '—', inline: true  },
+          { name: '💬 Discord',          value: discord    || '—', inline: true  },
+          { name: '📦 Package',          value: PKG        || '—', inline: false },
+          { name: '📍 Delivery Location',value: teleporter || '—', inline: false },
+          { name: '🦕 Total Dinos',      value: String(dinoCount), inline: true  },
+          { name: '🦕 Dinos Ordered',    value: dinoOrderText || '—', inline: false },
+          { name: '📝 Notes',            value: notes      || '—', inline: false },
+        ],
+        footer: { text: 'React ✅ when delivered  •  React ❌ to cancel' },
+        timestamp: new Date().toISOString(),
+      };
+    }
+
     const res = await fetch(DISCORD_WEBHOOK_ADMIN, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        content: '<@&' + ARK_ADMIN_ROLE + '>',
+        content: '<@&' + ARK_ADMIN_ROLE + '> — new order needs delivery!',
         allowed_mentions: { roles: [ARK_ADMIN_ROLE] },
-        embeds: [{
-          title: '📋 ARK Donation — Action Required',
-          color: 16737280,
-          fields: [
-            { name: 'PACKAGE',        value: PKG        || '—', inline: true  },
-            { name: 'PAYMENT METHOD', value: PAY        || '—', inline: true  },
-            { name: 'PLAYER',         value: ingame     || '—', inline: true  },
-            { name: 'DISCORD',        value: discord    || '—', inline: true  },
-            { name: 'TELEPORTER',     value: teleporter || '—', inline: true  },
-            { name: 'TOTAL DINOS',    value: String(dinoCount), inline: true  },
-            { name: 'DINOS ORDERED',  value: dinoOrderText || '—', inline: false },
-            { name: 'NOTES',          value: notes      || '—', inline: false },
-          ],
-          footer: { text: 'React ✅ when delivered' },
-          timestamp: new Date().toISOString(),
-        }],
+        embeds: [embed],
       }),
     });
     if (!res.ok) throw new Error('Webhook failed: ' + res.status);
@@ -674,7 +794,10 @@
     submitBtn.textContent = 'Sending…';
 
     try {
-      await postDonationToDiscord(ingame, discord, teleporter, notes);
+      await Promise.all([
+        postDonationToDiscord(ingame, discord, teleporter, notes),
+        saveOrderToSupabase(ingame, discord, teleporter, notes),
+      ]);
       orderForm.hidden   = true;
       formSuccess.hidden = false;
 
