@@ -359,7 +359,7 @@
       <h1>Zeropoint</h1>
       <p>Built by players. Run for players.</p>
       <div class="hero-stats">
-        <span class="hero-stat"><span class="hero-stat-dot"></span>3 Live Servers</span>
+        <span class="hero-stat"><span class="hero-stat-dot"></span>4 Live Servers</span>
         <span class="hero-stat-sep">·</span>
         <span class="hero-stat"><span id="hero-member-count">50</span> Members</span>
         <span class="hero-stat-sep">·</span>
@@ -371,7 +371,7 @@
             <span class="game-card-title">🦕 ARK: Survival Evolved</span>
             <span class="game-badge badge-live">Live</span>
           </div>
-          <span class="game-card-sub">3 servers · Xbox PvE · US East</span>
+          <span class="game-card-sub">4 servers · Xbox/PC PvE · US East</span>
           <span class="game-card-btn">
             Join Servers
             <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
@@ -449,7 +449,7 @@
       <div class="ark-row">
         <span class="ark-dot"></span>
         <div class="ark-row-info">
-          <span class="ark-map">Crystal Isles</span>
+          <span class="ark-map">Ragnarok 2</span>
           <div class="ark-tags">
             <span class="ark-tag">Miami</span>
             <span class="ark-tag">Xbox</span>
@@ -494,19 +494,22 @@
         </div>
       </div>
 
-      <div class="ark-row-soon">
-        <span class="ark-dot-soon"></span>
+      <div class="ark-row">
+        <span class="ark-dot"></span>
         <div class="ark-row-info">
-          <span class="ark-map" style="color:var(--muted);font-weight:600;">ARK: Survival Ascended</span>
+          <span class="ark-map">ARK: Survival Ascended</span>
           <div class="ark-tags">
-            <span class="ark-tag-asa">50x</span>
-            <span class="ark-tag-asa">Modded</span>
-            <span class="ark-tag-asa">PvE</span>
-            <span class="ark-tag-asa">Xbox</span>
-            <span class="ark-tag-asa">New York</span>
+            <span class="ark-tag">50x</span>
+            <span class="ark-tag">Modded</span>
+            <span class="ark-tag">PvE</span>
+            <span class="ark-tag">Xbox</span>
+            <span class="ark-tag">New York</span>
           </div>
         </div>
-        <span class="ark-badge-soon">Coming Soon</span>
+        <div class="ark-row-right">
+          <div class="ark-bar-wrap"><div class="ark-bar" id="idx-bar-asa"></div></div>
+          <span class="ark-count" id="idx-pc-asa">—</span>
+        </div>
       </div>
 
       <div class="ark-panel-footer">
@@ -555,7 +558,7 @@
 
   </div>
 
-  <!-- FOOTER -->
+<!-- FOOTER -->
   <footer>
     <p>&copy; 2026 Zeropoint &mdash; <a href="discord.html">Join our Discord</a> &mdash; <a href="rules.html">Community Rules</a></p>
   </footer>
@@ -1073,12 +1076,13 @@
   // ── LIVE PLAYER COUNTS ──
   (function () {
     const SERVERS = [
-      { id: 'idx-pc-crystal',  bar: 'idx-bar-crystal',  ip: '217.114.193.20:10005'  },
-      { id: 'idx-pc-fjordur',  bar: 'idx-bar-fjordur',  ip: '31.214.234.17:10047'   },
-      { id: 'idx-pc-ragnarok', bar: 'idx-bar-ragnarok', ip: '217.114.193.39:10038'  },
+      { id: 'idx-pc-crystal',  bar: 'idx-bar-crystal',  ip: '217.114.195.208:10020', platform: 'Xbox' },
+      { id: 'idx-pc-fjordur',  bar: 'idx-bar-fjordur',  ip: '31.214.234.17:10047',   platform: 'Xbox' },
+      { id: 'idx-pc-ragnarok', bar: 'idx-bar-ragnarok', ip: '217.114.193.39:10038',  platform: 'Xbox' },
+      { id: 'idx-pc-asa',      bar: 'idx-bar-asa',      ip: '85.190.136.159:5690',   platform: 'ASA'  },
     ];
-    async function fetchPlayers(ip) {
-      const url = 'https://api.arkbuddy.app/api/v2/servers/get?platform=Xbox&type=unofficial&ip='
+    async function fetchPlayers(ip, platform) {
+      const url = 'https://api.arkbuddy.app/api/v2/servers/get?platform=' + platform + '&type=unofficial&ip='
         + encodeURIComponent(ip) + '&skippable=clusters,mods';
       const res = await fetch(url);
       if (!res.ok) return null;
@@ -1093,7 +1097,7 @@
         const el = document.getElementById(s.id);
         if (!el) continue;
         try {
-          const d = await fetchPlayers(s.ip);
+          const d = await fetchPlayers(s.ip, s.platform);
           if (d) {
             el.textContent = d.cur + ' / ' + d.max;
             el.className = 'ark-count pc-live';
