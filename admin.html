@@ -328,6 +328,15 @@
     .action-cancel {
       background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.2); color: var(--red);
     }
+    .pay-badge { display:inline-block; font-size:0.6rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; border-radius:6px; padding:0.22rem 0.55rem; white-space:nowrap; vertical-align:middle; margin-left:0.4rem; }
+    .pay-badge.confirmed   { background: rgba(34,197,94,0.08); color: var(--green);  border: 1px solid rgba(34,197,94,0.2); }
+    .pay-badge.unconfirmed { background: rgba(245,158,11,0.08); color: var(--yellow); border: 1px solid rgba(245,158,11,0.18); }
+    .order-note-row { display:flex; gap:0.5rem; align-items:stretch; margin-top:0.6rem; }
+    .order-note-input { flex:1; background:var(--surface); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:0.45rem 0.7rem; font-size:0.8rem; font-family:inherit; outline:none; transition:border-color 0.15s; resize:none; }
+    .order-note-input:focus { border-color:var(--accent); }
+    .order-note-save { background:rgba(255,77,148,0.1); border:1px solid rgba(255,77,148,0.28); color:var(--accent); border-radius:6px; padding:0.45rem 0.85rem; font-size:0.75rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:background 0.15s; }
+    .order-note-save:hover { background:rgba(255,77,148,0.18); }
+    .order-note-saved { font-size:0.72rem; color:var(--green); margin-top:0.3rem; display:none; }
 
     /* ════════════════════════════════
        EMPTY / LOADING
@@ -442,6 +451,19 @@
       <button type="submit" class="login-btn" id="login-btn">Sign in</button>
     </form>
     <p class="login-error" id="login-error" hidden></p>
+
+    <p style="text-align:center;margin-top:0.9rem;">
+      <button type="button" id="forgot-btn" style="background:none;border:none;color:var(--muted);font-size:0.78rem;cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:0;">Forgot password?</button>
+    </p>
+    <div id="forgot-panel" hidden style="margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem;">
+      <p style="font-size:0.78rem;color:var(--muted2);margin-bottom:0.75rem;">Enter your email and we'll send a reset link.</p>
+      <div class="login-group">
+        <label for="forgot-email">Email address</label>
+        <input id="forgot-email" type="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <button type="button" class="login-btn" id="forgot-submit-btn">Send reset link</button>
+      <p id="forgot-msg" hidden style="margin-top:0.75rem;font-size:0.78rem;text-align:center;line-height:1.4;"></p>
+    </div>
   </div>
 </div>
 
@@ -661,6 +683,22 @@
 const SUPABASE_URL  = 'https://cairclbnutqouejtlhks.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_25_ecIfEwCQ1BdXof_ZonQ_Bi2x1CDU';
 
+// ── If this page received invite / recovery tokens, hand off to auth.html ──
+(function() {
+  const qp = new URLSearchParams(window.location.search);
+  const hp = new URLSearchParams(window.location.hash.replace('#', ''));
+  const typeQ = qp.get('type');
+  const typeH = hp.get('type');
+  const hasCode      = !!qp.get('code');
+  const hasTokenHash = !!qp.get('token_hash');
+  const hasHashFlow  = (typeH === 'invite' || typeH === 'recovery') && hp.get('access_token');
+  const hasQueryFlow = (typeQ === 'invite' || typeQ === 'recovery');
+  const hasError     = !!hp.get('error');
+  if (hasCode || hasTokenHash || hasHashFlow || hasQueryFlow || hasError) {
+    window.location.replace('auth.html' + window.location.search + window.location.hash);
+  }
+})();
+
 if (!window.supabase) {
   document.getElementById('login-error').textContent = 'Supabase failed to load. Check your connection.';
   document.getElementById('login-error').hidden = false;
@@ -676,7 +714,15 @@ let _dashReady = false;
 
 // ── AUTH ──
 sb.auth.onAuthStateChange((_, session) => {
-  if (session) showDash(); else showLogin();
+  if (!session) { showLogin(); return; }
+  const role = session.user.user_metadata?.role;
+  if (role !== 'admin' && role !== 'owner') {
+    sb.auth.signOut();
+    const errEl = document.getElementById('login-error');
+    if (errEl) { errEl.textContent = 'Access denied — admin account required.'; errEl.hidden = false; }
+    return;
+  }
+  showDash();
 });
 
 function showDash() {
@@ -719,6 +765,44 @@ loginForm.addEventListener('submit', async e => {
 });
 
 document.getElementById('sign-out-btn').addEventListener('click', () => sb.auth.signOut());
+
+// ── FORGOT PASSWORD ──
+document.getElementById('forgot-btn').addEventListener('click', () => {
+  const panel = document.getElementById('forgot-panel');
+  panel.hidden = !panel.hidden;
+  if (!panel.hidden) document.getElementById('forgot-email').focus();
+});
+
+document.getElementById('forgot-submit-btn').addEventListener('click', async () => {
+  const email = document.getElementById('forgot-email').value.trim();
+  const btn   = document.getElementById('forgot-submit-btn');
+  const msg   = document.getElementById('forgot-msg');
+
+  if (!email) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = 'Please enter your email address.';
+    msg.hidden = false;
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/auth.html',
+  });
+
+  if (error) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = error.message;
+  } else {
+    msg.style.color = 'var(--green)';
+    msg.textContent = 'Reset link sent! Check your email.';
+    btn.textContent = 'Sent';
+  }
+  msg.hidden = false;
+  btn.disabled = false;
+});
 
 // ── SIDEBAR ──
 const sidebar        = document.getElementById('sidebar');
@@ -824,9 +908,11 @@ function buildArkCard(o) {
     dinoHtml = '<div class="dino-chips-wrap">' + chips + '</div>';
   }
 
+  const payBadge = '<span class="pay-badge ' + (o.payment_confirmed ? 'confirmed' : 'unconfirmed') + '">' + (o.payment_confirmed ? 'Paid' : 'Unpaid') + '</span>';
+
   const actions = o.status === 'pending'
     ? '<div class="order-actions">' +
-        '<button class="action-btn action-deliver" data-action="delivered" data-id="' + o.id + '">&check; Mark delivered</button>' +
+        '<button class="action-btn action-deliver" data-action="delivered" data-id="' + o.id + '"' + (!o.payment_confirmed ? ' disabled title="Owner has not confirmed payment yet"' : '') + '>&check; Mark delivered</button>' +
         '<button class="action-btn action-cancel"  data-action="cancelled"  data-id="' + o.id + '">&times; Cancel</button>' +
       '</div>'
     : '';
@@ -847,9 +933,17 @@ function buildArkCard(o) {
     '</div>' +
     '<div class="order-body">' +
       '<div class="order-field"><span class="order-field-label">Package</span><span class="order-field-val">' + esc(o.package || '\u2014') + '</span></div>' +
-      '<div class="order-field"><span class="order-field-label">Payment</span><span class="order-field-val">' + esc(o.pay_method || '\u2014') + '</span></div>' +
+      '<div class="order-field"><span class="order-field-label">Payment</span><span class="order-field-val">' + esc(o.pay_method || '\u2014') + payBadge + '</span></div>' +
       '<div class="order-field"><span class="order-field-label">Deliver to</span><span class="order-field-val">' + esc(o.teleporter || '\u2014') + '</span></div>' +
       (o.notes ? '<div class="order-field"><span class="order-field-label">Notes</span><span class="order-field-val">' + esc(o.notes) + '</span></div>' : '') +
+      (o.tracking_code ? '<div class="order-field"><span class="order-field-label">Tracking</span><span class="order-field-val" style="font-family:ui-monospace,monospace;font-weight:800;letter-spacing:0.2em;">' + esc(o.tracking_code) + '</span></div>' : '') +
+    '</div>' +
+    '<div style="padding:0 1rem 1rem;">' +
+      '<div class="order-note-row">' +
+        '<textarea class="order-note-input" rows="1" placeholder="Add a note visible to the customer…" data-note-id="' + o.id + '">' + esc(o.admin_note || '') + '</textarea>' +
+        '<button class="order-note-save" data-note-save="' + o.id + '">Save</button>' +
+      '</div>' +
+      '<div class="order-note-saved" id="note-saved-' + o.id + '">✓ Saved</div>' +
     '</div>' +
     dinoHtml +
     actions +
@@ -930,6 +1024,18 @@ function attachActions(container, table) {
   container.querySelectorAll('[data-action]').forEach(btn => {
     btn.addEventListener('click', () => updateStatus(table, btn.dataset.id, btn.dataset.action));
   });
+  container.querySelectorAll('[data-note-save]').forEach(btn => btn.addEventListener('click', () => saveNote(btn.dataset.noteSave)));
+}
+
+async function saveNote(id) {
+  const textarea = document.querySelector('[data-note-id="' + id + '"]');
+  const savedEl  = document.getElementById('note-saved-' + id);
+  if (!textarea) return;
+  const { error } = await _sb.from('ark_orders').update({ admin_note: textarea.value || null }).eq('id', id);
+  if (!error && savedEl) {
+    savedEl.style.display = 'block';
+    setTimeout(() => { savedEl.style.display = 'none'; }, 2500);
+  }
 }
 
 function emptyState(title, sub) {
