@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeropoint | Set Password</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
+      --border: #22222e; --accent: #ff4d94;
+      --text: #e8e8f0; --muted: #7a7a90; --green: #22c55e; --red: #ef4444;
+    }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,77,148,0.08) 0%, transparent 65%);
+    }
+
+    .card {
+      position: relative; z-index: 1;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; padding: 2.25rem 2rem;
+      width: 100%; max-width: 400px;
+    }
+
+    .brand {
+      font-size: 0.85rem; font-weight: 800; color: var(--accent);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 1.75rem; display: block;
+    }
+
+    h1 {
+      font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em;
+      margin-bottom: 0.35rem;
+    }
+    .subtitle {
+      font-size: 0.83rem; color: var(--muted); margin-bottom: 1.75rem;
+      line-height: 1.5;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+    .form-group label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .form-group input {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); border-radius: 8px; padding: 0.65rem 0.9rem;
+      font-size: 0.9rem; font-family: inherit; outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .form-group input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255,77,148,0.12);
+    }
+
+    .strength-bar {
+      height: 3px; border-radius: 2px; background: var(--surface2);
+      margin-top: 0.4rem; overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%; border-radius: 2px; width: 0%;
+      transition: width 0.25s, background 0.25s;
+    }
+    .strength-label {
+      font-size: 0.68rem; color: var(--muted); margin-top: 0.3rem;
+    }
+
+    .submit-btn {
+      width: 100%; background: var(--accent); color: #000; border: none;
+      border-radius: 9px; padding: 0.8rem; font-size: 0.9rem; font-weight: 800;
+      cursor: pointer; letter-spacing: 0.02em; margin-top: 0.5rem;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .submit-btn:hover:not(:disabled) { opacity: 0.87; transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: 0.38; cursor: not-allowed; transform: none; }
+
+    .msg {
+      font-size: 0.8rem; border-radius: 8px;
+      padding: 0.6rem 0.85rem; margin-top: 1rem; text-align: center;
+    }
+    .msg.error   { background: rgba(239,68,68,0.08);  border: 1px solid rgba(239,68,68,0.2);  color: var(--red); }
+    .msg.success { background: rgba(34,197,94,0.08);  border: 1px solid rgba(34,197,94,0.2);  color: var(--green); }
+    .msg[hidden] { display: none; }
+
+    /* ── Invalid / expired state ── */
+    .invalid-state { text-align: center; }
+    .invalid-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .invalid-state h1 { margin-bottom: 0.5rem; }
+    .invalid-state p { font-size: 0.84rem; color: var(--muted); line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="card">
+    <!-- content injected by JS -->
+  </div>
+
+  <script>
+  const SUPABASE_URL  = 'https://cairclbnutqouejtlhks.supabase.co';
+  const SUPABASE_ANON = 'sb_publishable_25_ecIfEwCQ1BdXof_ZonQ_Bi2x1CDU';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  const card = document.getElementById('card');
+
+  // ── Parse both query params (PKCE / token_hash) and hash params (implicit) ──
+  const qp        = new URLSearchParams(window.location.search);
+  const hp        = new URLSearchParams(window.location.hash.replace('#', ''));
+
+  const code       = qp.get('code');                    // PKCE flow
+  const tokenHash  = qp.get('token_hash');              // token_hash flow
+  const typeQuery  = qp.get('type');                    // type from query string
+  const typeHash   = hp.get('type');                    // type from hash (implicit)
+  const access     = hp.get('access_token');            // implicit flow
+  const refresh    = hp.get('refresh_token');           // implicit flow
+
+  // ── Initialise: exchange / verify tokens then show form ──
+  async function init() {
+    // Handle Supabase error redirects (#error=access_denied&error_code=otp_expired…)
+    const errCode = hp.get('error_code') || hp.get('error');
+    if (errCode) {
+      const msg = errCode === 'otp_expired'
+        ? 'This invite link has expired. Ask your administrator to send a new invitation.'
+        : 'This link is invalid or has already been used. Ask your administrator for a new invitation.';
+      showInvalid(msg);
+      return;
+    }
+
+    let flowType = 'invite';
+    let sessionOk = false;
+
+    if (code) {
+      // PKCE flow — exchange authorization code for a session
+      const { data, error } = await sb.auth.exchangeCodeForSession(code);
+      if (!error && data?.session) {
+        sessionOk = true;
+        flowType  = 'invite';
+      }
+    } else if (tokenHash) {
+      // token_hash flow (common in Supabase v2 email templates)
+      const otpType = typeQuery === 'recovery' ? 'recovery' : 'invite';
+      flowType = otpType;
+      const { data, error } = await sb.auth.verifyOtp({ token_hash: tokenHash, type: otpType });
+      if (!error) {
+        // verifyOtp may not always embed the session in its response — confirm via getSession
+        const sess = data?.session || (await sb.auth.getSession()).data?.session;
+        sessionOk = !!sess;
+      }
+    } else if ((typeHash === 'invite' || typeHash === 'recovery') && access && refresh) {
+      // Implicit flow — establish session from hash tokens
+      flowType = typeHash;
+      const { data, error } = await sb.auth.setSession({ access_token: access, refresh_token: refresh });
+      if (!error) {
+        const sess = data?.session || (await sb.auth.getSession()).data?.session;
+        sessionOk = !!sess;
+      }
+    }
+
+    if (!sessionOk) {
+      showInvalid();
+      return;
+    }
+
+    showSetPasswordForm(flowType);
+  }
+
+  init();
+
+  // ─────────────────────────────────────────
+  function showSetPasswordForm(type) {
+    const isInvite = type !== 'recovery';
+    card.innerHTML = `
+      <span class="brand">Zeropoint</span>
+      <h1>${isInvite ? 'Set your password' : 'Reset your password'}</h1>
+      <p class="subtitle">${isInvite
+        ? 'Welcome to the team. Choose a password for your account.'
+        : 'Enter a new password for your account.'}</p>
+
+      <form id="pw-form">
+        <div class="form-group">
+          <label for="pw">New password</label>
+          <input id="pw" type="password" minlength="8" required placeholder="Min. 8 characters" autocomplete="new-password" />
+          <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+          <div class="strength-label" id="strength-label"></div>
+        </div>
+        <div class="form-group">
+          <label for="pw2">Confirm password</label>
+          <input id="pw2" type="password" minlength="8" required placeholder="Repeat your password" autocomplete="new-password" />
+        </div>
+        <button class="submit-btn" id="submit-btn" type="submit">
+          ${isInvite ? 'Create account' : 'Reset password'}
+        </button>
+      </form>
+      <p class="msg" id="msg" hidden></p>
+    `;
+
+    // Password strength meter
+    document.getElementById('pw').addEventListener('input', e => {
+      const val = e.target.value;
+      const fill = document.getElementById('strength-fill');
+      const label = document.getElementById('strength-label');
+      let score = 0;
+      if (val.length >= 8)  score++;
+      if (val.length >= 12) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^a-zA-Z0-9]/.test(val)) score++;
+      const levels = [
+        { w: '20%',  bg: '#ef4444', text: 'Weak' },
+        { w: '40%',  bg: '#f97316', text: 'Fair' },
+        { w: '60%',  bg: '#eab308', text: 'Good' },
+        { w: '80%',  bg: '#84cc16', text: 'Strong' },
+        { w: '100%', bg: '#22c55e', text: 'Very strong' },
+      ];
+      const lvl = levels[Math.max(0, score - 1)] || levels[0];
+      fill.style.width = val.length ? lvl.w : '0%';
+      fill.style.background = lvl.bg;
+      label.textContent = val.length ? lvl.text : '';
+    });
+
+    document.getElementById('pw-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const pw  = document.getElementById('pw').value;
+      const pw2 = document.getElementById('pw2').value;
+      const btn = document.getElementById('submit-btn');
+
+      if (pw !== pw2) { showMsg('error', 'Passwords do not match.'); return; }
+      if (pw.length < 8) { showMsg('error', 'Password must be at least 8 characters.'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Saving…';
+
+      // Confirm the session is still alive before updating
+      const { data: { session: activeSession } } = await sb.auth.getSession();
+      if (!activeSession) {
+        showMsg('error', 'Session expired — please close this tab and click the invite link again.');
+        btn.disabled = false;
+        btn.textContent = isInvite ? 'Create account' : 'Reset password';
+        return;
+      }
+
+      const { error } = await sb.auth.updateUser({ password: pw });
+
+      if (error) {
+        showMsg('error', error.message);
+        btn.disabled = false;
+        btn.textContent = isInvite ? 'Create account' : 'Reset password';
+        return;
+      }
+
+      showMsg('success', 'Password set! Redirecting you to the dashboard…');
+      setTimeout(async () => {
+        const { data: { user } } = await sb.auth.getUser();
+        const role = user?.user_metadata?.role;
+        window.location.href = role === 'owner' ? 'owner.html' : 'admin.html';
+      }, 1800);
+    });
+  }
+
+  // ─────────────────────────────────────────
+  function showInvalid(msg) {
+    const text = msg || 'This link has expired or already been used.<br>Ask your administrator to send a new invitation.';
+    card.innerHTML = `
+      <div class="invalid-state">
+        <div class="invalid-icon">🔗</div>
+        <h1>Link expired</h1>
+        <p>${text}</p>
+      </div>
+    `;
+  }
+
+  function showMsg(type, text) {
+    const el = document.getElementById('msg');
+    if (!el) return;
+    el.className = 'msg ' + type;
+    el.textContent = text;
+    el.hidden = false;
+  }
+  </script>
+
+</body>
+</html>
