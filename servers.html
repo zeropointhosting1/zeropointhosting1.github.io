@@ -207,13 +207,13 @@
 
     <div class="total-stat">
       <span class="total-stat-dot"></span>
-      <span><strong id="total-cur">—</strong> players online across 3 servers</span>
+      <span><strong id="total-cur">—</strong> players online across 4 servers</span>
     </div>
 
     <div class="server-card">
       <div class="server-left">
         <span class="server-game">ARK: Survival Evolved</span>
-        <span class="server-name">Crystal Isles (PvE)</span>
+        <span class="server-name">Ragnarok 2 (PvE)</span>
         <span class="server-meta">Miami &middot; Xbox</span>
       </div>
       <div class="server-right">
@@ -252,20 +252,23 @@
       </div>
     </div>
 
-    <p class="arkbuddy-credit">Live stats powered by <a href="https://arkbuddy.app" target="_blank" rel="noopener">ArkBuddy</a></p>
-
-    <div class="list-divider"><span>Coming Soon</span></div>
-
-    <div class="server-card-soon-asa">
+    <div class="server-card">
       <div class="server-left">
-        <span class="server-game-asa">ARK: Survival Ascended</span>
+        <span class="server-game">ARK: Survival Ascended</span>
         <span class="server-name">PvE · 50x · Modded</span>
         <span class="server-meta">New York &middot; Xbox</span>
       </div>
       <div class="server-right">
-        <span class="badge-asa">Coming Soon</span>
+        <span class="status-dot"></span>
+        <span class="ping-value dynamic-ping" data-min="10" data-max="18">14 ms</span>
+        <span class="pc-sep">·</span>
+        <span class="player-count" id="pc-asa">— online</span>
       </div>
     </div>
+
+    <p class="arkbuddy-credit">Live stats powered by <a href="https://arkbuddy.app" target="_blank" rel="noopener">ArkBuddy</a></p>
+
+    <div class="list-divider"><span>Coming Soon</span></div>
 
     <div class="server-card-soon">
       <div class="server-left">
@@ -287,13 +290,14 @@
 
   <script>
   const SERVERS = [
-    { id: 'crystal',  ip: '217.114.193.20:10005'  },
-    { id: 'fjordur',  ip: '31.214.234.17:10047'   },
-    { id: 'ragnarok', ip: '217.114.193.39:10038'  },
+    { id: 'crystal',  ip: '217.114.195.208:10020', platform: 'Xbox' },
+    { id: 'fjordur',  ip: '31.214.234.17:10047',   platform: 'Xbox' },
+    { id: 'ragnarok', ip: '217.114.193.39:10038',  platform: 'Xbox' },
+    { id: 'asa',      ip: '85.190.136.159:5690',   platform: 'ASA'  },
   ];
 
-  async function fetchPlayers(ip) {
-    const url = 'https://api.arkbuddy.app/api/v2/servers/get?platform=Xbox&type=unofficial&ip='
+  async function fetchPlayers(ip, platform) {
+    const url = 'https://api.arkbuddy.app/api/v2/servers/get?platform=' + platform + '&type=unofficial&ip='
       + encodeURIComponent(ip) + '&skippable=clusters,mods';
     const res = await fetch(url);
     if (!res.ok) return null;
@@ -309,7 +313,7 @@
       const el = document.getElementById('pc-' + s.id);
       if (!el) continue;
       try {
-        const d = await fetchPlayers(s.ip);
+        const d = await fetchPlayers(s.ip, s.platform);
         if (d) {
           el.textContent = d.cur + ' / ' + d.max + ' online';
           el.className = 'player-count pc-live';
