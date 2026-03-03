@@ -252,6 +252,66 @@
     .kpi-players  .kpi-icon  { background: rgba(168,85,247,0.1); color: var(--purple); }
     .kpi-players  .kpi-card-glow { background: var(--purple); }
 
+    .kpi-pend-rev .kpi-value { color: var(--yellow); }
+    .kpi-pend-rev .kpi-icon  { background: rgba(245,158,11,0.1); color: var(--yellow); }
+    .kpi-pend-rev .kpi-card-glow { background: var(--yellow); }
+
+    /* ════════════════════════
+       KPI CARD CUSTOMIZATION
+    ════════════════════════ */
+    .customize-btn {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: none; border: 1px solid var(--border2); color: var(--muted);
+      border-radius: var(--radius-sm); padding: 0.28rem 0.75rem;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .customize-btn:hover { color: var(--text); border-color: var(--accent); background: rgba(232,56,122,0.06); }
+    .customize-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(232,56,122,0.08); }
+
+    .kpi-grid.edit-mode .kpi-card { overflow: visible; user-select: none; border-color: var(--border2); }
+
+    .kpi-drag-handle {
+      display: none; position: absolute; top: -9px; left: -9px; z-index: 10;
+      width: 22px; height: 22px; background: var(--surface3); border: 1px solid var(--border2);
+      border-radius: 6px; cursor: grab; align-items: center; justify-content: center; color: var(--muted);
+      transition: color 0.15s, background 0.15s;
+    }
+    .kpi-drag-handle:active { cursor: grabbing; }
+    .kpi-drag-handle:hover { color: var(--text); background: var(--surface2); }
+    .kpi-grid.edit-mode .kpi-drag-handle { display: flex; }
+
+    .kpi-delete-btn {
+      display: none; position: absolute; top: -9px; right: -9px; z-index: 10;
+      width: 22px; height: 22px; background: var(--surface3); border: 1px solid var(--border2);
+      border-radius: 6px; cursor: pointer; align-items: center; justify-content: center; color: var(--muted);
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .kpi-delete-btn:hover { color: var(--red); border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.08); }
+    .kpi-grid.edit-mode .kpi-delete-btn { display: flex; }
+
+    .kpi-card.drag-over { border-color: var(--accent); box-shadow: -3px 0 0 0 var(--accent), 0 4px 24px rgba(0,0,0,0.25); }
+    .kpi-card.dragging { opacity: 0.4; border-color: var(--border2); box-shadow: none; }
+
+    .kpi-tray {
+      display: none; align-items: center; flex-wrap: wrap; gap: 0.5rem;
+      padding: 0.75rem 1rem; background: var(--surface); border: 1px solid var(--border2);
+      border-radius: var(--radius); margin-bottom: 1rem;
+    }
+    .kpi-tray.visible { display: flex; }
+    .kpi-tray-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); flex-shrink: 0; margin-right: 0.25rem;
+    }
+    .kpi-tray-chip {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: var(--surface2); border: 1px solid var(--border2); color: var(--muted2);
+      border-radius: 20px; padding: 0.2rem 0.65rem; font-size: 0.68rem; font-weight: 600; cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .kpi-tray-chip:hover { color: var(--accent); border-color: rgba(232,56,122,0.35); background: rgba(232,56,122,0.07); }
+    .kpi-tray-chip-plus { color: var(--accent); font-size: 0.8rem; font-weight: 700; }
+
     /* editable cost input */
     .kpi-edit-btn {
       background: none; border: none; color: var(--muted); padding: 0.2rem;
@@ -311,6 +371,14 @@
       background: var(--surface3); color: var(--muted2); border: 1px solid var(--border2);
       white-space: nowrap; flex-shrink: 0;
     }
+    .chart-toggle { display: flex; gap: 0.2rem; }
+    .chart-toggle-btn {
+      background: none; border: 1px solid var(--border2); color: var(--muted);
+      border-radius: 5px; padding: 0.18rem 0.5rem; font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.04em; cursor: pointer; transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .chart-toggle-btn:hover { color: var(--text); background: var(--surface2); }
+    .chart-toggle-btn.active { background: var(--surface3); color: var(--text); border-color: var(--accent); }
 
     @media (max-width: 900px) {
       .charts-row-side { grid-template-columns: 1fr 1fr; }
@@ -425,6 +493,16 @@
     .action-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     .action-deliver { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.25); color: var(--green); }
     .action-cancel  { background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.2); color: var(--red); }
+    .action-confirm { background: rgba(99,102,241,0.08); border-color: rgba(99,102,241,0.25); color: var(--purple); }
+    .pay-badge { display:inline-block; font-size:0.6rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; border-radius:6px; padding:0.22rem 0.55rem; white-space:nowrap; vertical-align:middle; margin-left:0.4rem; }
+    .pay-badge.confirmed   { background: rgba(34,197,94,0.08); color: var(--green);  border: 1px solid rgba(34,197,94,0.2); }
+    .pay-badge.unconfirmed { background: rgba(245,158,11,0.08); color: var(--yellow); border: 1px solid rgba(245,158,11,0.18); }
+    .order-note-row { display:flex; gap:0.5rem; align-items:stretch; margin-top:0.6rem; }
+    .order-note-input { flex:1; background:var(--surface); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:0.45rem 0.7rem; font-size:0.8rem; font-family:inherit; outline:none; transition:border-color 0.15s; resize:none; }
+    .order-note-input:focus { border-color:var(--accent); }
+    .order-note-save { background:rgba(255,77,148,0.1); border:1px solid rgba(255,77,148,0.28); color:var(--accent); border-radius:6px; padding:0.45rem 0.85rem; font-size:0.75rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:background 0.15s; }
+    .order-note-save:hover { background:rgba(255,77,148,0.18); }
+    .order-note-saved { font-size:0.72rem; color:var(--green); margin-top:0.3rem; display:none; }
 
     /* ════════════════════════
        EMPTY / LOADING
@@ -535,6 +613,19 @@
       <button type="submit" class="login-btn" id="login-btn">Sign in</button>
     </form>
     <p class="login-error" id="login-error" hidden></p>
+
+    <p style="text-align:center;margin-top:0.9rem;">
+      <button type="button" id="forgot-btn" style="background:none;border:none;color:var(--muted);font-size:0.78rem;cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:0;">Forgot password?</button>
+    </p>
+    <div id="forgot-panel" hidden style="margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem;">
+      <p style="font-size:0.78rem;color:var(--muted2);margin-bottom:0.75rem;">Enter your email and we'll send a reset link.</p>
+      <div class="login-group">
+        <label for="forgot-email">Email address</label>
+        <input id="forgot-email" type="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <button type="button" class="login-btn" id="forgot-submit-btn">Send reset link</button>
+      <p id="forgot-msg" hidden style="margin-top:0.75rem;font-size:0.78rem;text-align:center;line-height:1.4;"></p>
+    </div>
   </div>
 </div>
 
@@ -618,13 +709,29 @@
             <div class="page-title">Overview</div>
             <div class="page-sub">Revenue, analytics &amp; activity at a glance</div>
           </div>
-          <span class="live-pill"><span class="live-dot"></span>Live</span>
+          <div style="display:flex;align-items:center;gap:0.65rem;">
+            <button class="customize-btn" id="customize-btn">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <rect x="1" y="1" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                <rect x="7" y="1" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                <rect x="1" y="7" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                <rect x="7" y="7" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.2"/>
+              </svg>
+              Customize
+            </button>
+            <span class="live-pill"><span class="live-dot"></span>Live</span>
+          </div>
         </div>
         <div class="page-content">
 
           <!-- KPI Cards -->
-          <div class="kpi-grid">
-            <div class="kpi-card kpi-revenue">
+          <div class="kpi-tray" id="kpi-tray">
+            <span class="kpi-tray-label">Hidden</span>
+          </div>
+          <div class="kpi-grid" id="kpi-grid">
+            <div class="kpi-card kpi-revenue" id="card-revenue">
+              <button class="kpi-drag-handle" draggable="false" aria-label="Drag to reorder"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="2" cy="2" r="1" fill="currentColor"/><circle cx="6" cy="2" r="1" fill="currentColor"/><circle cx="2" cy="5" r="1" fill="currentColor"/><circle cx="6" cy="5" r="1" fill="currentColor"/><circle cx="2" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="8" r="1" fill="currentColor"/></svg></button>
+              <button class="kpi-delete-btn" aria-label="Hide card"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1 1l7 7M8 1L1 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
               <div class="kpi-card-glow"></div>
               <div class="kpi-top">
                 <span class="kpi-label">Total Revenue</span>
@@ -638,7 +745,9 @@
               <div class="kpi-sub">All non-cancelled orders</div>
             </div>
 
-            <div class="kpi-card kpi-delivered">
+            <div class="kpi-card kpi-delivered" id="card-delivered">
+              <button class="kpi-drag-handle" draggable="false" aria-label="Drag to reorder"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="2" cy="2" r="1" fill="currentColor"/><circle cx="6" cy="2" r="1" fill="currentColor"/><circle cx="2" cy="5" r="1" fill="currentColor"/><circle cx="6" cy="5" r="1" fill="currentColor"/><circle cx="2" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="8" r="1" fill="currentColor"/></svg></button>
+              <button class="kpi-delete-btn" aria-label="Hide card"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1 1l7 7M8 1L1 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
               <div class="kpi-card-glow"></div>
               <div class="kpi-top">
                 <span class="kpi-label">Delivered Revenue</span>
@@ -652,7 +761,9 @@
               <div class="kpi-sub">Confirmed deliveries only</div>
             </div>
 
-            <div class="kpi-card kpi-pending">
+            <div class="kpi-card kpi-pending" id="card-pending">
+              <button class="kpi-drag-handle" draggable="false" aria-label="Drag to reorder"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="2" cy="2" r="1" fill="currentColor"/><circle cx="6" cy="2" r="1" fill="currentColor"/><circle cx="2" cy="5" r="1" fill="currentColor"/><circle cx="6" cy="5" r="1" fill="currentColor"/><circle cx="2" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="8" r="1" fill="currentColor"/></svg></button>
+              <button class="kpi-delete-btn" aria-label="Hide card"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1 1l7 7M8 1L1 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
               <div class="kpi-card-glow"></div>
               <div class="kpi-top">
                 <span class="kpi-label">Pending Orders</span>
@@ -667,7 +778,9 @@
               <div class="kpi-sub" id="kpi-pending-sub">Awaiting action</div>
             </div>
 
-            <div class="kpi-card kpi-orders">
+            <div class="kpi-card kpi-orders" id="card-orders">
+              <button class="kpi-drag-handle" draggable="false" aria-label="Drag to reorder"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="2" cy="2" r="1" fill="currentColor"/><circle cx="6" cy="2" r="1" fill="currentColor"/><circle cx="2" cy="5" r="1" fill="currentColor"/><circle cx="6" cy="5" r="1" fill="currentColor"/><circle cx="2" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="8" r="1" fill="currentColor"/></svg></button>
+              <button class="kpi-delete-btn" aria-label="Hide card"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1 1l7 7M8 1L1 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
               <div class="kpi-card-glow"></div>
               <div class="kpi-top">
                 <span class="kpi-label">Total Orders</span>
@@ -682,7 +795,9 @@
             </div>
 
             <!-- Server Costs -->
-            <div class="kpi-card kpi-cost">
+            <div class="kpi-card kpi-cost" id="card-cost">
+              <button class="kpi-drag-handle" draggable="false" aria-label="Drag to reorder"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="2" cy="2" r="1" fill="currentColor"/><circle cx="6" cy="2" r="1" fill="currentColor"/><circle cx="2" cy="5" r="1" fill="currentColor"/><circle cx="6" cy="5" r="1" fill="currentColor"/><circle cx="2" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="8" r="1" fill="currentColor"/></svg></button>
+              <button class="kpi-delete-btn" aria-label="Hide card"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1 1l7 7M8 1L1 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
               <div class="kpi-card-glow"></div>
               <div class="kpi-top">
                 <span class="kpi-label">Server Costs</span>
@@ -718,7 +833,9 @@
             </div>
 
             <!-- Net Profit -->
-            <div class="kpi-card kpi-profit">
+            <div class="kpi-card kpi-profit" id="card-profit">
+              <button class="kpi-drag-handle" draggable="false" aria-label="Drag to reorder"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="2" cy="2" r="1" fill="currentColor"/><circle cx="6" cy="2" r="1" fill="currentColor"/><circle cx="2" cy="5" r="1" fill="currentColor"/><circle cx="6" cy="5" r="1" fill="currentColor"/><circle cx="2" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="8" r="1" fill="currentColor"/></svg></button>
+              <button class="kpi-delete-btn" aria-label="Hide card"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1 1l7 7M8 1L1 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
               <div class="kpi-card-glow"></div>
               <div class="kpi-top">
                 <span class="kpi-label">Net Profit</span>
@@ -733,7 +850,9 @@
             </div>
 
             <!-- Live Players -->
-            <div class="kpi-card kpi-players">
+            <div class="kpi-card kpi-players" id="card-players">
+              <button class="kpi-drag-handle" draggable="false" aria-label="Drag to reorder"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="2" cy="2" r="1" fill="currentColor"/><circle cx="6" cy="2" r="1" fill="currentColor"/><circle cx="2" cy="5" r="1" fill="currentColor"/><circle cx="6" cy="5" r="1" fill="currentColor"/><circle cx="2" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="8" r="1" fill="currentColor"/></svg></button>
+              <button class="kpi-delete-btn" aria-label="Hide card"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1 1l7 7M8 1L1 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
               <div class="kpi-card-glow"></div>
               <div class="kpi-top">
                 <span class="kpi-label">Live Players</span>
@@ -747,6 +866,24 @@
               <div class="kpi-value" id="kpi-players">&mdash;</div>
               <div class="kpi-sub" id="kpi-players-sub">Across all 3 servers</div>
             </div>
+
+            <!-- Pending Revenue -->
+            <div class="kpi-card kpi-pend-rev" id="card-pend-rev">
+              <button class="kpi-drag-handle" draggable="false" aria-label="Drag to reorder"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="2" cy="2" r="1" fill="currentColor"/><circle cx="6" cy="2" r="1" fill="currentColor"/><circle cx="2" cy="5" r="1" fill="currentColor"/><circle cx="6" cy="5" r="1" fill="currentColor"/><circle cx="2" cy="8" r="1" fill="currentColor"/><circle cx="6" cy="8" r="1" fill="currentColor"/></svg></button>
+              <button class="kpi-delete-btn" aria-label="Hide card"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1 1l7 7M8 1L1 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+              <div class="kpi-card-glow"></div>
+              <div class="kpi-top">
+                <span class="kpi-label">Pending Revenue</span>
+                <div class="kpi-icon">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.3"/>
+                    <path d="M7 4v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-value" id="kpi-pend-rev">&mdash;</div>
+              <div class="kpi-sub" id="kpi-pend-rev-sub">Awaiting delivery</div>
+            </div>
           </div>
 
           <!-- Charts -->
@@ -755,14 +892,22 @@
               <div class="chart-card">
                 <div class="chart-header">
                   <div>
-                    <div class="chart-title">Revenue &mdash; Last 14 Days</div>
+                    <div class="chart-title" id="chart-rev-title">Revenue &mdash; Last 14 Days</div>
                     <div class="chart-sub">Daily ARK donation income</div>
                   </div>
-                  <span class="chart-badge" id="chart-rev-total">&mdash;</span>
+                  <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <div class="chart-toggle">
+                      <button class="chart-toggle-btn" data-days="7">7d</button>
+                      <button class="chart-toggle-btn active" data-days="14">14d</button>
+                      <button class="chart-toggle-btn" data-days="30">30d</button>
+                    </div>
+                    <span class="chart-badge" id="chart-rev-total">&mdash;</span>
+                  </div>
                 </div>
                 <canvas id="chart-revenue" height="68"></canvas>
               </div>
             </div>
+
 
             <div class="charts-row charts-row-side">
               <div class="chart-card">
@@ -925,6 +1070,22 @@
 const SUPABASE_URL  = 'https://cairclbnutqouejtlhks.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_25_ecIfEwCQ1BdXof_ZonQ_Bi2x1CDU';
 
+// ── If this page received invite / recovery tokens, hand off to auth.html ──
+(function() {
+  const qp = new URLSearchParams(window.location.search);
+  const hp = new URLSearchParams(window.location.hash.replace('#', ''));
+  const typeQ = qp.get('type');
+  const typeH = hp.get('type');
+  const hasCode      = !!qp.get('code');
+  const hasTokenHash = !!qp.get('token_hash');
+  const hasHashFlow  = (typeH === 'invite' || typeH === 'recovery') && hp.get('access_token');
+  const hasQueryFlow = (typeQ === 'invite' || typeQ === 'recovery');
+  const hasError     = !!hp.get('error');
+  if (hasCode || hasTokenHash || hasHashFlow || hasQueryFlow || hasError) {
+    window.location.replace('auth.html' + window.location.search + window.location.hash);
+  }
+})();
+
 if (!window.supabase) {
   document.getElementById('login-error').textContent = 'Supabase failed to load. Check your connection.';
   document.getElementById('login-error').hidden = false;
@@ -938,11 +1099,21 @@ const loginError  = document.getElementById('login-error');
 let _ready = false;
 
 // ── AUTH ──
-sb.auth.onAuthStateChange((_, session) => { session ? showDash() : showLogin(); });
+sb.auth.onAuthStateChange((_, session) => {
+  if (!session) { showLogin(); return; }
+  const role = session.user.user_metadata?.role;
+  if (role !== 'owner') {
+    sb.auth.signOut();
+    const errEl = document.getElementById('login-error');
+    if (errEl) { errEl.textContent = 'Access denied — owner account required.'; errEl.hidden = false; }
+    return;
+  }
+  showDash();
+});
 
 function showDash() {
   loginScreen.hidden = true; dashboard.hidden = false;
-  if (!_ready) { _ready = true; initCostEditor(); loadAll(); subscribeRealtime(); setInterval(loadAll, 30000); fetchLivePlayers(); setInterval(fetchLivePlayers, 60000); }
+  if (!_ready) { _ready = true; initCostEditor(); initCardCustomize(); loadAll(); subscribeRealtime(); setInterval(loadAll, 30000); fetchLivePlayers(); setInterval(fetchLivePlayers, 60000); }
 }
 function showLogin() {
   loginScreen.hidden = false; dashboard.hidden = true; _ready = false;
@@ -965,6 +1136,44 @@ document.getElementById('login-form').addEventListener('submit', async e => {
   }
 });
 document.getElementById('sign-out-btn').addEventListener('click', () => sb.auth.signOut());
+
+// ── FORGOT PASSWORD ──
+document.getElementById('forgot-btn').addEventListener('click', () => {
+  const panel = document.getElementById('forgot-panel');
+  panel.hidden = !panel.hidden;
+  if (!panel.hidden) document.getElementById('forgot-email').focus();
+});
+
+document.getElementById('forgot-submit-btn').addEventListener('click', async () => {
+  const email = document.getElementById('forgot-email').value.trim();
+  const btn   = document.getElementById('forgot-submit-btn');
+  const msg   = document.getElementById('forgot-msg');
+
+  if (!email) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = 'Please enter your email address.';
+    msg.hidden = false;
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/auth.html',
+  });
+
+  if (error) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = error.message;
+  } else {
+    msg.style.color = 'var(--green)';
+    msg.textContent = 'Reset link sent! Check your email.';
+    btn.textContent = 'Sent';
+  }
+  msg.hidden = false;
+  btn.disabled = false;
+});
 
 // ── SIDEBAR ──
 const sidebar = document.getElementById('sidebar');
@@ -1056,6 +1265,170 @@ function initCostEditor() {
   );
 }
 
+// ── KPI CARD CUSTOMIZATION ──
+const KPI_CARDS_META = [
+  { id: 'card-revenue',   label: 'Total Revenue'    },
+  { id: 'card-delivered', label: 'Delivered Revenue' },
+  { id: 'card-pending',   label: 'Pending Orders'    },
+  { id: 'card-orders',    label: 'Total Orders'      },
+  { id: 'card-cost',      label: 'Server Costs'      },
+  { id: 'card-profit',    label: 'Net Profit'        },
+  { id: 'card-players',   label: 'Live Players'      },
+  { id: 'card-pend-rev',  label: 'Pending Revenue'   },
+];
+
+function loadKpiLayout() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem('zp_kpi_layout') || 'null');
+    if (parsed && Array.isArray(parsed.order) && Array.isArray(parsed.hidden)) {
+      const allIds = KPI_CARDS_META.map(m => m.id);
+      const merged = [...parsed.order, ...parsed.hidden];
+      const missing = allIds.filter(id => !merged.includes(id));
+      return { order: [...parsed.order, ...missing], hidden: parsed.hidden };
+    }
+  } catch (_) {}
+  return { order: KPI_CARDS_META.map(m => m.id), hidden: [] };
+}
+
+function applyKpiLayout(order, hidden) {
+  const grid = document.getElementById('kpi-grid');
+  if (!grid) return;
+  for (const id of order) {
+    if (hidden.includes(id)) continue;
+    const el = document.getElementById(id);
+    if (el) grid.appendChild(el);
+  }
+  for (const { id } of KPI_CARDS_META) {
+    const el = document.getElementById(id);
+    if (el) el.hidden = hidden.includes(id);
+  }
+}
+
+function initCardCustomize() {
+  const grid      = document.getElementById('kpi-grid');
+  const tray      = document.getElementById('kpi-tray');
+  const customBtn = document.getElementById('customize-btn');
+  if (!grid || !tray || !customBtn) return;
+
+  let { order, hidden } = loadKpiLayout();
+  applyKpiLayout(order, hidden);
+  renderTray();
+
+  let editMode = false;
+  let dragSrcId = null;
+
+  customBtn.addEventListener('click', () => {
+    editMode = !editMode;
+    grid.classList.toggle('edit-mode', editMode);
+    customBtn.classList.toggle('active', editMode);
+    // Update button text (after the SVG)
+    const nodes = [...customBtn.childNodes];
+    const textNode = nodes.find(n => n.nodeType === Node.TEXT_NODE);
+    if (textNode) textNode.textContent = editMode ? '\n              Done\n            ' : '\n              Customize\n            ';
+    tray.classList.toggle('visible', editMode && hidden.length > 0);
+  });
+
+  // Delete (hide) card
+  grid.addEventListener('click', e => {
+    if (!editMode) return;
+    const btn = e.target.closest('.kpi-delete-btn');
+    if (!btn) return;
+    const card = btn.closest('.kpi-card');
+    if (!card) return;
+    const id = card.id;
+    order  = order.filter(i => i !== id);
+    hidden = [...hidden, id];
+    localStorage.setItem('zp_kpi_layout', JSON.stringify({ order, hidden }));
+    applyKpiLayout(order, hidden);
+    renderTray();
+    tray.classList.toggle('visible', editMode && hidden.length > 0);
+  });
+
+  // Re-add card from tray
+  tray.addEventListener('click', e => {
+    const chip = e.target.closest('.kpi-tray-chip');
+    if (!chip) return;
+    const id = chip.dataset.cardId;
+    hidden = hidden.filter(i => i !== id);
+    if (!order.includes(id)) order = [...order, id];
+    localStorage.setItem('zp_kpi_layout', JSON.stringify({ order, hidden }));
+    applyKpiLayout(order, hidden);
+    renderTray();
+    tray.classList.toggle('visible', editMode && hidden.length > 0);
+  });
+
+  function renderTray() {
+    tray.querySelectorAll('.kpi-tray-chip').forEach(c => c.remove());
+    for (const id of hidden) {
+      const meta = KPI_CARDS_META.find(m => m.id === id);
+      if (!meta) continue;
+      const chip = document.createElement('button');
+      chip.className = 'kpi-tray-chip';
+      chip.dataset.cardId = id;
+      chip.innerHTML = '<span class="kpi-tray-chip-plus">+</span> ' + meta.label;
+      tray.appendChild(chip);
+    }
+  }
+
+  // Drag to reorder — only starts from the handle
+  grid.addEventListener('mousedown', e => {
+    if (!editMode) return;
+    const handle = e.target.closest('.kpi-drag-handle');
+    if (!handle) return;
+    const card = handle.closest('.kpi-card');
+    if (card) card.setAttribute('draggable', 'true');
+  });
+  grid.addEventListener('mouseup', () => {
+    grid.querySelectorAll('.kpi-card[draggable]').forEach(c => c.removeAttribute('draggable'));
+  });
+
+  grid.addEventListener('dragstart', e => {
+    if (!editMode) return;
+    const card = e.target.closest('.kpi-card');
+    if (!card) return;
+    dragSrcId = card.id;
+    card.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', card.id);
+  });
+  grid.addEventListener('dragend', e => {
+    const card = e.target.closest('.kpi-card');
+    if (card) { card.classList.remove('dragging'); card.removeAttribute('draggable'); }
+    grid.querySelectorAll('.kpi-card.drag-over').forEach(c => c.classList.remove('drag-over'));
+    dragSrcId = null;
+  });
+  grid.addEventListener('dragover', e => {
+    if (!editMode || !dragSrcId) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const target = e.target.closest('.kpi-card');
+    if (!target || target.id === dragSrcId) return;
+    grid.querySelectorAll('.kpi-card.drag-over').forEach(c => c.classList.remove('drag-over'));
+    target.classList.add('drag-over');
+  });
+  grid.addEventListener('dragleave', e => {
+    const target = e.target.closest('.kpi-card');
+    if (target) target.classList.remove('drag-over');
+  });
+  grid.addEventListener('drop', e => {
+    if (!editMode || !dragSrcId) return;
+    e.preventDefault();
+    const target = e.target.closest('.kpi-card');
+    if (!target || target.id === dragSrcId) return;
+    target.classList.remove('drag-over');
+    const srcEl = document.getElementById(dragSrcId);
+    if (!srcEl) return;
+    const rect = target.getBoundingClientRect();
+    const after = e.clientX > rect.left + rect.width / 2 || e.clientY > rect.top + rect.height / 2;
+    grid.insertBefore(srcEl, after ? target.nextSibling : target);
+    // Sync order from DOM
+    order = [];
+    grid.querySelectorAll('.kpi-card').forEach(c => { if (c.id) order.push(c.id); });
+    for (const id of hidden) { if (!order.includes(id)) order.push(id); }
+    localStorage.setItem('zp_kpi_layout', JSON.stringify({ order, hidden }));
+  });
+}
+
 // ── KPIs ──
 function updateKpis() {
   const arkPending = arkOrders.filter(o => o.status === 'pending').length;
@@ -1064,6 +1437,7 @@ function updateKpis() {
 
   const revenue   = arkOrders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + (parseFloat(o.amount) || 0), 0);
   const delivered = arkOrders.filter(o => o.status === 'delivered').reduce((s, o) => s + (parseFloat(o.amount) || 0), 0);
+  const pendingRevenue = arkOrders.filter(o => o.status === 'pending').reduce((s, o) => s + (parseFloat(o.amount) || 0), 0);
   const totalOrders = arkOrders.length + bbsOrders.length;
   const profit = revenue - _serverCost;
 
@@ -1073,6 +1447,9 @@ function updateKpis() {
   document.getElementById('kpi-total').textContent     = totalOrders;
   document.getElementById('kpi-pending-sub').textContent = arkPending + ' ARK \u00b7 ' + bbsPending + ' BBS';
   document.getElementById('kpi-total-sub').textContent   = arkOrders.length + ' ARK \u00b7 ' + bbsOrders.length + ' BBS';
+
+  document.getElementById('kpi-pend-rev').textContent     = fmt$(pendingRevenue);
+  document.getElementById('kpi-pend-rev-sub').textContent = arkPending + ' order' + (arkPending !== 1 ? 's' : '') + ' awaiting delivery';
 
   // server cost card + breakdown
   document.getElementById('kpi-cost').textContent    = fmt$(_serverCost);
@@ -1164,8 +1541,11 @@ function buildArkCard(o, showActions) {
     dinoHtml = '<div class="dino-chips-wrap">' + chips + '</div>';
   }
 
+  const payBadge = '<span class="pay-badge ' + (o.payment_confirmed ? 'confirmed' : 'unconfirmed') + '">' + (o.payment_confirmed ? 'Paid' : 'Unpaid') + '</span>';
+
   const actions = showActions && o.status === 'pending'
     ? '<div class="order-actions">' +
+        (!o.payment_confirmed ? '<button class="action-btn action-confirm" data-pay-confirm="' + o.id + '">&#36; Confirm Payment</button>' : '') +
         '<button class="action-btn action-deliver" data-action="delivered" data-id="' + o.id + '">&check; Mark delivered</button>' +
         '<button class="action-btn action-cancel"  data-action="cancelled"  data-id="' + o.id + '">&times; Cancel</button>' +
       '</div>'
@@ -1187,9 +1567,17 @@ function buildArkCard(o, showActions) {
     '</div>' +
     '<div class="order-body">' +
       '<div class="order-field"><span class="order-field-label">Package</span><span class="order-field-val">' + esc(o.package || '\u2014') + '</span></div>' +
-      '<div class="order-field"><span class="order-field-label">Payment</span><span class="order-field-val">' + esc(o.pay_method || '\u2014') + (o.amount ? ' &mdash; <span class="order-amount">$' + esc(o.amount) + '</span>' : '') + '</span></div>' +
+      '<div class="order-field"><span class="order-field-label">Payment</span><span class="order-field-val">' + esc(o.pay_method || '\u2014') + (o.amount ? ' &mdash; <span class="order-amount">$' + esc(o.amount) + '</span>' : '') + payBadge + '</span></div>' +
       '<div class="order-field"><span class="order-field-label">Deliver to</span><span class="order-field-val">' + esc(o.teleporter || '\u2014') + '</span></div>' +
       (o.notes ? '<div class="order-field"><span class="order-field-label">Notes</span><span class="order-field-val">' + esc(o.notes) + '</span></div>' : '') +
+      (o.tracking_code ? '<div class="order-field"><span class="order-field-label">Tracking</span><span class="order-field-val" style="font-family:ui-monospace,monospace;font-weight:800;letter-spacing:0.2em;">' + esc(o.tracking_code) + '</span></div>' : '') +
+    '</div>' +
+    '<div style="padding:0 1rem 1rem;">' +
+      '<div class="order-note-row">' +
+        '<textarea class="order-note-input" rows="1" placeholder="Add a note visible to the customer…" data-note-id="' + o.id + '">' + esc(o.admin_note || '') + '</textarea>' +
+        '<button class="order-note-save" data-note-save="' + o.id + '">Save</button>' +
+      '</div>' +
+      '<div class="order-note-saved" id="note-saved-' + o.id + '">✓ Saved</div>' +
     '</div>' +
     dinoHtml + actions +
   '</div>';
@@ -1280,16 +1668,19 @@ function renderCharts() {
   renderDinoChart();
 }
 
+let _revDays = 14;
+
 function renderRevenueChart() {
-  const days = 14, labels = [], data = [], now = new Date();
+  const days = _revDays, labels = [], data = [], now = new Date();
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date(now); d.setDate(d.getDate() - i);
     const key = d.toISOString().slice(0, 10);
     labels.push(d.toLocaleDateString('en-US', { month:'short', day:'numeric' }));
     data.push(arkOrders.filter(o => o.status !== 'cancelled' && (o.created_at||'').slice(0,10) === key).reduce((s, o) => s + (parseFloat(o.amount)||0), 0));
   }
-  const total14 = data.reduce((a, b) => a + b, 0);
-  document.getElementById('chart-rev-total').textContent = fmt$(total14) + ' / 14d';
+  const total = data.reduce((a, b) => a + b, 0);
+  document.getElementById('chart-rev-total').textContent = fmt$(total) + ' / ' + days + 'd';
+  document.getElementById('chart-rev-title').textContent = 'Revenue \u2014 Last ' + days + ' Days';
 
   destroyChart('revenue');
   _charts.revenue = new Chart(document.getElementById('chart-revenue'), {
@@ -1386,6 +1777,29 @@ function renderDinoChart() {
 // ── HELPERS ──
 function attachActions(container, table) {
   container.querySelectorAll('[data-action]').forEach(btn => btn.addEventListener('click', () => updateStatus(table, btn.dataset.id, btn.dataset.action)));
+  container.querySelectorAll('[data-pay-confirm]').forEach(btn => btn.addEventListener('click', () => confirmPayment(btn.dataset.payConfirm)));
+  container.querySelectorAll('[data-note-save]').forEach(btn => btn.addEventListener('click', () => saveNote(btn.dataset.noteSave)));
+}
+
+async function saveNote(id) {
+  const textarea = document.querySelector('[data-note-id="' + id + '"]');
+  const savedEl  = document.getElementById('note-saved-' + id);
+  if (!textarea) return;
+  const { error } = await sb.from('ark_orders').update({ admin_note: textarea.value || null }).eq('id', id);
+  if (!error && savedEl) {
+    savedEl.style.display = 'block';
+    setTimeout(() => { savedEl.style.display = 'none'; }, 2500);
+  }
+}
+
+async function confirmPayment(id) {
+  const btn = document.querySelector('[data-pay-confirm="' + id + '"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+  const { error } = await sb.from('ark_orders').update({ payment_confirmed: true }).eq('id', id);
+  if (error) {
+    alert('Failed to confirm payment: ' + error.message);
+    if (btn) { btn.disabled = false; btn.textContent = '$ Confirm Payment'; }
+  }
 }
 function emptyState(title, sub) {
   return '<div class="empty-state"><div class="empty-icon">&#128218;</div><div class="empty-title">' + title + '</div><div class="empty-sub">' + sub + '</div></div>';
@@ -1394,6 +1808,14 @@ function fmtDate(str) {
   return new Date(str).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' });
 }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+document.querySelectorAll('.chart-toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    _revDays = parseInt(btn.dataset.days);
+    document.querySelectorAll('.chart-toggle-btn').forEach(b => b.classList.toggle('active', b === btn));
+    renderRevenueChart();
+  });
+});
 </script>
 </body>
 </html>
