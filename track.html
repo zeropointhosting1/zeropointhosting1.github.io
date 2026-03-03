@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeropoint | Track Order</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
+      --border: #22222e; --accent: #ff4d94;
+      --text: #e8e8f0; --muted: #7a7a90;
+      --green: #22c55e; --yellow: #f59e0b; --red: #ef4444;
+    }
+
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh; overflow-x: hidden;
+    }
+
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse 80% 55% at 50% -5%, rgba(255,77,148,0.09) 0%, transparent 65%);
+    }
+
+    .page {
+      position: relative; z-index: 1;
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; padding: 2rem 1.25rem 5rem;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      width: 100%; max-width: 460px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 3.5rem;
+    }
+    .topbar-brand {
+      font-size: 1rem; font-weight: 800; color: var(--accent);
+      text-decoration: none; letter-spacing: 0.05em;
+    }
+    .topbar-back {
+      font-size: 0.78rem; color: var(--muted); text-decoration: none;
+      display: flex; align-items: center; gap: 0.3rem;
+      transition: color 0.15s;
+    }
+    .topbar-back:hover { color: var(--text); }
+
+    /* ── HEADER ── */
+    .header { text-align: center; margin-bottom: 2rem; width: 100%; max-width: 460px; }
+    .header-eyebrow {
+      font-size: 0.67rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.7rem; opacity: 0.9;
+    }
+    .header-title {
+      font-size: clamp(2.1rem, 7vw, 2.9rem); font-weight: 900;
+      letter-spacing: -0.04em; line-height: 1.05;
+      background: linear-gradient(145deg, #ffffff 25%, #8888aa 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+    .header-sub { font-size: 0.84rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── LOOKUP CARD ── */
+    .lookup-card {
+      width: 100%; max-width: 460px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; padding: 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .input-label {
+      font-size: 0.67rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted);
+      display: block; margin-bottom: 0.9rem;
+    }
+    .code-inputs {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.65rem;
+      margin-bottom: 1.1rem;
+    }
+    .code-input {
+      aspect-ratio: 1; border-radius: 12px; text-align: center;
+      font-size: 2rem; font-weight: 900; font-family: ui-monospace, monospace;
+      background: var(--bg); border: 1.5px solid var(--border); color: var(--text);
+      outline: none; width: 100%; caret-color: var(--accent);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .code-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255,77,148,0.13);
+    }
+    .lookup-btn {
+      width: 100%; background: var(--accent); color: #000; border: none;
+      border-radius: 10px; padding: 0.85rem; font-size: 0.9rem;
+      font-weight: 800; cursor: pointer; letter-spacing: 0.02em;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .lookup-btn:hover:not(:disabled) { opacity: 0.87; transform: translateY(-1px); }
+    .lookup-btn:disabled { opacity: 0.38; cursor: not-allowed; transform: none; }
+    .lookup-err {
+      margin-top: 0.85rem; font-size: 0.79rem; color: var(--red);
+      background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.18);
+      border-radius: 8px; padding: 0.55rem 0.85rem; text-align: center;
+    }
+
+    /* ── RESULT CARD ── */
+    .order-result {
+      width: 100%; max-width: 460px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; overflow: hidden;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+    }
+    .order-result.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+    /* Banner */
+    .result-banner {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 1.4rem 1.5rem 1.2rem; border-bottom: 1px solid var(--border);
+    }
+    .result-banner.pending   { background: linear-gradient(135deg, rgba(245,158,11,0.07) 0%, transparent 60%); }
+    .result-banner.delivered { background: linear-gradient(135deg, rgba(34,197,94,0.07) 0%, transparent 60%); }
+    .result-banner.cancelled { background: linear-gradient(135deg, rgba(107,107,133,0.07) 0%, transparent 60%); }
+    .result-player { font-size: 1.05rem; font-weight: 800; margin-bottom: 0.2rem; }
+    .result-pkg    { font-size: 0.77rem; color: var(--muted); }
+
+    .status-pill {
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.3rem 0.7rem; border-radius: 6px; white-space: nowrap; flex-shrink: 0;
+    }
+    .status-pill.pending   { background: rgba(245,158,11,0.1);  color: var(--yellow); border: 1px solid rgba(245,158,11,0.22); }
+    .status-pill.delivered { background: rgba(34,197,94,0.1);   color: var(--green);  border: 1px solid rgba(34,197,94,0.22); }
+    .status-pill.cancelled { background: rgba(107,107,133,0.1); color: var(--muted);  border: 1px solid rgba(107,107,133,0.2); }
+
+    /* ── STEPPER ── */
+    .stepper { padding: 1.5rem 1.75rem 1rem; border-bottom: 1px solid var(--border); }
+    .stepper-track {
+      display: grid;
+      grid-template-columns: 32px 1fr 32px 1fr 32px;
+      align-items: center;
+      margin-bottom: 0.55rem;
+    }
+    .step-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800;
+      background: var(--surface2); border: 2px solid var(--border); color: var(--muted);
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+    }
+    .step-dot.done   { background: rgba(34,197,94,0.14); border-color: var(--green); color: var(--green); }
+    .step-dot.active { background: rgba(245,158,11,0.1); border-color: var(--yellow); color: var(--yellow); }
+    .step-line { height: 2px; background: var(--border); transition: background 0.3s; }
+    .step-line.done { background: var(--green); }
+    .stepper-labels {
+      display: grid;
+      grid-template-columns: 32px 1fr 32px 1fr 32px;
+    }
+    .step-label {
+      font-size: 0.57rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--muted); text-align: center;
+      transition: color 0.3s;
+    }
+    .step-label.done   { color: var(--green); }
+    .step-label.active { color: var(--yellow); }
+    .step-spacer { /* empty grid cells for lines */ }
+
+    .cancelled-notice {
+      text-align: center; padding: 0.5rem 0;
+      font-size: 0.8rem; color: var(--muted);
+    }
+
+    /* ── DETAILS ── */
+    .result-details {
+      padding: 1.1rem 1.5rem 0.4rem;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .detail-row {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 1rem; padding: 0.55rem 0; border-bottom: 1px solid var(--border);
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { font-size: 0.75rem; color: var(--muted); flex-shrink: 0; }
+    .detail-val   { font-size: 0.83rem; font-weight: 600; text-align: right; }
+
+    /* ── ADMIN NOTE ── */
+    .note-box {
+      margin: 0.75rem 1.25rem 1.25rem;
+      background: rgba(255,77,148,0.05); border: 1px solid rgba(255,77,148,0.2);
+      border-radius: 10px; padding: 0.9rem 1rem;
+    }
+    .note-label {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 0.45rem; display: flex; align-items: center; gap: 0.45rem;
+    }
+    .note-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .note-text { font-size: 0.84rem; color: var(--text); line-height: 1.55; }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <nav class="topbar">
+      <a class="topbar-brand" href="index.html">Zeropoint</a>
+      <a class="topbar-back" href="ark.html">&#8592; ARK Donations</a>
+    </nav>
+
+    <div class="header">
+      <p class="header-eyebrow">Order Tracking</p>
+      <h1 class="header-title">Track Your Order</h1>
+      <p class="header-sub">Enter the 4-digit code you received when placing your order.</p>
+    </div>
+
+    <div class="lookup-card">
+      <label class="input-label">Your tracking code</label>
+      <div class="code-inputs">
+        <input class="code-input" id="c0" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" />
+        <input class="code-input" id="c1" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" />
+        <input class="code-input" id="c2" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" />
+        <input class="code-input" id="c3" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" />
+      </div>
+      <button class="lookup-btn" id="lookup-btn">Look Up Order</button>
+      <p class="lookup-err" id="lookup-err" hidden></p>
+    </div>
+
+    <div class="order-result" id="order-result">
+      <div class="result-banner" id="r-banner">
+        <div>
+          <div class="result-player" id="r-player"></div>
+          <div class="result-pkg" id="r-package"></div>
+        </div>
+        <span class="status-pill" id="r-status"></span>
+      </div>
+
+      <div class="stepper" id="r-stepper"></div>
+
+      <div class="result-details">
+        <div class="detail-row">
+          <span class="detail-label">Payment</span>
+          <span class="detail-val" id="r-pay"></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Delivery location</span>
+          <span class="detail-val" id="r-teleport"></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Ordered</span>
+          <span class="detail-val" id="r-date"></span>
+        </div>
+      </div>
+
+      <div class="note-box" id="r-note-box" hidden>
+        <div class="note-label"><span class="note-dot"></span>Note from team</div>
+        <div class="note-text" id="r-note-text"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+  const SUPABASE_URL  = 'https://cairclbnutqouejtlhks.supabase.co';
+  const SUPABASE_ANON = 'sb_publishable_25_ecIfEwCQ1BdXof_ZonQ_Bi2x1CDU';
+  const _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // ── Auto-advance between digit inputs ──
+  const inputs = [0,1,2,3].map(i => document.getElementById('c' + i));
+  inputs.forEach((inp, i) => {
+    inp.addEventListener('input', () => {
+      inp.value = inp.value.replace(/\D/g, '').slice(-1);
+      if (inp.value && i < 3) inputs[i + 1].focus();
+    });
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !inp.value && i > 0) inputs[i - 1].focus();
+      if (e.key === 'Enter') doLookup();
+    });
+    inp.addEventListener('paste', e => {
+      const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 4);
+      if (text.length === 4) {
+        inputs.forEach((inp2, j) => { inp2.value = text[j] || ''; });
+        inputs[3].focus();
+        e.preventDefault();
+      }
+    });
+  });
+
+  // Pre-fill from ?code= URL param
+  (function () {
+    const code = new URLSearchParams(location.search).get('code');
+    if (code && /^\d{4}$/.test(code)) {
+      inputs.forEach((inp, i) => { inp.value = code[i] || ''; });
+      doLookup();
+    }
+  })();
+
+  function getCode() { return inputs.map(i => i.value).join(''); }
+
+  function fmtDate(s) {
+    return new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function renderStepper(status) {
+    const el = document.getElementById('r-stepper');
+
+    if (status === 'cancelled') {
+      el.innerHTML = '<div class="cancelled-notice">This order has been cancelled.</div>';
+      return;
+    }
+
+    const isDelivered = status === 'delivered';
+    // 0=Received always done, 1=In Progress done only if delivered, 2=Delivered done only if delivered
+    const doneCount = isDelivered ? 3 : 1;
+
+    const steps  = ['Received', 'In Progress', 'Delivered'];
+    const dotCls = steps.map((_, i) => i < doneCount ? 'done' : i === doneCount ? 'active' : '');
+    const lineCls = [dotCls[0] === 'done' && dotCls[1] !== '' ? 'done' : '', dotCls[1] === 'done' ? 'done' : ''];
+
+    el.innerHTML =
+      '<div class="stepper-track">' +
+        '<div class="step-dot ' + dotCls[0] + '">' + (dotCls[0] === 'done' ? '✓' : '1') + '</div>' +
+        '<div class="step-line ' + lineCls[0] + '"></div>' +
+        '<div class="step-dot ' + dotCls[1] + '">' + (dotCls[1] === 'done' ? '✓' : '2') + '</div>' +
+        '<div class="step-line ' + lineCls[1] + '"></div>' +
+        '<div class="step-dot ' + dotCls[2] + '">' + (dotCls[2] === 'done' ? '✓' : '3') + '</div>' +
+      '</div>' +
+      '<div class="stepper-labels">' +
+        steps.map((s, i) => '<span class="step-label ' + dotCls[i] + '">' + s + '</span><span class="step-spacer"></span>').join('').slice(0, -'<span class="step-spacer"></span>'.length) +
+      '</div>';
+  }
+
+  async function doLookup() {
+    const code   = getCode();
+    const errEl  = document.getElementById('lookup-err');
+    const result = document.getElementById('order-result');
+    const btn    = document.getElementById('lookup-btn');
+
+    errEl.hidden = true;
+    result.classList.remove('visible');
+
+    if (code.length < 4) {
+      errEl.textContent = 'Please enter all 4 digits.';
+      errEl.hidden = false;
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Looking up…';
+
+    const { data, error } = await _sb
+      .from('ark_orders')
+      .select('ingame_name, package, status, pay_method, amount, teleporter, created_at, admin_note')
+      .eq('tracking_code', code)
+      .maybeSingle();
+
+    btn.disabled = false;
+    btn.textContent = 'Look Up Order';
+
+    if (error) {
+      errEl.textContent = 'Something went wrong: ' + error.message;
+      errEl.hidden = false;
+      return;
+    }
+    if (!data) {
+      errEl.textContent = 'No order found for code ' + code + '. Double-check and try again.';
+      errEl.hidden = false;
+      return;
+    }
+
+    // Banner
+    const banner = document.getElementById('r-banner');
+    banner.className = 'result-banner ' + data.status;
+    document.getElementById('r-player').textContent  = data.ingame_name || '—';
+    document.getElementById('r-package').textContent = data.package || '—';
+    const pill = document.getElementById('r-status');
+    pill.textContent = data.status;
+    pill.className   = 'status-pill ' + data.status;
+
+    // Stepper
+    renderStepper(data.status);
+
+    // Details
+    document.getElementById('r-pay').textContent      = (data.pay_method || '—') + (data.amount ? ' — $' + data.amount : '');
+    document.getElementById('r-teleport').textContent = data.teleporter || '—';
+    document.getElementById('r-date').textContent     = fmtDate(data.created_at);
+
+    // Admin note
+    const noteBox = document.getElementById('r-note-box');
+    if (data.admin_note) {
+      document.getElementById('r-note-text').textContent = data.admin_note;
+      noteBox.hidden = false;
+    } else {
+      noteBox.hidden = true;
+    }
+
+    result.classList.add('visible');
+  }
+
+  document.getElementById('lookup-btn').addEventListener('click', doLookup);
+  </script>
+
+</body>
+</html>
