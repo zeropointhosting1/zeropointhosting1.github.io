@@ -6,6 +6,7 @@
   <title>Zeropoint | ARK Donations</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     button { touch-action: manipulation; }
@@ -1172,6 +1173,24 @@
     </div>
   </div>
 
+  <!-- STRIPE PAYMENT OVERLAY -->
+  <div class="modal-overlay" id="stripe-overlay" hidden>
+    <div class="modal-panel" style="max-width:480px;padding:1.75rem 2rem;">
+      <div class="modal-header" style="margin-bottom:1.5rem;">
+        <div>
+          <div class="modal-eyebrow">🔒 Secure Payment</div>
+          <h2 class="modal-title" id="stripe-total" style="font-size:2rem;letter-spacing:-0.04em;">$0</h2>
+          <p class="modal-subtitle" id="stripe-pkg-label" style="margin-top:0.25rem;"></p>
+        </div>
+        <button class="modal-close" id="stripe-close" aria-label="Close">✕</button>
+      </div>
+      <div id="stripe-payment-element" style="min-height:160px;"></div>
+      <div id="stripe-error" style="display:none;color:#ff6b6b;font-size:0.82rem;margin-top:0.75rem;padding:0.55rem 0.8rem;background:rgba(255,107,107,0.08);border-radius:6px;border:1px solid rgba(255,107,107,0.25);"></div>
+      <button id="stripe-submit" style="display:block;width:100%;margin-top:1.25rem;padding:0.85rem;border-radius:8px;background:#635bff;color:#fff;border:none;font-size:0.95rem;font-weight:800;cursor:pointer;letter-spacing:0.01em;transition:opacity 0.15s,transform 0.15s;font-family:inherit;">Pay Now</button>
+      <p style="text-align:center;font-size:0.7rem;color:var(--muted);margin-top:0.85rem;line-height:1.5;">🔒 Secured by Stripe — your card info never touches our servers</p>
+    </div>
+  </div>
+
   <script>
   // ── NAV ACTIVE ──
   (function () {
@@ -1399,6 +1418,7 @@
 
     orderSub.textContent      = pkg + ' — paying via ' + pay;
     orderFootInfo.textContent = 'Paying via ' + pay;
+    orderSubmit.textContent   = (pay === 'Stripe') ? 'Continue to Payment →' : 'Continue & Get Code →';
     orderOverlay.hidden = false;
     document.body.classList.add('modal-open');
   }
@@ -1589,6 +1609,17 @@
           : document.getElementById('o-notes-pve').value.trim());
     const map        = currentIsPvp ? document.getElementById('o-map').value : '';
 
+    // ── Stripe card payment fork ──
+    if (currentPay === 'Stripe') {
+      const amountNum = parseFloat((currentPkg.match(/\$(\d+)/) || [])[1] || 0);
+      if (!amountNum) { alert('Could not determine package price.'); return; }
+      closeOrderModal();
+      await launchStripePayment({ ingame, discord, teleporter, notes, map, pkg: currentPkg }, amountNum);
+      orderSubmit.disabled    = false;
+      orderSubmit.textContent = 'Continue to Payment →';
+      return;
+    }
+
     orderSubmit.disabled    = true;
     orderSubmit.textContent = 'Sending…';
 
@@ -1616,7 +1647,7 @@
     }
 
     orderSubmit.disabled    = false;
-    orderSubmit.textContent = 'Continue & Get Code →';
+    orderSubmit.textContent = (currentPay === 'Stripe') ? 'Continue to Payment →' : 'Continue & Get Code →';
   });
 
   // ── TRACKING CODE MODAL ──
@@ -1718,6 +1749,169 @@
     });
     if (!res.ok) throw new Error('Discord webhook failed: HTTP ' + res.status);
   }
+
+  // ══════════════════════════════════════════
+  //  STRIPE ON-PAGE CHECKOUT
+  // ══════════════════════════════════════════
+  const STRIPE_PK = 'pk_test_51T6FE632tgRxBIZdqhH7y3p2AUy4nPD3eViJURWZ9qhH7y3p2AUy4nPD3eViJURWZ9q00XSZLCcDg';
+  let _stripe, _stripeElements;
+  let _stripeOrder = {};
+
+  function getStripe() {
+    if (!_stripe) _stripe = Stripe(STRIPE_PK);
+    return _stripe;
+  }
+
+  const stripeOverlay   = document.getElementById('stripe-overlay');
+  const stripePayEl     = document.getElementById('stripe-payment-element');
+  const stripeErrorEl   = document.getElementById('stripe-error');
+  const stripeSubmitBtn = document.getElementById('stripe-submit');
+  const stripeTotalEl   = document.getElementById('stripe-total');
+  const stripePkgLabel  = document.getElementById('stripe-pkg-label');
+
+  function closeStripeOverlay() {
+    stripeOverlay.hidden = true;
+    document.body.classList.remove('modal-open');
+    if (_stripeElements) {
+      try { _stripeElements.getElement('payment').unmount(); } catch(e) {}
+      _stripeElements = null;
+    }
+  }
+
+  document.getElementById('stripe-close').addEventListener('click', closeStripeOverlay);
+  stripeOverlay.addEventListener('click', e => { if (e.target === stripeOverlay) closeStripeOverlay(); });
+
+  async function launchStripePayment(orderData, amount) {
+    _stripeOrder   = orderData;
+    stripeErrorEl.style.display = 'none';
+    stripeErrorEl.textContent   = '';
+    stripeTotalEl.textContent   = '$' + amount;
+    stripePkgLabel.textContent  = orderData.pkg;
+    stripePayEl.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--muted);font-size:0.88rem;">Loading payment form…</div>';
+    stripeSubmitBtn.disabled    = false;
+    stripeSubmitBtn.textContent = 'Pay Now';
+    stripeOverlay.hidden = false;
+    document.body.classList.add('modal-open');
+
+    try {
+      const resp = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: amount, description: orderData.pkg }),
+      });
+      const { clientSecret, error } = await resp.json();
+      if (error) throw new Error(error);
+
+      const stripe = getStripe();
+      _stripeElements = stripe.elements({
+        clientSecret,
+        appearance: {
+          theme: 'night',
+          variables: {
+            colorPrimary: '#635bff',
+            colorBackground: '#1a1a24',
+            colorText: '#e8e8f0',
+            colorDanger: '#ff6b6b',
+            colorTextSecondary: '#7a7a90',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+            borderRadius: '7px',
+            spacingUnit: '4px',
+          },
+        },
+      });
+      const paymentEl = _stripeElements.create('payment');
+      stripePayEl.innerHTML = '';
+      paymentEl.mount('#stripe-payment-element');
+    } catch (err) {
+      stripeErrorEl.textContent   = 'Could not load payment form: ' + err.message;
+      stripeErrorEl.style.display = 'block';
+      stripePayEl.innerHTML       = '';
+    }
+  }
+
+  stripeSubmitBtn.addEventListener('click', async () => {
+    if (!_stripeElements) return;
+    stripeSubmitBtn.disabled    = true;
+    stripeSubmitBtn.textContent = 'Processing…';
+    stripeErrorEl.style.display = 'none';
+
+    const stripe = getStripe();
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements: _stripeElements,
+      redirect: 'if_required',
+      confirmParams: { return_url: location.href },
+    });
+
+    if (error) {
+      stripeErrorEl.textContent   = error.message;
+      stripeErrorEl.style.display = 'block';
+      stripeSubmitBtn.disabled    = false;
+      stripeSubmitBtn.textContent = 'Pay Now';
+      return;
+    }
+
+    // Payment succeeded — close overlay, save order, show tracking code
+    closeStripeOverlay();
+
+    const { ingame, discord, teleporter, notes, map, pkg } = _stripeOrder;
+    const code = String(Math.floor(1000 + Math.random() * 9000));
+
+    try {
+      await Promise.all([
+        postToDiscord(ingame, discord, teleporter, notes, map, pkg, 'Card (Stripe)', code),
+        saveToSupabase(ingame, discord, teleporter, notes, pkg, 'Stripe', code),
+      ]);
+    } catch (err) {
+      console.warn('Order save failed after payment (payment was still captured):', err);
+    }
+
+    tcodeDigits.innerHTML  = code.split('').map(d => '<div class="tcode-digit">' + d + '</div>').join('');
+    tcodeCopy.textContent  = 'Copy Code';
+    tcodeContinue.textContent = '✓ Payment Complete — Close';
+    tcodeContinue.href        = '#';
+    tcodeContinue.target      = '';
+    tcodeContinue.style.background = '#00c97a';
+    tcodeContinue.style.color      = '#000';
+    tcodeContinue.onclick = function(e) {
+      e.preventDefault();
+      tcodeOverlay.hidden = true;
+      document.body.classList.remove('modal-open');
+      tcodeContinue.onclick  = null;
+      tcodeContinue.style.background = '';
+      tcodeContinue.style.color      = '';
+      tcodeContinue.textContent      = 'Got it — Continue to Payment →';
+      tcodeContinue.target           = '_blank';
+    };
+    tcodeOverlay.hidden = false;
+    document.body.classList.add('modal-open');
+
+    _stripeOrder = {};
+  });
+
+  // Inject "💳 Pay with Card" button below each payment grid
+  document.querySelectorAll('.pkg-payments, .server-pack-payments').forEach(function(grid) {
+    var btn = document.createElement('button');
+    btn.type      = 'button';
+    btn.textContent = '💳 Pay with Card';
+    btn.style.cssText = [
+      'display:block', 'width:100%', 'margin-top:0.45rem',
+      'padding:0.6rem 0.5rem', 'border-radius:6px',
+      'font-size:0.78rem', 'font-weight:700',
+      'background:#635bff', 'color:#fff',
+      'border:none', 'cursor:pointer',
+      'letter-spacing:0.03em',
+      'transition:opacity 0.15s,transform 0.15s',
+      'font-family:inherit',
+    ].join(';');
+    btn.addEventListener('mouseover', function() { btn.style.opacity = '0.85'; btn.style.transform = 'translateY(-1px)'; });
+    btn.addEventListener('mouseout',  function() { btn.style.opacity = '1';    btn.style.transform = ''; });
+    btn.addEventListener('click', function() {
+      var card = btn.closest('[data-package]');
+      var pkg  = card ? card.dataset.package : 'Unknown Package';
+      openOrderModal(pkg, 'Stripe');
+    });
+    grid.after(btn);
+  });
   </script>
 
 </body>
