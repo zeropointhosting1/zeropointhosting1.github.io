@@ -892,10 +892,12 @@ function renderArkOrders() {
 
 function buildArkCard(o) {
   const date    = new Date(o.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' });
-  const initials = (o.ingame_name || '??').slice(0, 2).toUpperCase();
+  const isServer = o.package && o.package.includes('Private Server');
+  const displayName = o.ingame_name || o.discord || '??';
+  const initials = displayName.slice(0, 2).toUpperCase();
 
   let dinoHtml = '';
-  if (!o.is_pvp && Array.isArray(o.dinos) && o.dinos.length) {
+  if (!o.is_pvp && !isServer && Array.isArray(o.dinos) && o.dinos.length) {
     const chips = o.dinos.map(d => {
       const pair = d.type === 'pair';
       const colors = (d.colors || []).map((c, i) => c ? 'R' + i + ':' + c : null).filter(Boolean);
@@ -922,7 +924,7 @@ function buildArkCard(o) {
       '<div class="order-left">' +
         '<div class="order-avatar">' + initials + '</div>' +
         '<div>' +
-          '<div class="order-player">' + esc(o.ingame_name) + (o.is_pvp ? ' <span style="font-size:0.7rem;opacity:0.7;">\u2694\ufe0f PvP</span>' : '') + '</div>' +
+          '<div class="order-player">' + esc(displayName) + (isServer ? ' <span style="font-size:0.7rem;opacity:0.8;">\uD83C\uDF1F Server</span>' : o.is_pvp ? ' <span style="font-size:0.7rem;opacity:0.7;">\u2694\ufe0f PvP</span>' : '') + '</div>' +
           (o.discord ? '<div class="order-discord">' + esc(o.discord) + '</div>' : '') +
         '</div>' +
       '</div>' +
