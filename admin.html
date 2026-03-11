@@ -339,6 +339,29 @@
     .order-note-saved { font-size:0.72rem; color:var(--green); margin-top:0.3rem; display:none; }
 
     /* ════════════════════════════════
+       SPAWN COMMANDS
+    ════════════════════════════════ */
+    .spawn-cmds { margin: 0 0 0.75rem; }
+    .spawn-cmds summary {
+      font-size: 0.68rem; color: var(--muted2); cursor: pointer; font-weight: 700;
+      list-style: none; display: inline-flex; align-items: center; gap: 0.35rem;
+      padding: 0.2rem 0; user-select: none; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .spawn-cmds summary::-webkit-details-marker { display: none; }
+    .spawn-cmd-list { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.5rem 0 0; }
+    .spawn-cmd-row { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+    .spawn-cmd-label { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); min-width: 80px; flex-shrink: 0; }
+    .spawn-cmd-code {
+      flex: 1; font-family: ui-monospace, 'Cascadia Code', monospace; font-size: 0.72rem;
+      background: var(--surface2); border: 1px solid var(--border2); color: var(--text);
+      border-radius: 5px; padding: 0.28rem 0.65rem; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      white-space: nowrap; overflow-x: auto; display: block; user-select: all;
+    }
+    .spawn-cmd-code:hover { border-color: var(--accent); background: rgba(232,56,122,0.04); }
+    .spawn-cmd-code.copied { border-color: var(--green); color: var(--green); background: rgba(34,197,94,0.04); }
+
+    /* ════════════════════════════════
        EMPTY / LOADING
     ════════════════════════════════ */
     .empty-state {
@@ -890,6 +913,121 @@ function renderArkOrders() {
   }
 }
 
+// ── SPAWN COMMANDS ──
+const DINO_CLASSES = {
+  'Archaeopteryx':          'Archa_Character_BP_C',
+  'Desmodus':               'Desmodus_Character_BP_C',
+  'Dilophosaurus':          'Dilo_Character_BP_C',
+  'Dimorphodon':            'Dimorph_Character_BP_C',
+  'Dodo':                   'Dodo_Character_BP_C',
+  'Electrophorus':          'Eel_Character_BP_C',
+  'Fjordhawk':              'Fjordhawk_Character_BP_C',
+  'Jerboa':                 'Jerboa_Character_BP_C',
+  'Lystrosaurus':           'Lystro_Character_BP_C',
+  'Mesopithecus':           'Monkey_Character_BP_C',
+  'Otter':                  'Otter_Character_BP_C',
+  'Oviraptor':              'Oviraptor_Character_BP_C',
+  'Parasaur':               'Para_Character_BP_C',
+  'Pegomastax':             'Pegomastax_Character_BP_C',
+  'Pteranodon':             'Ptero_Character_BP_C',
+  'Troodon':                'Troodon_Character_BP_C',
+  'Argentavis':             'Argent_Character_BP_C',
+  'Baryonyx':               'Baryonyx_Character_BP_C',
+  'Carnotaurus':            'Carno_Character_BP_C',
+  'Castoroides':            'Beaver_Character_BP_C',
+  'Daeodon':                'Daeodon_Character_BP_C',
+  'Deinonychus':            'Deinonychus_Character_BP_C',
+  'Doedicurus':             'Doed_Character_BP_C',
+  'Gallimimus':             'Galli_Character_BP_C',
+  'Iguanodon':              'Iguanodon_Character_BP_C',
+  'Kaprosuchus':            'Kapro_Character_BP_C',
+  'Maewing':                'Maewing_Character_BP_C',
+  'Mammoth':                'Mammoth_Character_BP_C',
+  'Megaloceros':            'Stag_Character_BP_C',
+  'Megalosaurus':           'Megalosaurus_Character_BP_C',
+  'Moschops':               'Moschops_Character_BP_C',
+  'Pachycephalosaurus':     'Pachy_Character_BP_C',
+  'Pelagornis':             'Pela_Character_BP_C',
+  'Procoptodon':            'Procoptodon_Character_BP_C',
+  'Raptor':                 'Raptor_Character_BP_C',
+  'Sarcosuchus':            'Sarco_Character_BP_C',
+  'Snow Owl':               'Owl_Character_BP_C',
+  'Stegosaurus':            'Stego_Character_BP_C',
+  'Tapejara':               'Tapejara_Character_BP_C',
+  'Thylacoleo':             'Thylacoleo_Character_BP_C',
+  'Velonasaur':             'Spindles_Character_BP_C',
+  'Woolly Rhino':           'Rhino_Character_BP_C',
+  'Allosaurus':             'Allo_Character_BP_C',
+  'Ankylosaurus':           'Ankylo_Character_BP_C',
+  'Astrodelphis':           'Astrodelphis_Character_BP_C',
+  'Basilosaurus':           'Basilosaurus_Character_BP_C',
+  'Brontosaurus':           'Bronto_Character_BP_C',
+  'Crystal Wyvern (Blood)': 'CrystalWyvern_Character_BP_Blood_C',
+  'Crystal Wyvern (Ember)': 'CrystalWyvern_Character_BP_Fire_C',
+  'Crystal Wyvern (Heart)': 'CrystalWyvern_Character_BP_Heal_C',
+  'Diplodocus':             'Diplodocus_Character_BP_C',
+  'Gacha':                  'Gacha_Character_BP_C',
+  'Griffin':                'Griffin_Character_BP_C',
+  'Magmasaur':              'Cherufe_Character_BP_C',
+  'Managarmr':              'IceJumper_Character_BP_C',
+  'Megalodon':              'Megalodon_Character_BP_C',
+  'Paraceratherium':        'Paracer_Character_BP_C',
+  'Plesiosaur':             'Plesiosaur_Character_BP_C',
+  'Quetzal':                'Quetz_Character_BP_C',
+  'Rex':                    'Rex_Character_BP_C',
+  'Rock Drake':             'RockDrake_Character_BP_C',
+  'Shadowmane':             'Shadowmane_Character_BP_C',
+  'Spinosaurus':            'Spino_Character_BP_C',
+  'Stryder':                'Stryders_Character_BP_C',
+  'Therizinosaurus':        'Therizino_Character_BP_C',
+  'Triceratops':            'Trike_Character_BP_C',
+  'Tropeognathus':          'Tropeognathus_Character_BP_C',
+  'Wyvern (Fire)':          'Wyvern_Character_BP_Fire_C',
+  'Wyvern (Ice)':           'Wyvern_Character_BP_Ice_C',
+  'Wyvern (Lightning)':     'Wyvern_Character_BP_Lightning_C',
+  'Wyvern (Poison)':        'Wyvern_Character_BP_Poison_C',
+  'Yutyrannus':             'Yuty_Character_BP_C',
+  'Giganotosaurus':         'Gigant_Character_BP_C',
+  'Mosasaurus':             'Mosa_Character_BP_C',
+  'Alpha Rex':              'MegaRex_Character_BP_C',
+  'Alpha Raptor':           'MegaRaptor_Character_BP_C',
+  'Alpha Carnotaurus':      'MegaCarno_Character_BP_C',
+  'Alpha Megalodon':        'MegaMegalodon_Character_BP_C',
+  'Alpha Mosasaurus':       'MegaMosa_Character_BP_C',
+  'Alpha Fire Wyvern':      'Wyvern_Character_BP_Alpha_C',
+};
+
+// level 750 = ARK donations, level 500 = BBS orders
+function buildSpawnCmds(dinos, level) {
+  if (!dinos || !dinos.length) return '';
+  const rows = [];
+  dinos.forEach(d => {
+    const cls = DINO_CLASSES[d.name];
+    if (!cls) return;
+    const cmd = 'admincheat GMSummon "' + cls + '" ' + level;
+    const isPair = d.type === 'pair';
+    const count = isPair ? 2 : 1;
+    for (let i = 0; i < count; i++) {
+      const label = esc(d.name) + (isPair ? ' (' + (i + 1) + '/2)' : '');
+      rows.push('<div class="spawn-cmd-row"><span class="spawn-cmd-label">' + label + '</span><code class="spawn-cmd-code" onclick="copySpawnCmd(this)">' + esc(cmd) + '</code></div>');
+    }
+  });
+  if (!rows.length) return '';
+  return '<details class="spawn-cmds" open><summary>⚡ Spawn Commands <span style="opacity:0.45;font-size:0.9em;font-weight:400;text-transform:none;letter-spacing:0">(click to copy)</span></summary><div class="spawn-cmd-list">' + rows.join('') + '</div></details>';
+}
+
+function copySpawnCmd(el) {
+  const text = el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    el.classList.add('copied');
+    el.textContent = '✓ Copied!';
+    setTimeout(() => { el.classList.remove('copied'); el.textContent = text; }, 1400);
+  }).catch(() => {
+    const r = document.createRange(); r.selectNode(el);
+    window.getSelection().removeAllRanges(); window.getSelection().addRange(r);
+  });
+}
+
 function buildArkCard(o) {
   const date    = new Date(o.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' });
   const isServer = o.package && o.package.includes('Private Server');
@@ -948,6 +1086,7 @@ function buildArkCard(o) {
       '<div class="order-note-saved" id="note-saved-' + o.id + '">✓ Saved</div>' +
     '</div>' +
     dinoHtml +
+    buildSpawnCmds(o.dinos, 750) +
     actions +
   '</div>';
 }
@@ -1017,6 +1156,7 @@ function buildBbsCard(o) {
       (o.notes ? '<div class="order-field"><span class="order-field-label">Notes</span><span class="order-field-val">' + esc(o.notes) + '</span></div>' : '') +
     '</div>' +
     itemsHtml +
+    buildSpawnCmds(items.filter(i => !i.kind), 500) +
     actions +
   '</div>';
 }
