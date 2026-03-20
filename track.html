@@ -404,6 +404,11 @@
       .step-label { font-size: 0.42rem; max-width: 48px; }
       .stepper { padding: 1.1rem 0.9rem 1rem; }
     }
+
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 1.5rem; text-align: center; }
+    footer p { color: var(--muted); font-size: 0.82rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -434,7 +439,6 @@
           <li><a href="hytalepackages.html">Packages</a></li>
         </ul>
       </li>
-      <li><a href="Discord.html">Discord</a></li>
       <li><a href="aboutus.html">About</a></li>
     </ul>
     <a class="nav-cta" href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener">
@@ -511,7 +515,19 @@
 
   </div>
 
+  <footer>
+    <p>&copy; 2026 Zeropoint &mdash; <a href="Discord.html">Join our Discord</a> &mdash; <a href="servers.html">Servers</a></p>
+  </footer>
+
   <script>
+  // ── NAV ACTIVE STATE ──
+  (function () {
+    const page = location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('nav a').forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === page);
+    });
+  })();
+
   const SUPABASE_URL  = 'https://cairclbnutqouejtlhks.supabase.co';
   const SUPABASE_ANON = 'sb_publishable_25_ecIfEwCQ1BdXof_ZonQ_Bi2x1CDU';
   const _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
