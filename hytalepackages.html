@@ -1,1 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FL9SR49RMD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FL9SR49RMD');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeropoint | Hytale Early Supporter Packages</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button { touch-action: manipulation; }
+    :root {
+      --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
+      --border: #22222e; --accent: #ff4d94; --accent2: #ff7ab4;
+      --text: #e8e8f0; --muted: #7a7a90; --muted2: #9898b0; --radius: 10px;
+      --hy: #f59e0b; --hy2: #fbbf24;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6; min-height: 100vh; overflow-x: hidden;
+    }
+    body.modal-open { overflow: hidden; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      background: rgba(10,10,15,0.92);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      height: 64px;
+      gap: 1.5rem;
+    }
+    .nav-logo {
+      color: #fff; font-weight: 800; font-size: 0.95rem; letter-spacing: 0.1em;
+      text-transform: uppercase; text-decoration: none; flex-shrink: 0;
+      transition: opacity 0.2s;
+    }
+    .nav-logo:hover { opacity: 0.8; }
+    .nav-logo span { color: #ff4d94; }
+    nav ul {
+      display: flex; align-items: center; gap: 0.2rem; list-style: none;
+      flex: 1; justify-content: center;
+    }
+    nav ul a {
+      display: block; padding: 0.45rem 0.85rem;
+      color: rgba(255,255,255,0.55); text-decoration: none;
+      font-size: 0.875rem; font-weight: 500; letter-spacing: 0.01em;
+      border-radius: 6px; transition: color 0.15s, background 0.15s;
+    }
+    nav ul a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+    nav ul a.active { color: #fff; }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.5rem 1.1rem; border-radius: 7px;
+      background: #5865f2; color: #fff; text-decoration: none;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.02em;
+      flex-shrink: 0;
+      transition: background 0.18s, box-shadow 0.18s;
+      box-shadow: 0 2px 12px rgba(88,101,242,0.35);
+    }
+    .nav-cta:hover { background: #4752c4; box-shadow: 0 4px 20px rgba(88,101,242,0.5); }
+    .nav-cta svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; }
+    .nav-toggle {
+      display: none; background: none; border: none; cursor: pointer;
+      padding: 0.5rem; flex-direction: column; justify-content: center; gap: 5px;
+    }
+    .nav-toggle span {
+      display: block; width: 22px; height: 2px;
+      background: rgba(255,255,255,0.7); border-radius: 2px;
+      transition: transform 0.22s, opacity 0.22s;
+    }
+    .nav-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.active span:nth-child(2) { opacity: 0; }
+    .nav-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 680px) {
+      nav { padding: 0 1.25rem; }
+      .nav-cta { display: none; }
+      .nav-toggle { display: flex; }
+      nav ul {
+        display: none; position: fixed; top: 64px; left: 0; right: 0;
+        background: rgba(10,10,15,0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        flex-direction: column; align-items: stretch; justify-content: flex-start;
+        padding: 0.75rem 1rem 1.25rem; gap: 0.1rem; z-index: 99;
+      }
+      nav ul.nav-open { display: flex; }
+      nav ul a { font-size: 0.95rem; padding: 0.6rem 0.85rem; color: rgba(255,255,255,0.65); }
+    }
+
+    /* ── NAV DROPDOWNS ── */
+    .nav-dd { position: relative; }
+    .nav-dd-btn {
+      display: flex; align-items: center; gap: 0.3rem;
+      background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,0.55); font-size: 0.875rem; font-weight: 500;
+      letter-spacing: 0.01em; padding: 0.45rem 0.85rem; border-radius: 6px;
+      transition: color 0.15s, background 0.15s; white-space: nowrap;
+      font-family: inherit;
+    }
+    .nav-dd-btn:hover, .nav-dd.open .nav-dd-btn { color: #fff; background: rgba(255,255,255,0.06); }
+    .nav-dd-chevron { transition: transform 0.2s; flex-shrink: 0; opacity: 0.4; }
+    .nav-dd.open .nav-dd-chevron { transform: rotate(180deg); opacity: 0.8; }
+    .nav-soon {
+      font-size: 0.55rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      background: rgba(245,158,11,0.12); color: #f59e0b;
+      border: 1px solid rgba(245,158,11,0.2); border-radius: 4px; padding: 0.1rem 0.35rem;
+    }
+    .nav-dd-menu {
+      position: absolute; top: calc(100% + 8px); left: 50%;
+      transform: translateX(-50%) translateY(-4px);
+      background: #0d0d18;
+      border: 1px solid rgba(255,255,255,0.09); border-radius: 10px;
+      padding: 0.5rem; min-width: 180px; list-style: none;
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+      z-index: 200;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+      display: flex; flex-direction: column;
+    }
+    .nav-dd.open .nav-dd-menu {
+      opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0);
+    }
+    .nav-dd-menu li a {
+      display: block; padding: 0.55rem 0.75rem; border-radius: 7px;
+      text-decoration: none; font-size: 0.85rem; font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      transition: background 0.1s, color 0.1s;
+    }
+    .nav-dd-menu li a:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .nav-dd-menu li a.active { color: #ff4d94; }
+    @media (max-width: 680px) {
+      .nav-dd-btn { font-size: 0.95rem; padding: 0.6rem 0.85rem; width: 100%; justify-content: space-between; color: rgba(255,255,255,0.65); }
+      .nav-dd-menu {
+        position: static; transform: none; opacity: 1; visibility: visible; pointer-events: auto;
+        background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 8px; margin: 0.1rem 0 0.1rem 0.75rem; display: none; box-shadow: none; padding: 0.35rem;
+      }
+      .nav-dd.open .nav-dd-menu { display: block; }
+      .nav-dd-menu li a { font-size: 0.9rem; }
+    }
+    /* ── HYTALE ACTIVE OVERRIDES ── */
+
+    /* ── PAGE HEADER ── */
+    .page-header { padding: 120px 1.5rem 4rem; text-align: center; position: relative; overflow: hidden; }
+    .page-header::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 65% 55% at 50% 35%, rgba(245,158,11,0.06) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(255,77,148,0.03) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .page-eyebrow { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--hy); margin-bottom: 1rem; opacity: 0.9; }
+    .page-header h1 {
+      font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05;
+      background: linear-gradient(160deg, #ffffff 0%, #a0a0b8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+    .page-header p { font-size: 1rem; color: var(--muted); max-width: 520px; margin: 0 auto; }
+
+    /* ── COMING SOON BADGE ── */
+    .cs-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 1rem; border-radius: 99px;
+      background: rgba(245,158,11,0.07); border: 1px solid rgba(245,158,11,0.22);
+      font-size: 0.74rem; font-weight: 700; color: var(--hy); letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .cs-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--hy); box-shadow: 0 0 6px rgba(245,158,11,0.9); animation: csblink 2s ease-in-out infinite; flex-shrink: 0; }
+    @keyframes csblink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ── PACKAGES WRAPPER ── */
+    .packages { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+    /* ── PRE-LAUNCH NOTICE ── */
+    .prelaunch-notice {
+      max-width: 760px; margin: 0 auto 3.5rem;
+      background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.18);
+      border-left: 3px solid var(--hy); border-radius: 10px;
+      padding: 1.1rem 1.35rem; display: flex; gap: 0.85rem; align-items: flex-start;
+    }
+    .prelaunch-notice-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .prelaunch-notice-text { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .prelaunch-notice-text strong { color: var(--text); }
+
+    /* ── SECTION LABELS ── */
+    .section-eyebrow { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--hy); font-weight: 700; margin-bottom: 0.35rem; }
+    .section-title { font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 2rem; }
+
+    /* ── PACKAGE GRID ── */
+    .package-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+    @media (max-width: 1020px) { .package-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px)  { .package-grid { grid-template-columns: 1fr; } }
+
+    /* ── PACKAGE CARD ── */
+    .pkg-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-top: 2px solid var(--hy); border-radius: var(--radius);
+      padding: 1.75rem 1.5rem 1.5rem; display: flex; flex-direction: column;
+      gap: 1rem; transition: border-color 0.2s, box-shadow 0.2s, transform 0.22s;
+      position: relative; overflow: hidden;
+    }
+    .pkg-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(245,158,11,0.04), transparent 65%);
+      pointer-events: none;
+    }
+    .pkg-card:hover {
+      border-color: rgba(245,158,11,0.5);
+      box-shadow: 0 0 30px rgba(245,158,11,0.08), 0 6px 30px rgba(0,0,0,0.5);
+      transform: translateY(-4px);
+    }
+    .pkg-card.featured { border-top-color: var(--hy2); border-color: rgba(245,158,11,0.28); }
+    .pkg-featured-badge {
+      position: absolute; top: 0.75rem; right: 0.75rem;
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      background: rgba(245,158,11,0.15); color: var(--hy); border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 5px; padding: 0.18rem 0.5rem;
+    }
+    .pkg-icon { font-size: 1.8rem; }
+    .pkg-header { display: flex; flex-direction: column; gap: 0.3rem; }
+    .pkg-tier { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .pkg-name { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.01em; }
+    .pkg-pricing { display: flex; align-items: baseline; gap: 0.3rem; }
+    .pkg-currency { font-size: 1rem; font-weight: 700; color: var(--muted); align-self: flex-start; margin-top: 0.45rem; }
+    .pkg-price { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.04em; color: var(--text); line-height: 1; }
+    .pkg-perks { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+    .pkg-perks li { font-size: 0.82rem; color: var(--muted); display: flex; align-items: flex-start; gap: 0.5rem; line-height: 1.4; }
+    .pkg-perks li::before { content: '✓'; color: var(--hy); font-weight: 700; flex-shrink: 0; font-size: 0.8rem; margin-top: 0.05rem; }
+    .pkg-payments { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; margin-top: 0.25rem; }
+    .pay-btn {
+      padding: 0.55rem 0.3rem; border-radius: 6px; font-size: 0.73rem; font-weight: 700;
+      color: #fff; text-align: center; letter-spacing: 0.03em; cursor: pointer; border: none;
+      transition: opacity 0.15s, transform 0.15s; font-family: inherit;
+    }
+    .pay-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .paypal  { background: #0070ba; }
+    .cashapp { background: #00c244; }
+    .venmo   { background: #3d95ce; }
+    @media (max-width: 400px) {
+      .pkg-payments { grid-template-columns: 1fr; }
+      .pay-btn { padding: 0.65rem 0.5rem; }
+    }
+
+    /* ── PAYMENT GUIDE ── */
+    .pay-guide {
+      max-width: 760px; margin: 3rem auto 0;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .pay-guide-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+    .pay-guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+    @media (max-width: 540px) { .pay-guide-grid { grid-template-columns: 1fr; } }
+    .pay-guide-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; }
+    .pay-guide-name { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .pay-guide-handle { font-size: 0.76rem; color: var(--muted); font-family: ui-monospace, monospace; }
+
+    /* ── FAQ ── */
+    .faq-section { max-width: 760px; margin: 4rem auto 5rem; }
+    .faq-eyebrow { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--hy); margin-bottom: 1.25rem; }
+    .faq-item { border-top: 1px solid var(--border); padding: 1.1rem 0; }
+    .faq-item:last-child { border-bottom: 1px solid var(--border); }
+    .faq-q { font-size: 0.93rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .faq-a { font-size: 0.84rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── ORDER MODAL ── */
+    .order-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 1rem; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+    }
+    .order-overlay[hidden] { display: none; }
+    .order-panel {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      width: 100%; max-width: 520px; margin: auto; display: flex; flex-direction: column;
+    }
+    .order-header {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .order-header-meta { flex: 1; min-width: 0; }
+    .order-header-title { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.3; }
+    .order-header-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
+    .order-close-btn {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--muted);
+      border-radius: 7px; width: 34px; height: 34px; font-size: 1rem; cursor: pointer;
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      transition: color 0.15s, background 0.15s; font-family: inherit;
+    }
+    .order-close-btn:hover { color: var(--text); background: #2a2a38; }
+    .order-body {
+      overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+      flex: 1; padding: 1.25rem 1.5rem; max-height: calc(100vh - 180px);
+    }
+    .order-footer {
+      padding: 1rem 1.5rem; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-shrink: 0; flex-wrap: wrap;
+    }
+    .order-footer-info { font-size: 0.82rem; color: var(--muted); flex: 1; }
+    .order-submit-btn {
+      background: var(--hy); color: #000; border: none; border-radius: 8px;
+      padding: 0.7rem 1.5rem; font-size: 0.875rem; font-weight: 800; cursor: pointer;
+      letter-spacing: 0.02em; transition: opacity 0.15s, transform 0.15s; font-family: inherit;
+      white-space: nowrap;
+    }
+    .order-submit-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+    .order-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .o-section {
+      font-size: 0.73rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase;
+      color: var(--hy); border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem; margin: 1.25rem 0 1rem;
+    }
+    .o-section:first-child { margin-top: 0; }
+    .o-group { display: flex; flex-direction: column; gap: 0.38rem; margin-bottom: 0.75rem; }
+    .o-group label { font-size: 0.77rem; font-weight: 600; color: var(--text); }
+    .o-group label span { color: var(--muted); font-weight: 400; }
+    .o-group input, .o-group select, .o-group textarea {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+      border-radius: 7px; padding: 0.6rem 0.85rem; font-size: 0.875rem;
+      font-family: inherit; outline: none; transition: border-color 0.15s; width: 100%;
+    }
+    .o-group input:focus, .o-group select:focus, .o-group textarea:focus { border-color: var(--hy); }
+    .o-group textarea { resize: vertical; min-height: 70px; }
+    .o-static-field {
+      padding: 0.6rem 0.85rem; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 7px; font-size: 0.875rem; color: var(--muted);
+    }
+
+    /* ── TERMS BOX ── */
+    .terms-box {
+      margin-top: 1.5rem; padding: 1rem 1.1rem;
+      background: rgba(245,158,11,0.04); border: 1px solid rgba(245,158,11,0.14);
+      border-radius: 10px;
+    }
+    .terms-box-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; }
+    .terms-list { list-style: none; padding: 0; margin: 0 0 0.85rem; display: flex; flex-direction: column; gap: 0.3rem; }
+    .terms-list li { font-size: 0.8rem; color: var(--text); line-height: 1.45; padding-left: 1.1rem; position: relative; }
+    .terms-list li::before { content: '\2022'; position: absolute; left: 0; color: var(--hy); font-weight: 700; }
+    .terms-check-row { display: flex; align-items: flex-start; gap: 0.55rem; cursor: pointer; padding-top: 0.75rem; border-top: 1px solid rgba(245,158,11,0.12); }
+    .terms-check-row input[type="checkbox"] {
+      appearance: none; -webkit-appearance: none;
+      width: 16px; height: 16px; min-width: 16px;
+      border: 1.5px solid var(--border); border-radius: 4px;
+      background: var(--surface2); cursor: pointer; margin-top: 2px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .terms-check-row input[type="checkbox"]:checked {
+      background: var(--hy); border-color: var(--hy);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='%230a0a0f' d='M10.28 2.28L4.5 8.06 1.72 5.28.28 6.72l4.22 4.22 7.22-7.22z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: center; background-size: 68%;
+    }
+    .terms-check-row span { font-size: 0.79rem; color: var(--muted); line-height: 1.4; user-select: none; }
+
+    /* ── SUCCESS SCREEN ── */
+    .tcode-panel { max-width: 440px; text-align: center; padding: 2.5rem 2rem; margin: 0 auto; }
+    .tcode-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .tcode-title { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+    .tcode-sub { font-size: 0.83rem; color: var(--muted); margin-bottom: 1.75rem; line-height: 1.55; }
+    .tcode-code-wrap {
+      background: var(--bg); border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.25rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    }
+    .tcode-code-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.25rem; }
+    .tcode-code-val { font-size: 1.8rem; font-weight: 900; font-family: ui-monospace, monospace; color: var(--hy); letter-spacing: 0.08em; }
+    .tcode-copy {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.28); color: var(--hy);
+      border-radius: 8px; padding: 0.55rem 1rem; font-size: 0.82rem; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.03em; transition: background 0.15s; font-family: inherit;
+      white-space: nowrap;
+    }
+    .tcode-copy:hover { background: rgba(245,158,11,0.16); }
+    .tcode-hint { font-size: 0.72rem; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.5; }
+    .tcode-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+    .tcode-method-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+      padding: 0.7rem 0.5rem; border-radius: 8px; font-size: 0.72rem; font-weight: 700;
+      color: #fff; cursor: pointer; border: none; text-decoration: none;
+      transition: opacity 0.15s, transform 0.15s; font-family: inherit; letter-spacing: 0.03em;
+    }
+    .tcode-method-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .tcode-paypal  { background: #0070ba; }
+    .tcode-cashapp { background: #00c244; }
+    .tcode-venmo   { background: #3d95ce; }
+    .tcode-method-inactive { opacity: 0.35 !important; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 3rem 1.5rem; }
+    .footer-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+    .footer-brand { display: flex; flex-direction: column; gap: 0.25rem; }
+    .footer-logo { font-size: 1rem; font-weight: 800; color: var(--text); letter-spacing: -0.01em; }
+    .footer-logo span { color: var(--accent); }
+    .footer-copy { font-size: 0.74rem; color: var(--muted); }
+    .footer-links { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: center; }
+    .footer-links a { font-size: 0.78rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">Zero<span>point</span></a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li class="nav-dd">
+        <button class="nav-dd-btn">
+          ARK
+          <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-dd-menu">
+          <li><a href="servers.html">Servers</a></li>
+          <li><a href="ark.html">Donations</a></li>
+          <li><a href="bbs.html">Admin Shop</a></li>
+        </ul>
+      </li>
+      <li class="nav-dd">
+        <button class="nav-dd-btn">
+          Hytale
+          <span class="nav-soon">Soon</span>
+          <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-dd-menu">
+          <li><a href="hytalepackages.html" class="active">Packages</a></li>
+        </ul>
+      </li>
+      <li><a href="Discord.html">Discord</a></li>
+      <li><a href="aboutus.html">About</a></li>
+    </ul>
+    <a class="nav-cta" href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener">
+      <svg viewBox="0 0 127.14 96.36" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
+      Join Discord
+    </a>
+    <button class="nav-toggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="cs-badge">
+      <span class="cs-dot"></span>
+      Hytale — Pre-Launch
+    </div>
+    <p class="page-eyebrow">Early Supporter Packages</p>
+    <h1>Support Us Before Day One</h1>
+    <p>Hytale hasn't released yet — but when it does, we'll be ready. Back Zeropoint now and lock in your rewards before the servers go live.</p>
+  </div>
+
+  <!-- PACKAGES CONTENT -->
+  <div class="packages">
+
+    <!-- PRE-LAUNCH NOTICE -->
+    <div class="prelaunch-notice">
+      <div class="prelaunch-notice-icon">⚠️</div>
+      <div class="prelaunch-notice-text">
+        <strong>Pre-Launch Notice:</strong> Hytale has not yet been released. These are early supporter packages — your donation funds community infrastructure and secures your perks.
+        <strong>All in-game rewards are delivered at launch.</strong> You will be notified via the email you provide. Discord roles are assigned within 24 hours of confirmed payment.
+      </div>
+    </div>
+
+    <!-- PACKAGE GRID -->
+    <div class="section-eyebrow">Packages</div>
+    <div class="section-title">Choose Your Tier</div>
+
+    <div class="package-grid">
+
+      <!-- Bronze -->
+      <div class="pkg-card">
+        <div class="pkg-icon">🥉</div>
+        <div class="pkg-header">
+          <div class="pkg-tier">Tier 1</div>
+          <div class="pkg-name">Bronze Supporter</div>
+        </div>
+        <div class="pkg-pricing">
+          <span class="pkg-currency">$</span>
+          <span class="pkg-price">5</span>
+        </div>
+        <ul class="pkg-perks">
+          <li>Early access role on Discord</li>
+          <li>Your name in the community credits</li>
+          <li>Supporter badge on Discord</li>
+        </ul>
+        <div class="pkg-payments">
+          <button class="pay-btn paypal"  onclick="openModal('Bronze Supporter','5.00','PayPal')">PayPal</button>
+          <button class="pay-btn cashapp" onclick="openModal('Bronze Supporter','5.00','Cash App')">Cash App</button>
+          <button class="pay-btn venmo"   onclick="openModal('Bronze Supporter','5.00','Venmo')">Venmo</button>
+        </div>
+      </div>
+
+      <!-- Silver -->
+      <div class="pkg-card">
+        <div class="pkg-icon">🥈</div>
+        <div class="pkg-header">
+          <div class="pkg-tier">Tier 2</div>
+          <div class="pkg-name">Silver Supporter</div>
+        </div>
+        <div class="pkg-pricing">
+          <span class="pkg-currency">$</span>
+          <span class="pkg-price">10</span>
+        </div>
+        <ul class="pkg-perks">
+          <li>All Bronze perks</li>
+          <li>Custom supporter tag in-game at launch</li>
+          <li>Priority access to community events</li>
+        </ul>
+        <div class="pkg-payments">
+          <button class="pay-btn paypal"  onclick="openModal('Silver Supporter','10.00','PayPal')">PayPal</button>
+          <button class="pay-btn cashapp" onclick="openModal('Silver Supporter','10.00','Cash App')">Cash App</button>
+          <button class="pay-btn venmo"   onclick="openModal('Silver Supporter','10.00','Venmo')">Venmo</button>
+        </div>
+      </div>
+
+      <!-- Gold -->
+      <div class="pkg-card featured">
+        <span class="pkg-featured-badge">Popular</span>
+        <div class="pkg-icon">🥇</div>
+        <div class="pkg-header">
+          <div class="pkg-tier">Tier 3</div>
+          <div class="pkg-name">Gold Supporter</div>
+        </div>
+        <div class="pkg-pricing">
+          <span class="pkg-currency">$</span>
+          <span class="pkg-price">25</span>
+        </div>
+        <ul class="pkg-perks">
+          <li>All Silver perks</li>
+          <li>Exclusive cosmetic item on launch</li>
+          <li>Gold role &amp; color on Discord</li>
+          <li>Mention in launch announcement</li>
+        </ul>
+        <div class="pkg-payments">
+          <button class="pay-btn paypal"  onclick="openModal('Gold Supporter','25.00','PayPal')">PayPal</button>
+          <button class="pay-btn cashapp" onclick="openModal('Gold Supporter','25.00','Cash App')">Cash App</button>
+          <button class="pay-btn venmo"   onclick="openModal('Gold Supporter','25.00','Venmo')">Venmo</button>
+        </div>
+      </div>
+
+      <!-- Platinum -->
+      <div class="pkg-card">
+        <div class="pkg-icon">💎</div>
+        <div class="pkg-header">
+          <div class="pkg-tier">Tier 4</div>
+          <div class="pkg-name">Platinum Supporter</div>
+        </div>
+        <div class="pkg-pricing">
+          <span class="pkg-currency">$</span>
+          <span class="pkg-price">50</span>
+        </div>
+        <ul class="pkg-perks">
+          <li>All Gold perks</li>
+          <li>VIP server slot — guaranteed spot</li>
+          <li>Private lounge access on Discord</li>
+          <li>Input on server rules &amp; events</li>
+          <li>Lifetime Platinum role</li>
+        </ul>
+        <div class="pkg-payments">
+          <button class="pay-btn paypal"  onclick="openModal('Platinum Supporter','50.00','PayPal')">PayPal</button>
+          <button class="pay-btn cashapp" onclick="openModal('Platinum Supporter','50.00','Cash App')">Cash App</button>
+          <button class="pay-btn venmo"   onclick="openModal('Platinum Supporter','50.00','Venmo')">Venmo</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PAYMENT GUIDE -->
+    <div class="pay-guide">
+      <div class="pay-guide-title">How to Send Payment</div>
+      <div class="pay-guide-grid">
+        <div class="pay-guide-item">
+          <div class="pay-guide-name">💙 PayPal</div>
+          <div class="pay-guide-handle">paypal.me/ZeropointHosting</div>
+        </div>
+        <div class="pay-guide-item">
+          <div class="pay-guide-name">💚 Cash App</div>
+          <div class="pay-guide-handle">$ZeroPointArk</div>
+        </div>
+        <div class="pay-guide-item">
+          <div class="pay-guide-name">💙 Venmo</div>
+          <div class="pay-guide-handle">venmo.com/u/ZeroPointArk</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section">
+      <div class="faq-eyebrow">FAQ</div>
+      <div class="faq-item">
+        <div class="faq-q">When will I receive my rewards?</div>
+        <div class="faq-a">All in-game rewards are delivered at or shortly after Hytale's official launch. You'll be notified via the email you provide when ordering. Your Discord roles are granted within 24 hours of confirmed payment.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What if Hytale's release keeps getting delayed?</div>
+        <div class="faq-a">We're in it for the long haul. Your supporter role and Discord perks — like the early access role and badge — are granted immediately after payment is confirmed. In-game rewards activate at launch, whenever that happens.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Are these packages refundable?</div>
+        <div class="faq-a">All sales are final as these are community support donations. In the unlikely event that Hytale is cancelled entirely, we'll reach out via Discord to discuss options on a case-by-case basis.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I get my Discord role after donating?</div>
+        <div class="faq-a">After completing your order, join our Discord server and open a support ticket or message an admin with your 4-digit tracking code. We'll assign your role within 24 hours of verifying the payment.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I upgrade my tier later?</div>
+        <div class="faq-a">Yes — just purchase the higher tier and message us in Discord. We'll apply the upgrade and update your role accordingly.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ORDER MODAL -->
+  <div class="order-overlay" id="order-overlay" hidden>
+    <div class="order-panel">
+
+      <!-- STEP 1: FORM -->
+      <div id="step-form">
+        <div class="order-header">
+          <div class="order-header-meta">
+            <div class="order-header-title" id="modal-title">Confirm Your Package</div>
+            <div class="order-header-sub" id="modal-sub">Fill in your details to reserve your spot.</div>
+          </div>
+          <button class="order-close-btn" onclick="closeModal()" aria-label="Close">✕</button>
+        </div>
+
+        <div class="order-body">
+          <p class="o-section">Your Details</p>
+
+          <div class="o-group">
+            <label for="o-discord">Discord Username <span>(required)</span></label>
+            <input type="text" id="o-discord" placeholder="e.g. zeropoint_fan" autocomplete="off" />
+          </div>
+
+          <div class="o-group">
+            <label for="o-email">Email Address <span>(for launch notification)</span></label>
+            <input type="email" id="o-email" placeholder="you@example.com" autocomplete="email" />
+          </div>
+
+          <div class="o-group">
+            <label for="o-note">Note <span>(optional)</span></label>
+            <textarea id="o-note" placeholder="Anything you want us to know!"></textarea>
+          </div>
+
+          <p class="o-section">Payment</p>
+
+          <div class="o-group">
+            <label>Method &amp; Amount</label>
+            <div class="o-static-field" id="o-method-display">—</div>
+          </div>
+
+          <div class="terms-box">
+            <div class="terms-box-label">Order Terms</div>
+            <ul class="terms-list">
+              <li>This is a pre-launch early supporter donation. In-game rewards are delivered at Hytale's launch.</li>
+              <li>After submitting, send your payment to the handle for your chosen method.</li>
+              <li>Include your 4-digit tracking code in the payment note so we can match your order.</li>
+              <li>Discord roles are assigned after payment is confirmed, typically within 24 hours.</li>
+            </ul>
+            <label class="terms-check-row">
+              <input type="checkbox" id="o-terms-check" />
+              <span>I understand this is a pre-launch donation and in-game rewards will be delivered at launch.</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="order-footer">
+          <div class="order-footer-info" id="modal-amount">Total: —</div>
+          <button class="order-submit-btn" id="submit-btn" disabled onclick="submitOrder()">
+            Continue &amp; Get Code →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: SUCCESS -->
+      <div id="step-success" hidden>
+        <div class="order-header">
+          <div class="order-header-meta">
+            <div class="order-header-title">You're in — Order Confirmed!</div>
+            <div class="order-header-sub">Your early supporter spot has been saved.</div>
+          </div>
+          <button class="order-close-btn" onclick="closeModal()" aria-label="Close">✕</button>
+        </div>
+
+        <div class="order-body">
+          <div class="tcode-panel">
+            <div class="tcode-icon">🎉</div>
+            <div class="tcode-title">Spot Reserved!</div>
+            <div class="tcode-sub">Now send your payment using the method you selected. Include the code below in the payment note so we can match your order.</div>
+
+            <div class="tcode-code-wrap">
+              <div style="text-align:left;">
+                <div class="tcode-code-label">Tracking Code</div>
+                <div class="tcode-code-val" id="tcode-display">——</div>
+              </div>
+              <button class="tcode-copy" id="tcode-copy-btn" onclick="copyCode()">📋 Copy</button>
+            </div>
+
+            <p class="tcode-hint">Put this code in your payment note. Once we verify your payment, your Discord role will be assigned within 24 hours.</p>
+
+            <div class="tcode-methods">
+              <a class="tcode-method-btn tcode-paypal"  id="tlink-paypal"  href="https://paypal.me/ZeropointHosting" target="_blank" rel="noopener">
+                <span>💙</span>PayPal
+              </a>
+              <a class="tcode-method-btn tcode-cashapp" id="tlink-cashapp" href="https://cash.app/$ZeroPointArk" target="_blank" rel="noopener">
+                <span>💚</span>Cash App
+              </a>
+              <a class="tcode-method-btn tcode-venmo"   id="tlink-venmo"   href="https://venmo.com/u/ZeroPointArk" target="_blank" rel="noopener">
+                <span>💙</span>Venmo
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo">Zero<span>point</span></span>
+        <span class="footer-copy">&copy; 2026 Zeropoint Gaming</span>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="servers.html">Servers</a>
+        <a href="ark.html">ARK Donations</a>
+        <a href="Discord.html">Discord</a>
+        <a href="aboutus.html">About</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  // ── CONFIG ──
+  const SUPABASE_URL  = 'https://cairclbnutqouejtlhks.supabase.co';
+  const SUPABASE_ANON = 'sb_publishable_25_ecIfEwCQ1BdXof_ZonQ_Bi2x1CDU';
+  const WEBHOOK_URL   = 'https://discord.com/api/webhooks/1351763258604064768/sjqEYWD6CtN_f1lNGf3N89r6k_oJhHCT-JV26Kq7ZilnJTkEHCWJqZg-cEuGHOV7I_P';
+  const ADMIN_ROLE    = '1474505890827866175';
+
+  const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // ── ORDER STATE ──
+  var _pkg    = '';
+  var _price  = '';
+  var _method = '';
+  var _code   = '';
+
+  function genCode() {
+    return String(Math.floor(1000 + Math.random() * 9000));
+  }
+
+  // ── OPEN MODAL ──
+  function openModal(pkg, price, method) {
+    _pkg    = pkg;
+    _price  = price;
+    _method = method;
+
+    document.getElementById('modal-title').textContent    = pkg;
+    document.getElementById('modal-sub').textContent      = 'via ' + method + ' · $' + price;
+    document.getElementById('modal-amount').textContent   = 'Total: $' + price;
+    document.getElementById('o-method-display').textContent = method + ' — $' + price;
+
+    document.getElementById('o-discord').value       = '';
+    document.getElementById('o-email').value         = '';
+    document.getElementById('o-note').value          = '';
+    document.getElementById('o-terms-check').checked = false;
+    document.getElementById('submit-btn').disabled   = true;
+    document.getElementById('step-form').hidden      = false;
+    document.getElementById('step-success').hidden   = true;
+
+    document.getElementById('order-overlay').hidden = false;
+    document.body.classList.add('modal-open');
+  }
+
+  // ── CLOSE MODAL ──
+  function closeModal() {
+    document.getElementById('order-overlay').hidden = true;
+    document.body.classList.remove('modal-open');
+  }
+
+  // ── TERMS CHECKBOX ──
+  document.getElementById('o-terms-check').addEventListener('change', function() {
+    document.getElementById('submit-btn').disabled = !this.checked;
+  });
+
+  // ── CLICK OUTSIDE TO CLOSE ──
+  document.getElementById('order-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // ── SUBMIT ORDER ──
+  async function submitOrder() {
+    var discord = document.getElementById('o-discord').value.trim();
+    var email   = document.getElementById('o-email').value.trim();
+    var note    = document.getElementById('o-note').value.trim();
+
+    if (!discord) {
+      alert('Please enter your Discord username.');
+      return;
+    }
+
+    var btn = document.getElementById('submit-btn');
+    btn.disabled    = true;
+    btn.textContent = 'Saving…';
+
+    _code = genCode();
+
+    // ── SAVE TO SUPABASE ──
+    try {
+      await supa.from('hytale_orders').insert([{
+        package_name:   _pkg,
+        amount:         parseFloat(_price),
+        payment_method: _method,
+        discord_user:   discord,
+        email:          email || null,
+        note:           note  || null,
+        tracking_code:  _code,
+        status:         'pending'
+      }]);
+    } catch(err) {
+      console.warn('Supabase error:', err);
+    }
+
+    // ── POST TO DISCORD WEBHOOK ──
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: '<@&' + ADMIN_ROLE + '> New Hytale Early Supporter Order!',
+          embeds: [{
+            title: '⚔️ Hytale — ' + _pkg,
+            color: 0xf59e0b,
+            fields: [
+              { name: 'Package',        value: _pkg,                   inline: true  },
+              { name: 'Amount',         value: '$' + _price,           inline: true  },
+              { name: 'Payment Method', value: _method,                inline: true  },
+              { name: 'Discord',        value: discord,                inline: true  },
+              { name: 'Email',          value: email    || '—',        inline: true  },
+              { name: 'Tracking Code',  value: '`' + _code + '`',     inline: true  },
+              { name: 'Note',           value: note     || '—',        inline: false }
+            ],
+            footer: { text: 'Zeropoint Gaming · Hytale Pre-Launch' },
+            timestamp: new Date().toISOString()
+          }]
+        })
+      });
+    } catch(err) {
+      console.warn('Webhook error:', err);
+    }
+
+    // ── SHOW SUCCESS ──
+    document.getElementById('tcode-display').textContent = _code;
+
+    // Dim non-selected payment buttons
+    var methodKeys = { 'PayPal': 'paypal', 'Cash App': 'cashapp', 'Venmo': 'venmo' };
+    ['paypal','cashapp','venmo'].forEach(function(k) {
+      var el = document.getElementById('tlink-' + k);
+      if (el) el.classList.add('tcode-method-inactive');
+    });
+    var activeKey = methodKeys[_method];
+    if (activeKey) {
+      var activeEl = document.getElementById('tlink-' + activeKey);
+      if (activeEl) activeEl.classList.remove('tcode-method-inactive');
+    }
+
+    document.getElementById('step-form').hidden    = true;
+    document.getElementById('step-success').hidden = false;
+
+    btn.disabled    = false;
+    btn.textContent = 'Continue & Get Code →';
+  }
+
+  // ── COPY CODE ──
+  function copyCode() {
+    if (!_code) return;
+    navigator.clipboard.writeText(_code).then(function() {
+      var btn = document.getElementById('tcode-copy-btn');
+      btn.textContent = '✓ Copied!';
+      setTimeout(function() { btn.textContent = '📋 Copy'; }, 2000);
+    });
+  }
+
+  // ── MOBILE NAV TOGGLE ──
+  (function () {
+    var t = document.querySelector('.nav-toggle'), m = document.querySelector('nav ul');
+    if (!t || !m) return;
+    t.addEventListener('click', function () { t.classList.toggle('active'); m.classList.toggle('nav-open'); });
+    m.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { t.classList.remove('active'); m.classList.remove('nav-open'); }); });
+    document.addEventListener('click', function (e) { if (!e.target.closest('nav')) { t.classList.remove('active'); m.classList.remove('nav-open'); } });
+  })();
+
+  // Nav dropdowns — click to open, click outside to close
+  document.querySelectorAll('.nav-dd-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var item = btn.closest('.nav-dd');
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.nav-dd').forEach(function(d) { d.classList.remove('open'); });
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+  document.querySelectorAll('.nav-dd-menu a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      document.querySelectorAll('.nav-dd').forEach(function(d) { d.classList.remove('open'); });
+    });
+  });
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.nav-dd')) {
+      document.querySelectorAll('.nav-dd').forEach(function(d) { d.classList.remove('open'); });
+    }
+  });
+  </script>
+
+</body>
+</html>
 
