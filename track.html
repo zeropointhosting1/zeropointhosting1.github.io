@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FL9SR49RMD"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FL9SR49RMD');
-  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zeropoint | Track Order</title>
@@ -17,7 +9,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
-      --border: #22222e; --accent: #ff4d94;
+      --border: #22222e; --accent: #5865f2;
       --text: #e8e8f0; --muted: #7a7a90;
       --green: #22c55e; --yellow: #f59e0b; --red: #ef4444;
     }
@@ -31,7 +23,7 @@
     body::before {
       content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background:
-        radial-gradient(ellipse 80% 50% at 50% -5%, rgba(255,77,148,0.13) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 50% at 50% -5%, rgba(88,101,242,0.13) 0%, transparent 60%),
         radial-gradient(ellipse 50% 35% at 85% 85%, rgba(100,30,180,0.07) 0%, transparent 60%);
     }
 
@@ -58,7 +50,7 @@
       transition: opacity 0.2s;
     }
     .nav-logo:hover { opacity: 0.8; }
-    .nav-logo span { color: #ff4d94; }
+    .nav-logo span { color: #5865f2; }
     nav > ul {
       display: flex; align-items: center; gap: 0.2rem; list-style: none;
       flex: 1; justify-content: center;
@@ -149,7 +141,7 @@
       transition: background 0.1s, color 0.1s;
     }
     .nav-dd-menu li a:hover { background: rgba(255,255,255,0.07); color: #fff; }
-    .nav-dd-menu li a.active { color: #ff4d94; }
+    .nav-dd-menu li a.active { color: #5865f2; }
     @media (max-width: 680px) {
       .nav-dd { width: 100%; }
       .nav-dd-btn { font-size: 0.95rem; padding: 0.6rem 0.85rem; width: 100%; justify-content: space-between; color: rgba(255,255,255,0.65); }
@@ -184,10 +176,10 @@
 
     .header-icon {
       width: 50px; height: 50px; border-radius: 15px;
-      background: rgba(255,77,148,0.1); border: 1px solid rgba(255,77,148,0.22);
+      background: rgba(88,101,242,0.1); border: 1px solid rgba(88,101,242,0.22);
       display: flex; align-items: center; justify-content: center;
       margin: 0 auto 1.25rem;
-      box-shadow: 0 0 24px -6px rgba(255,77,148,0.25);
+      box-shadow: 0 0 24px -6px rgba(88,101,242,0.25);
     }
 
     .header-eyebrow {
@@ -214,7 +206,7 @@
     }
     .lookup-card::before {
       content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,77,148,0.55), transparent);
+      background: linear-gradient(90deg, transparent, rgba(88,101,242,0.55), transparent);
     }
 
     .input-label {
@@ -236,12 +228,12 @@
     .code-input::placeholder { color: var(--border); font-size: 1.2rem; }
     .code-input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(255,77,148,0.14), 0 0 16px rgba(255,77,148,0.1);
-      background: rgba(255,77,148,0.03);
+      box-shadow: 0 0 0 3px rgba(88,101,242,0.14), 0 0 16px rgba(88,101,242,0.1);
+      background: rgba(88,101,242,0.03);
     }
     .code-input:not(:placeholder-shown):not(:focus) {
-      border-color: rgba(255,77,148,0.28);
-      background: rgba(255,77,148,0.04);
+      border-color: rgba(88,101,242,0.28);
+      background: rgba(88,101,242,0.04);
     }
 
     .lookup-btn {
@@ -249,11 +241,11 @@
       border-radius: 12px; padding: 0.9rem; font-size: 0.9rem;
       font-weight: 800; cursor: pointer; letter-spacing: 0.02em;
       transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 4px 20px -5px rgba(255,77,148,0.4);
+      box-shadow: 0 4px 20px -5px rgba(88,101,242,0.4);
     }
     .lookup-btn:hover:not(:disabled) {
       opacity: 0.88; transform: translateY(-1px);
-      box-shadow: 0 6px 26px -5px rgba(255,77,148,0.5);
+      box-shadow: 0 6px 26px -5px rgba(88,101,242,0.5);
     }
     .lookup-btn:active:not(:disabled) { transform: translateY(0); }
     .lookup-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
@@ -291,7 +283,7 @@
     }
     .result-banner.pending     { background: linear-gradient(135deg, rgba(245,158,11,0.07) 0%, transparent 55%); }
     .result-banner.paid        { background: linear-gradient(135deg, rgba(34,197,94,0.06) 0%, transparent 55%); }
-    .result-banner.in_progress { background: linear-gradient(135deg, rgba(255,77,148,0.06) 0%, transparent 55%); }
+    .result-banner.in_progress { background: linear-gradient(135deg, rgba(88,101,242,0.06) 0%, transparent 55%); }
     .result-banner.delivered   { background: linear-gradient(135deg, rgba(34,197,94,0.09) 0%, transparent 55%); }
     .result-banner.cancelled   { background: linear-gradient(135deg, rgba(107,107,133,0.07) 0%, transparent 55%); }
 
@@ -304,7 +296,7 @@
     }
     .status-pill.pending     { background: rgba(245,158,11,0.1);  color: var(--yellow); border: 1px solid rgba(245,158,11,0.22); }
     .status-pill.paid        { background: rgba(34,197,94,0.1);   color: var(--green);  border: 1px solid rgba(34,197,94,0.22); }
-    .status-pill.in_progress { background: rgba(255,77,148,0.09); color: var(--accent); border: 1px solid rgba(255,77,148,0.22); }
+    .status-pill.in_progress { background: rgba(88,101,242,0.09); color: var(--accent); border: 1px solid rgba(88,101,242,0.22); }
     .status-pill.delivered   { background: rgba(34,197,94,0.1);   color: var(--green);  border: 1px solid rgba(34,197,94,0.22); }
     .status-pill.cancelled   { background: rgba(107,107,133,0.1); color: var(--muted);  border: 1px solid rgba(107,107,133,0.2); }
 
@@ -363,7 +355,7 @@
     /* ── ADMIN NOTE ── */
     .note-box {
       margin: 0 1.25rem 1.25rem;
-      background: rgba(255,77,148,0.05); border: 1px solid rgba(255,77,148,0.18);
+      background: rgba(88,101,242,0.05); border: 1px solid rgba(88,101,242,0.18);
       border-radius: 12px; padding: 0.9rem 1rem;
     }
     .note-label {
@@ -420,28 +412,40 @@
     <a class="nav-logo" href="index.html">Zero<span>point</span></a>
     <ul>
       <li><a href="index.html">Home</a></li>
+      <li><a href="servers.html">Servers</a></li>
       <li class="nav-dd">
         <button class="nav-dd-btn">
           ARK
           <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <ul class="nav-dd-menu">
-          <li><a href="servers.html">Servers</a></li>
           <li><a href="ark.html">Donations</a></li>
           <li><a href="bbs.html">Admin Shop</a></li>
+          <li><a href="arkrules.html">Rules</a></li>
         </ul>
       </li>
       <li class="nav-dd">
         <button class="nav-dd-btn">
           Hytale
-          <span class="nav-soon">Soon</span>
+          
           <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <ul class="nav-dd-menu">
           <li><a href="hytalepackages.html">Packages</a></li>
         </ul>
       </li>
+      <li class="nav-dd">
+        <button class="nav-dd-btn">
+          Minecraft
+          <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-dd-menu">
+          <li><a href="minecraft.html">Ranks</a></li>
+          <li><a href="minecraft-keys.html">Crate Keys</a></li>
+        </ul>
+      </li>
       <li><a href="aboutus.html">About</a></li>
+      <li><a href="blog.html">Updates</a></li>
     </ul>
     <a class="nav-cta" href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener">
       <svg viewBox="0 0 127.14 96.36" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
