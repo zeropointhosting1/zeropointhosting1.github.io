@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Updates & News — ARK, Hytale & Minecraft Servers | Zeropoint Gaming</title>
+  <meta name="description" content="Latest news, server updates, events, and announcements from Zeropoint Gaming. Stay up to date on ARK Survival Evolved Xbox, Hytale, and Minecraft server changes." />
+  <meta name="keywords" content="ARK server updates, Hytale news, Minecraft server news, Zeropoint Gaming updates, ARK Xbox server news, gaming community news, server announcements" />
+  <meta name="author" content="Zeropoint Gaming" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Updates & News — Zeropoint Gaming" />
+  <meta property="og:description" content="Server updates, events, and community news from Zeropoint Gaming's ARK, Hytale, and Minecraft servers." />
+  <meta property="og:url" content="https://zeropointhosting1.github.io/blog.html" />
+  <meta property="og:image" content="https://zeropointhosting1.github.io/zeropoint1.png" />
+  <meta property="og:site_name" content="Zeropoint Gaming" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Updates & News — Zeropoint Gaming" />
+  <meta name="twitter:description" content="Server updates and community news from Zeropoint Gaming's ARK, Hytale, and Minecraft servers." />
+  <meta name="twitter:image" content="https://zeropointhosting1.github.io/zeropoint1.png" />
+  <link rel="canonical" href="https://zeropointhosting1.github.io/blog.html" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
+      --border: #22222e; --accent: #5865f2;
+      --text: #e8e8f0; --muted: #7a7a90; --radius: 10px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6; min-height: 100vh; overflow-x: hidden;
+    }
+    body.no-scroll { overflow: hidden; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      background: rgba(10,10,15,0.92);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      height: 64px;
+      gap: 1.5rem;
+    }
+    .nav-logo {
+      color: #fff; font-weight: 800; font-size: 0.95rem; letter-spacing: 0.1em;
+      text-transform: uppercase; text-decoration: none; flex-shrink: 0;
+      transition: opacity 0.2s;
+    }
+    .nav-logo:hover { opacity: 0.8; }
+    .nav-logo span { color: #5865f2; }
+    nav > ul {
+      display: flex; align-items: center; gap: 0.2rem; list-style: none;
+      flex: 1; justify-content: center;
+    }
+    nav > ul > li > a {
+      display: block; padding: 0.45rem 0.85rem;
+      color: rgba(255,255,255,0.55); text-decoration: none;
+      font-size: 0.875rem; font-weight: 500; letter-spacing: 0.01em;
+      border-radius: 6px; transition: color 0.15s, background 0.15s;
+    }
+    nav > ul > li > a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+    nav > ul > li > a.active { color: #fff; }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.5rem 1.1rem; border-radius: 7px;
+      background: #5865f2; color: #fff; text-decoration: none;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.02em;
+      flex-shrink: 0;
+      transition: background 0.18s, box-shadow 0.18s;
+      box-shadow: 0 2px 12px rgba(88,101,242,0.35);
+    }
+    .nav-cta:hover { background: #4752c4; box-shadow: 0 4px 20px rgba(88,101,242,0.5); }
+    .nav-cta svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; }
+    .nav-toggle {
+      display: none; background: none; border: none; cursor: pointer;
+      padding: 0.5rem; flex-direction: column; justify-content: center; gap: 5px;
+    }
+    .nav-toggle span {
+      display: block; width: 22px; height: 2px;
+      background: rgba(255,255,255,0.7); border-radius: 2px;
+      transition: transform 0.22s, opacity 0.22s;
+    }
+    .nav-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.active span:nth-child(2) { opacity: 0; }
+    .nav-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 680px) {
+      nav { padding: 0 1.25rem; }
+      .nav-cta { display: none; }
+      .nav-toggle { display: flex; }
+      nav > ul {
+        display: none; position: fixed; top: 64px; left: 0; right: 0;
+        background: rgba(10,10,15,0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        flex-direction: column; align-items: stretch; justify-content: flex-start;
+        padding: 0.75rem 1rem 1.25rem; gap: 0.1rem; z-index: 99;
+      }
+      nav > ul.nav-open { display: flex; }
+      nav > ul > li > a { font-size: 0.95rem; padding: 0.6rem 0.85rem; color: rgba(255,255,255,0.65); }
+    }
+
+    /* ── NAV DROPDOWNS ── */
+    .nav-dd { position: relative; }
+    .nav-dd-btn {
+      display: flex; align-items: center; gap: 0.3rem;
+      background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,0.55); font-size: 0.875rem; font-weight: 500;
+      letter-spacing: 0.01em; padding: 0.45rem 0.85rem; border-radius: 6px;
+      transition: color 0.15s, background 0.15s; white-space: nowrap;
+      font-family: inherit;
+    }
+    .nav-dd-btn:hover, .nav-dd.open .nav-dd-btn { color: #fff; background: rgba(255,255,255,0.06); }
+    .nav-dd-chevron { transition: transform 0.2s; flex-shrink: 0; opacity: 0.4; }
+    .nav-dd.open .nav-dd-chevron { transform: rotate(180deg); opacity: 0.8; }
+    .nav-dd-menu {
+      position: absolute; top: calc(100% + 8px); left: 50%;
+      transform: translateX(-50%) translateY(-4px);
+      background: #0d0d18;
+      border: 1px solid rgba(255,255,255,0.09); border-radius: 10px;
+      padding: 0.5rem; min-width: 180px; list-style: none;
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+      z-index: 200;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+      display: flex; flex-direction: column;
+    }
+    .nav-dd.open .nav-dd-menu {
+      opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0);
+    }
+    .nav-dd-menu li a {
+      display: block; padding: 0.55rem 0.75rem; border-radius: 7px;
+      text-decoration: none; font-size: 0.85rem; font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      transition: background 0.1s, color 0.1s;
+    }
+    .nav-dd-menu li a:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    @media (max-width: 680px) {
+      .nav-dd { width: 100%; }
+      .nav-dd-btn { font-size: 0.95rem; padding: 0.6rem 0.85rem; width: 100%; justify-content: space-between; color: rgba(255,255,255,0.65); }
+      .nav-dd-menu {
+        position: static; transform: none; opacity: 1; visibility: visible; pointer-events: auto;
+        background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 8px; margin: 0.1rem 0; display: none; box-shadow: none; padding: 0.35rem;
+        width: 100%; min-width: 0; max-width: 100%;
+      }
+      .nav-dd.open .nav-dd-menu { display: block; transform: none; }
+      .nav-dd-menu li a { font-size: 0.9rem; }
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 120px 1.5rem 4rem;
+      text-align: center;
+      position: relative;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(88,101,242,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .page-eyebrow { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; opacity: 0.85; }
+    .page-header h1 { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; background: linear-gradient(160deg, #ffffff 0%, #a0a0b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.75rem; }
+    .page-header p { font-size: 1rem; color: var(--muted); max-width: 480px; margin: 0 auto; }
+
+    /* ── FILTERS ── */
+    .filters-wrap {
+      max-width: 860px; margin: 0 auto;
+      padding: 0 1.5rem 2.5rem;
+      display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 0.4rem 1.1rem; border-radius: 99px;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer;
+      transition: all 0.15s; font-family: inherit;
+    }
+    .filter-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* ── POST FEED ── */
+    .post-feed {
+      max-width: 860px; margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+      display: flex; flex-direction: column; gap: 0;
+    }
+
+    /* ── POST CARD — Discord embed style ── */
+    .post-card {
+      display: flex; gap: 1rem; padding: 0.9rem 1rem;
+      cursor: pointer; border-radius: 6px;
+      transition: background 0.12s;
+      position: relative;
+    }
+    .post-card:hover { background: rgba(255,255,255,0.04); }
+
+    /* colored left embed bar (appears inside the card via pseudo) */
+    .post-card-embed {
+      display: flex; gap: 0;
+      background: var(--surface);
+      border-radius: 6px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+      flex: 1; min-width: 0;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .post-card:hover .post-card-embed {
+      border-color: rgba(88,101,242,0.25);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    .post-embed-bar {
+      width: 4px; flex-shrink: 0;
+      background: var(--accent);
+    }
+    .post-embed-body {
+      padding: 1rem 1.25rem; flex: 1; min-width: 0;
+    }
+
+    /* avatar */
+    .post-avatar-col { flex-shrink: 0; padding-top: 0.1rem; }
+    .post-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      object-fit: cover; display: block;
+      background: var(--surface2);
+    }
+
+    /* author row */
+    .post-author-row {
+      display: flex; align-items: center; gap: 0.45rem;
+      flex-wrap: wrap; margin-bottom: 0.45rem;
+    }
+    .post-author-name {
+      font-size: 0.92rem; font-weight: 700;
+      color: var(--accent); line-height: 1;
+    }
+    .post-author-badge {
+      font-size: 0.58rem; font-weight: 800; letter-spacing: 0.07em;
+      text-transform: uppercase; padding: 0.15rem 0.45rem; border-radius: 3px;
+      background: var(--accent); color: #000; line-height: 1.4;
+    }
+    .post-author-badge.pinned-badge {
+      background: rgba(88,101,242,0.15); color: var(--accent);
+      border: 1px solid rgba(88,101,242,0.3);
+    }
+    .post-cat {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.15rem 0.45rem; border-radius: 3px;
+      background: rgba(88,101,242,0.1); color: var(--accent);
+      border: 1px solid rgba(88,101,242,0.22);
+    }
+    .post-date {
+      font-size: 0.75rem; color: var(--muted);
+    }
+
+    /* title & body */
+    .post-title {
+      font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.3;
+      color: #fff; margin-bottom: 0.45rem;
+    }
+    .post-excerpt {
+      font-size: 0.875rem; color: var(--muted); line-height: 1.65;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .post-footer {
+      display: flex; align-items: center; gap: 0.6rem;
+      margin-top: 0.75rem;
+    }
+    .read-link {
+      font-size: 0.76rem; font-weight: 700; color: var(--accent);
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      margin-left: auto;
+    }
+    .read-link svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .post-readtime { font-size: 0.75rem; color: var(--muted); }
+
+    /* ── STATES ── */
+    .feed-loading {
+      text-align: center; padding: 5rem 1.5rem;
+      color: var(--muted); font-size: 0.875rem;
+    }
+    .feed-empty {
+      text-align: center; padding: 5rem 1.5rem;
+    }
+    .feed-empty strong { display: block; color: var(--text); font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .feed-empty p { color: var(--muted); font-size: 0.875rem; }
+
+    /* ── POST OVERLAY ── */
+    .overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 3rem 1.5rem 2rem; overflow-y: auto; overscroll-behavior: contain;
+    }
+    .overlay[hidden] { display: none; }
+    .overlay-panel {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px; width: 100%; max-width: 700px;
+      margin: auto; overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+    }
+    .overlay-header {
+      padding: 1.25rem 1.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+    }
+    .overlay-header-left { flex: 1; display: flex; gap: 0.85rem; align-items: flex-start; }
+    .overlay-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      object-fit: cover; flex-shrink: 0;
+    }
+    .overlay-author-block { flex: 1; }
+    .overlay-author-row {
+      display: flex; align-items: center; gap: 0.45rem;
+      flex-wrap: wrap; margin-bottom: 0.35rem;
+    }
+    .overlay-title { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.25; color: #fff; }
+    .overlay-close {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--muted);
+      border-radius: 7px; width: 32px; height: 32px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; cursor: pointer; transition: color 0.15s, background 0.15s;
+      font-family: inherit;
+    }
+    .overlay-close:hover { color: var(--text); background: rgba(255,255,255,0.1); }
+    .overlay-body { padding: 1.25rem 1.5rem 2rem; }
+
+    /* ── MARKDOWN ── */
+    .post-content { font-size: 0.92rem; line-height: 1.8; color: var(--muted); }
+    .post-content h2 { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; margin: 1.6rem 0 0.5rem; color: var(--text); }
+    .post-content h3 { font-size: 1rem; font-weight: 700; margin: 1.25rem 0 0.4rem; color: var(--text); }
+    .post-content h4 { font-size: 0.92rem; font-weight: 700; margin: 1rem 0 0.3rem; color: var(--text); }
+    .post-content p { margin-bottom: 1rem; }
+    .post-content strong { font-weight: 700; color: var(--text); }
+    .post-content em { font-style: italic; }
+    .post-content a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .post-content hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+    .post-content ul, .post-content ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+    .post-content li { margin-bottom: 0.3rem; }
+    .post-content blockquote { border-left: 3px solid rgba(88,101,242,0.3); padding-left: 1rem; margin: 1rem 0; font-style: italic; }
+    .post-content code { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.35rem; font-size: 0.83em; font-family: ui-monospace, 'SF Mono', monospace; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="index.html">Zero<span>point</span></a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="servers.html">Servers</a></li>
+      <li class="nav-dd">
+        <button class="nav-dd-btn">
+          ARK
+          <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-dd-menu">
+          <li><a href="ark.html">Donations</a></li>
+          <li><a href="bbs.html">Admin Shop</a></li>
+          <li><a href="arkrules.html">Rules</a></li>
+        </ul>
+      </li>
+      <li class="nav-dd">
+        <button class="nav-dd-btn">
+          Hytale
+          <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-dd-menu">
+          <li><a href="hytalepackages.html">Packages</a></li>
+        </ul>
+      </li>
+      <li class="nav-dd">
+        <button class="nav-dd-btn">
+          Minecraft
+          <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-dd-menu">
+          <li><a href="minecraft.html">Ranks</a></li>
+          <li><a href="minecraft-keys.html">Crate Keys</a></li>
+        </ul>
+      </li>
+      <li><a href="aboutus.html">About</a></li>
+      <li><a href="blog.html" class="active">Updates</a></li>
+    </ul>
+    <a class="nav-cta" href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener">
+      <svg viewBox="0 0 127.14 96.36" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
+      Join Discord
+    </a>
+    <button class="nav-toggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div style="display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <img src="zeropoint1.png" alt="Zeropoint" style="width:64px;height:64px;border-radius:50%;border:2px solid rgba(88,101,242,0.4);box-shadow:0 0 24px rgba(88,101,242,0.2);" />
+      <div style="text-align:left;">
+        <p class="page-eyebrow" style="margin-bottom:0.2rem;">📢 #announcements</p>
+        <h1 style="font-size:clamp(1.6rem,5vw,2.8rem);">Updates</h1>
+      </div>
+    </div>
+    <p>News, patch notes, and announcements from the Zeropoint admin team.</p>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters-wrap" id="filters">
+    <button class="filter-btn active" data-cat="">All</button>
+  </div>
+
+  <!-- CHANNEL DIVIDER -->
+  <div style="max-width:860px;margin:0 auto;padding:0 1.5rem 0.5rem;">
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
+      <span style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);white-space:nowrap;">Latest Posts</span>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
+    </div>
+  </div>
+
+  <!-- FEED -->
+  <div class="post-feed" id="feed">
+    <div class="feed-loading">Loading updates…</div>
+  </div>
+
+  <!-- POST OVERLAY -->
+  <div class="overlay" id="overlay" hidden>
+    <div class="overlay-panel">
+      <div class="overlay-header">
+        <div class="overlay-header-left">
+          <img class="overlay-avatar" src="zeropoint1.png" alt="Zeropoint" />
+          <div class="overlay-author-block">
+            <div class="overlay-author-row post-author-row" id="ov-meta"></div>
+            <div class="overlay-title" id="ov-title"></div>
+          </div>
+        </div>
+        <button class="overlay-close" id="ov-close">✕</button>
+      </div>
+      <div class="overlay-body">
+        <div class="post-content" id="ov-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ── NAV TOGGLE ──
+  (function () {
+    var t = document.querySelector('.nav-toggle');
+    var m = document.querySelector('nav > ul');
+    if (!t || !m) return;
+    t.addEventListener('click', function () {
+      t.classList.toggle('active');
+      m.classList.toggle('nav-open');
+    });
+    m.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        t.classList.remove('active');
+        m.classList.remove('nav-open');
+      });
+    });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('nav')) {
+        t.classList.remove('active');
+        m.classList.remove('nav-open');
+      }
+    });
+  })();
+
+  // ── NAV DROPDOWNS ──
+  document.querySelectorAll('.nav-dd-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var item = btn.closest('.nav-dd');
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.nav-dd').forEach(function(d) { d.classList.remove('open'); });
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+  document.querySelectorAll('.nav-dd-menu a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      document.querySelectorAll('.nav-dd').forEach(function(d) { d.classList.remove('open'); });
+    });
+  });
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.nav-dd')) {
+      document.querySelectorAll('.nav-dd').forEach(function(d) { d.classList.remove('open'); });
+    }
+  });
+
+  // ── SUPABASE ──
+  var SB = window.supabase.createClient('https://cairclbnutqouejtlhks.supabase.co', 'sb_publishable_25_ecIfEwCQ1BdXof_ZonQ_Bi2x1CDU');
+
+  var allPosts = [];
+  var activeFilter = '';
+
+  // ── MARKDOWN ──
+  function renderMd(raw) {
+    if (!raw) return '';
+    var t = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    t = t.replace(/^---$/gm,'<hr>');
+    t = t.replace(/^#### (.+)$/gm,'<h4>$1</h4>');
+    t = t.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+    t = t.replace(/^## (.+)$/gm,'<h2>$1</h2>');
+    t = t.replace(/^# (.+)$/gm,'<h2>$1</h2>');
+    t = t.replace(/^&gt; (.+)$/gm,'<blockquote>$1</blockquote>');
+    // ordered lists
+    t = t.replace(/^\d+\. (.+)$/gm,'<li data-ol>$1</li>');
+    t = t.replace(/(<li data-ol>[\s\S]*?<\/li>)(\n(?=<li data-ol>)|$)/g, function(m){ return m; });
+    t = t.replace(/(<li data-ol>.*<\/li>\n?)+/g, function(s){ return '<ol>'+s.replace(/ data-ol/g,'')+'</ol>'; });
+    // unordered lists
+    t = t.replace(/^[-*] (.+)$/gm,'<li>$1</li>');
+    t = t.replace(/(<li>.*<\/li>\n?)+/g, function(s){ return '<ul>'+s+'</ul>'; });
+    t = t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+    t = t.replace(/\*(.+?)\*/g,'<em>$1</em>');
+    t = t.replace(/`(.+?)`/g,'<code>$1</code>');
+    t = t.replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+    var lines = t.split('\n'); var out = []; var buf = [];
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      if (/^<(h[2-4]|hr|ul|ol|blockquote)/.test(line) || line === '') {
+        if (buf.length) { out.push('<p>'+buf.join('<br>')+'</p>'); buf = []; }
+        if (line) out.push(line);
+      } else { buf.push(line); }
+    }
+    if (buf.length) out.push('<p>'+buf.join('<br>')+'</p>');
+    return out.join('\n');
+  }
+
+  function readTime(raw) {
+    var words = (raw || '').replace(/[#*`_>\[\]()-]/g,'').split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.round(words / 200));
+  }
+
+  function excerpt(raw, len) {
+    len = len || 220;
+    return raw.replace(/[#*`_>\[\]()\-]/g,'').replace(/\n/g,' ').replace(/\s+/g,' ').trim().slice(0, len);
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function fmtDate(iso) {
+    var d = new Date(iso);
+    var now = new Date();
+    var diff = (now - d) / 1000;
+    if (diff < 60)    return 'Just now';
+    if (diff < 3600)  return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    if (diff < 604800) return Math.floor(diff/86400) + 'd ago';
+    return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: d.getFullYear() !== now.getFullYear() ? 'numeric' : undefined });
+  }
+
+  // ── LOAD ──
+  async function load() {
+    var feed = document.getElementById('feed');
+    feed.innerHTML = '<div class="feed-loading">Loading updates…</div>';
+    var res = await SB.from('blog_posts').select('*').eq('published', true).order('created_at', { ascending: false });
+    allPosts = res.data || [];
+    buildFilters();
+    render();
+  }
+
+  function buildFilters() {
+    var cats = [];
+    allPosts.forEach(function(p) { if (p.category && cats.indexOf(p.category) === -1) cats.push(p.category); });
+    var bar = document.getElementById('filters');
+    bar.innerHTML = '<button class="filter-btn active" data-cat="">All</button>' +
+      cats.map(function(c) { return '<button class="filter-btn" data-cat="'+esc(c)+'">'+esc(c)+'</button>'; }).join('');
+    bar.querySelectorAll('.filter-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() { setFilter(btn.dataset.cat); });
+    });
+  }
+
+  function setFilter(cat) {
+    activeFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.cat === cat);
+    });
+    render();
+  }
+
+  function render() {
+    var feed = document.getElementById('feed');
+    var filtered = activeFilter ? allPosts.filter(function(p){ return p.category === activeFilter; }) : allPosts;
+
+    if (!filtered.length) {
+      feed.innerHTML = '<div class="feed-empty"><strong>Nothing here yet</strong><p>Check back soon for updates.</p></div>';
+      return;
+    }
+
+    feed.innerHTML = filtered.map(function(p) {
+      var ex = excerpt(p.content || '');
+      var hasMore = (p.content || '').replace(/\s+/g,' ').trim().length > 220;
+      var dateStr = fmtDate(p.created_at);
+      var mins = readTime(p.content || '');
+      return '<article class="post-card" data-id="'+p.id+'">' +
+        '<div class="post-avatar-col">' +
+          '<img class="post-avatar" src="zeropoint1.png" alt="Zeropoint" />' +
+        '</div>' +
+        '<div class="post-card-embed">' +
+          '<div class="post-embed-bar"></div>' +
+          '<div class="post-embed-body">' +
+            '<div class="post-author-row">' +
+              '<span class="post-author-name">Zeropoint Gaming</span>' +
+              '<span class="post-author-badge">Admin</span>' +
+              (p.pinned ? '<span class="post-author-badge pinned-badge">📌 Pinned</span>' : '') +
+              (p.category ? '<span class="post-cat">'+esc(p.category)+'</span>' : '') +
+              '<span class="post-date">'+esc(dateStr)+'</span>' +
+            '</div>' +
+            '<div class="post-title">'+esc(p.title)+'</div>' +
+            '<div class="post-excerpt">'+esc(ex)+(hasMore ? '…' : '')+'</div>' +
+            '<div class="post-footer">' +
+              '<span class="post-readtime">'+mins+' min read</span>' +
+              (hasMore ? '<span class="read-link">Read more <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' : '') +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</article>';
+    }).join('');
+
+    feed.querySelectorAll('.post-card').forEach(function(el) {
+      el.addEventListener('click', function() { openOverlay(+el.dataset.id); });
+    });
+  }
+
+  // ── OVERLAY ──
+  function openOverlay(id) {
+    var p = allPosts.find(function(x){ return x.id === id; });
+    if (!p) return;
+    var mins = readTime(p.content || '');
+    document.getElementById('ov-meta').innerHTML =
+      '<span class="post-author-name">Zeropoint Gaming</span>' +
+      '<span class="post-author-badge">Admin</span>' +
+      (p.category ? '<span class="post-cat">'+esc(p.category)+'</span>' : '') +
+      '<span class="post-date">'+esc(fmtDate(p.created_at))+'</span>' +
+      '<span class="post-date">· '+mins+' min read</span>';
+    document.getElementById('ov-title').textContent = p.title;
+    document.getElementById('ov-content').innerHTML = renderMd(p.content || '');
+    var ov = document.getElementById('overlay');
+    ov.removeAttribute('hidden');
+    ov.scrollTop = 0;
+    document.body.classList.add('no-scroll');
+  }
+
+  function closeOverlay() {
+    document.getElementById('overlay').setAttribute('hidden', '');
+    document.body.classList.remove('no-scroll');
+  }
+
+  document.getElementById('ov-close').addEventListener('click', closeOverlay);
+  document.getElementById('overlay').addEventListener('click', function(e) {
+    if (e.target === document.getElementById('overlay')) closeOverlay();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeOverlay();
+  });
+
+  load();
+  </script>
+
+  <!-- FOOTER -->
+  <footer style="border-top:1px solid rgba(255,255,255,0.07);padding:2.5rem 1.5rem;text-align:center;">
+    <p style="color:var(--muted);font-size:.82rem;">&copy; 2026 Zeropoint Gaming &nbsp;·&nbsp;
+      <a href="index.html" style="color:var(--accent);text-decoration:none;">Home</a> &nbsp;·&nbsp;
+      <a href="ark.html" style="color:var(--accent);text-decoration:none;">ARK Donations</a> &nbsp;·&nbsp;
+      <a href="hytalepackages.html" style="color:var(--accent);text-decoration:none;">Hytale</a> &nbsp;·&nbsp;
+      <a href="aboutus.html" style="color:var(--accent);text-decoration:none;">About</a>
+    </p>
+  </footer>
+
+<!-- ── ZEROBOT CHAT WIDGET ── -->
+<style>
+#zb-bubble{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#5865f2,#7289da);border:none;cursor:pointer;box-shadow:0 4px 20px rgba(88,101,242,0.4);display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;font-size:1.35rem;}
+#zb-bubble:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(88,101,242,0.55);}
+#zb-bubble.open{transform:scale(0.9);}
+#zb-panel{position:fixed;bottom:5rem;right:1.5rem;z-index:9998;width:340px;max-width:calc(100vw - 2rem);height:480px;background:#0d0d18;border:1px solid rgba(255,255,255,0.1);border-radius:16px;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,0.7);overflow:hidden;transition:opacity .2s,transform .2s;transform-origin:bottom right;}
+#zb-panel.zb-hidden{opacity:0;pointer-events:none;transform:scale(0.95) translateY(8px);}
+#zb-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0;}
+.zb-hdr-left{display:flex;align-items:center;gap:.5rem;}
+.zb-hdr-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;flex-shrink:0;}
+.zb-hdr-title{font-weight:700;font-size:.88rem;color:#f0f0f8;}
+.zb-hdr-sub{font-size:.68rem;color:rgba(255,255,255,0.4);margin-top:1px;}
+#zb-close{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:1rem;padding:.25rem;line-height:1;transition:color .15s;}
+#zb-close:hover{color:#f0f0f8;}
+#zb-msgs{flex:1;overflow-y:auto;padding:.75rem 1rem;display:flex;flex-direction:column;gap:.6rem;scroll-behavior:smooth;}
+#zb-msgs::-webkit-scrollbar{width:4px;}
+#zb-msgs::-webkit-scrollbar-track{background:transparent;}
+#zb-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px;}
+.zb-msg{max-width:82%;padding:.55rem .8rem;border-radius:12px;font-size:.83rem;line-height:1.5;word-break:break-word;}
+.zb-msg.bot{background:rgba(255,255,255,0.07);color:#d8d8ec;border-bottom-left-radius:4px;align-self:flex-start;}
+.zb-msg.user{background:linear-gradient(135deg,#5865f2,#ff6ea8);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;}
+.zb-typing{display:flex;gap:4px;align-items:center;padding:.55rem .8rem;background:rgba(255,255,255,0.07);border-radius:12px;border-bottom-left-radius:4px;align-self:flex-start;}
+.zb-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);animation:zb-bounce .9s infinite;}
+.zb-dot:nth-child(2){animation-delay:.15s;}
+.zb-dot:nth-child(3){animation-delay:.3s;}
+@keyframes zb-bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+#zb-footer{padding:.6rem .75rem;border-top:1px solid rgba(255,255,255,0.07);display:flex;gap:.5rem;align-items:center;flex-shrink:0;}
+#zb-input{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:.5rem .75rem;color:#f0f0f8;font-size:.83rem;font-family:inherit;outline:none;transition:border-color .15s;}
+#zb-input:focus{border-color:rgba(88,101,242,0.5);}
+#zb-input::placeholder{color:rgba(255,255,255,0.25);}
+#zb-send{background:linear-gradient(135deg,#5865f2,#ff6ea8);border:none;border-radius:8px;cursor:pointer;width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s;}
+#zb-send:hover{opacity:.85;}
+#zb-send:disabled{opacity:.4;cursor:default;}
+#zb-send svg{width:15px;height:15px;fill:white;}
+</style>
+<div id="zb-bubble" aria-label="Chat with ZeroBot">💬</div>
+<div id="zb-panel" class="zb-hidden">
+  <div id="zb-header">
+    <div class="zb-hdr-left">
+      <span class="zb-hdr-dot"></span>
+      <div><div class="zb-hdr-title">ZeroBot</div><div class="zb-hdr-sub">Zeropoint Gaming Assistant</div></div>
+    </div>
+    <button id="zb-close" aria-label="Close">✕</button>
+  </div>
+  <div id="zb-msgs"></div>
+  <div id="zb-footer">
+    <input id="zb-input" placeholder="Ask me anything…" maxlength="500" autocomplete="off" />
+    <button id="zb-send" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+  </div>
+</div>
+<script>
+(function(){
+  var FUNC='https://cairclbnutqouejtlhks.supabase.co/functions/v1/chat-bot';
+  var PAGE='Blog / Updates';
+  var sid=sessionStorage.getItem('zb_sid')||Math.random().toString(36).slice(2)+Date.now().toString(36);
+  sessionStorage.setItem('zb_sid',sid);
+  var history=[],opened=false,userMsgCount=parseInt(sessionStorage.getItem('zb_mc')||'0');
+  var bubble=document.getElementById('zb-bubble'),panel=document.getElementById('zb-panel'),msgs=document.getElementById('zb-msgs'),input=document.getElementById('zb-input'),send=document.getElementById('zb-send');
+  bubble.addEventListener('click',function(){
+    opened=!opened;panel.classList.toggle('zb-hidden',!opened);bubble.classList.toggle('open',opened);
+    if(opened&&msgs.children.length===0)addMsg('bot',"Hey! 👋 Got questions about Zeropoint? I can help with ARK, Hytale, orders, or anything else.");
+    if(userMsgCount>=4){showLiveAgent();}
+    if(opened)input.focus();
+  });
+  document.getElementById('zb-close').addEventListener('click',function(){opened=false;panel.classList.add('zb-hidden');bubble.classList.remove('open');});
+  function addMsg(role,text){var d=document.createElement('div');d.className='zb-msg '+role;d.textContent=text;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
+  function showTyping(){var d=document.createElement('div');d.className='zb-typing';d.id='zb-typing';d.innerHTML='<span class="zb-dot"></span><span class="zb-dot"></span><span class="zb-dot"></span>';msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;}
+  function removeTyping(){var t=document.getElementById('zb-typing');if(t)t.remove();}
+  async function sendMsg(){
+    var text=input.value.trim();if(!text)return;
+    input.value='';send.disabled=true;
+    addMsg('user',text);history.push({role:'user',content:text});userMsgCount++;sessionStorage.setItem('zb_mc',userMsgCount);showTyping();
+    try{
+      var res=await fetch(FUNC,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,sessionId:sid,history:history.slice(-10),page:PAGE})});
+      var data=await res.json();removeTyping();
+      var reply=data.reply||'Sorry, something went wrong. Try again!';
+      addMsg('bot',reply);history.push({role:'assistant',content:reply});
+    }catch(e){removeTyping();addMsg('bot','Connection error — please try again.');}
+    if(userMsgCount>=4){showLiveAgent();return;}
+    send.disabled=false;input.focus();
+  }
+  function showLiveAgent(){
+    input.disabled=true;send.disabled=true;input.placeholder='Chat limit reached';
+    var d=document.createElement('div');
+    d.style.cssText='margin:.5rem 0;padding:.75rem;background:rgba(88,101,242,0.1);border:1px solid rgba(88,101,242,0.25);border-radius:10px;text-align:center;';
+    d.innerHTML='<div style="font-size:.8rem;color:#f0f0f8;margin-bottom:.5rem;font-weight:600;">Still need help?</div><a href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.4rem;background:#5865f2;color:#fff;text-decoration:none;padding:.45rem .9rem;border-radius:7px;font-size:.78rem;font-weight:700;">💬 Talk to a Live Agent</a>';
+    msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+  }
+  send.addEventListener('click',sendMsg);
+  input.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
+})();
+</script>
+
+</body>
+</html>
