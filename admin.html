@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FL9SR49RMD"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FL9SR49RMD');
-  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zeropoint &middot; Admin</title>
@@ -509,12 +501,59 @@
       .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
       .admin-main { margin-left: 0; }
       .page-header { padding: 1rem 1.25rem; padding-top: 4rem; }
-      .page-content { padding: 1.5rem 1.25rem 3rem; }
+      .page-content { padding: 1.5rem 1rem 3rem; }
     }
     @media (max-width: 600px) {
       .org-row { grid-template-columns: 1fr; gap: 1rem; }
       .org-branch-line { display: none; }
       .org-sub-grid { grid-template-columns: 1fr; }
+      .order-card { padding: 1rem 1rem 1rem 1.25rem; }
+      .order-top { flex-direction: column; gap: 0.5rem; }
+      .order-meta { margin-top: 0; }
+      .order-actions { flex-direction: column; }
+      .action-btn { width: 100%; text-align: center; padding: 0.6rem 1rem; font-size: 0.78rem; }
+      .blog-row { flex-direction: column; gap: 0.65rem; }
+      .blog-row-actions { width: 100%; justify-content: flex-end; }
+      .blog-action-btn { flex: 1; text-align: center; padding: 0.5rem; }
+      .page-header-title { font-size: 1.3rem; }
+      .filter-bar { flex-wrap: wrap; gap: 0.4rem; }
+    }
+
+    /* ── BLOG FILTER BUTTONS ── */
+    .blog-filter-btn {
+      padding: .32rem .9rem; border-radius: 99px; font-size: .75rem; font-weight: 600;
+      background: transparent; border: 1px solid rgba(255,255,255,0.1);
+      color: var(--muted2); cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .blog-filter-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .blog-filter-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
+
+    /* ── BLOG POST ROW ── */
+    .blog-row {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm); padding: 1rem 1.25rem;
+      display: flex; align-items: flex-start; gap: 1rem;
+      transition: border-color .15s;
+    }
+    .blog-row:hover { border-color: var(--glass-border-hover); }
+    .blog-row-body { flex: 1; min-width: 0; }
+    .blog-row-title { font-size: .95rem; font-weight: 700; letter-spacing: -.01em; margin-bottom: .25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .blog-row-meta { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; font-size: .75rem; color: var(--muted2); }
+    .blog-pill { padding: .15rem .5rem; border-radius: 4px; font-size: .65rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+    .blog-pill.published { background: rgba(34,197,94,.12); color: #22c55e; border: 1px solid rgba(34,197,94,.2); }
+    .blog-pill.draft { background: rgba(245,158,11,.1); color: #f59e0b; border: 1px solid rgba(245,158,11,.2); }
+    .blog-pill.pinned { background: rgba(232,56,122,.1); color: var(--accent); border: 1px solid rgba(232,56,122,.2); }
+    .blog-row-actions { display: flex; gap: .4rem; flex-shrink: 0; }
+    .blog-action-btn {
+      padding: .35rem .75rem; border-radius: 7px; font-size: .75rem; font-weight: 700;
+      cursor: pointer; border: 1px solid rgba(255,255,255,0.1); font-family: inherit; transition: all .15s;
+    }
+    .blog-edit-btn { background: rgba(255,255,255,.06); color: var(--text); }
+    .blog-edit-btn:hover { background: rgba(255,255,255,.12); }
+    .blog-delete-btn { background: rgba(239,68,68,.08); color: #ef4444; border-color: rgba(239,68,68,.2); }
+    .blog-delete-btn:hover { background: rgba(239,68,68,.18); }
+    #blog-modal input:focus, #blog-modal textarea:focus, #blog-modal select:focus {
+      border-color: rgba(232,56,122,.5) !important; outline: none;
     }
   </style>
 </head>
@@ -609,6 +648,21 @@
             <path d="M1.5 13c0-2.76 2.69-5 6-5s6 2.24 6 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
           </svg>
           Team
+        </button>
+        <button class="sidebar-btn" data-section="chatlogs">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M1.5 2.5A1 1 0 012.5 1.5h10a1 1 0 011 1v8a1 1 0 01-1 1H5l-3.5 3V2.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+          </svg>
+          Chat Logs
+        </button>
+        <button class="sidebar-btn" data-section="blog">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M2 2.5h11M2 5.5h11M2 8.5h7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            <circle cx="11.5" cy="10.5" r="2.5" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M11.5 9.5v2M10.5 10.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          Blog Posts
+          <span class="sidebar-badge" id="badge-blog" hidden>0</span>
         </button>
       </nav>
 
@@ -780,6 +834,94 @@
         </div>
       </section>
 
+      <!-- CHAT LOGS -->
+      <section id="section-chatlogs" class="admin-section">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Chat Logs</div>
+            <div class="page-sub">ZeroBot conversations from visitors</div>
+          </div>
+          <span class="live-pill"><span class="live-dot"></span>Live</span>
+        </div>
+        <div class="page-content">
+          <div id="cl-filter-bar" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+            <select id="cl-page-filter" style="background:var(--glass);border:1px solid var(--glass-border);color:var(--text);border-radius:8px;padding:.4rem .75rem;font-size:.82rem;font-family:inherit;cursor:pointer;">
+              <option value="">All pages</option>
+              <option value="Home">Home</option>
+              <option value="ARK Donations">ARK Donations</option>
+              <option value="Admin Shop">Admin Shop</option>
+              <option value="Hytale Packages">Hytale Packages</option>
+            </select>
+            <button id="cl-refresh" style="background:var(--glass);border:1px solid var(--glass-border);color:var(--text);border-radius:8px;padding:.4rem .85rem;font-size:.82rem;font-family:inherit;cursor:pointer;">↻ Refresh</button>
+          </div>
+          <div id="cl-list" style="display:flex;flex-direction:column;gap:.6rem;"></div>
+        </div>
+      </section>
+
+      <!-- BLOG POSTS -->
+      <section id="section-blog" class="admin-section">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Blog Posts</div>
+            <div class="page-sub">Create and manage Updates page posts</div>
+          </div>
+          <button id="blog-new-btn" style="background:var(--accent);color:#000;border:none;border-radius:9px;padding:.5rem 1.1rem;font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.01em;display:flex;align-items:center;gap:.4rem;">+ New Post</button>
+        </div>
+        <div class="page-content">
+
+          <!-- FILTER BAR -->
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center;">
+            <button class="blog-filter-btn active" data-pub="">All</button>
+            <button class="blog-filter-btn" data-pub="true">Published</button>
+            <button class="blog-filter-btn" data-pub="false">Drafts</button>
+          </div>
+
+          <div id="blog-list" style="display:flex;flex-direction:column;gap:.6rem;"></div>
+        </div>
+
+        <!-- COMPOSE MODAL -->
+        <div id="blog-modal" hidden style="position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;">
+          <div style="background:#0d0d1a;border:1px solid rgba(255,255,255,0.1);border-radius:16px;width:100%;max-width:680px;margin:auto;overflow:hidden;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.08);">
+              <div style="font-size:1rem;font-weight:800;" id="blog-modal-title">New Post</div>
+              <button id="blog-modal-close" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--muted2);border-radius:7px;width:32px;height:32px;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+            <div style="padding:1.5rem;display:flex;flex-direction:column;gap:1rem;">
+              <input type="hidden" id="blog-edit-id" />
+              <div>
+                <label style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);display:block;margin-bottom:.4rem;">Title *</label>
+                <input id="blog-title" type="text" placeholder="Post title…" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);border-radius:9px;padding:.65rem .9rem;font-size:.9rem;font-family:inherit;outline:none;" />
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div>
+                  <label style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);display:block;margin-bottom:.4rem;">Category</label>
+                  <input id="blog-category" type="text" placeholder="e.g. ARK, Hytale, Event…" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);border-radius:9px;padding:.65rem .9rem;font-size:.85rem;font-family:inherit;outline:none;" />
+                </div>
+                <div>
+                  <label style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);display:block;margin-bottom:.4rem;">Status</label>
+                  <select id="blog-published" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);border-radius:9px;padding:.65rem .9rem;font-size:.85rem;font-family:inherit;outline:none;cursor:pointer;">
+                    <option value="false">Draft (not visible)</option>
+                    <option value="true">Published (live)</option>
+                  </select>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:.6rem;">
+                <input id="blog-pinned" type="checkbox" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;" />
+                <label for="blog-pinned" style="font-size:.85rem;color:var(--muted2);cursor:pointer;">📌 Pin this post (appears at top)</label>
+              </div>
+              <div>
+                <label style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);display:block;margin-bottom:.4rem;">Content (Markdown supported)</label>
+                <textarea id="blog-content" placeholder="Write your post here. Supports **bold**, *italic*, ## Headings, - lists, [links](url)…" style="width:100%;height:280px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);border-radius:9px;padding:.75rem .9rem;font-size:.875rem;font-family:ui-monospace,'SF Mono',monospace;outline:none;resize:vertical;line-height:1.6;"></textarea>
+              </div>
+              <div style="display:flex;gap:.75rem;justify-content:flex-end;padding-top:.5rem;border-top:1px solid rgba(255,255,255,0.07);">
+                <button id="blog-cancel-btn" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--muted2);border-radius:9px;padding:.55rem 1.1rem;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
+                <button id="blog-save-btn" style="background:var(--accent);color:#000;border:none;border-radius:9px;padding:.55rem 1.25rem;font-size:.85rem;font-weight:800;cursor:pointer;font-family:inherit;">Save Post</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
 </div>
@@ -907,6 +1049,54 @@ document.getElementById('forgot-submit-btn').addEventListener('click', async () 
   }
   msg.hidden = false;
   btn.disabled = false;
+});
+
+// ── CHAT LOGS ──
+async function loadChatLogs() {
+  const list = document.getElementById('cl-list');
+  const pageFilter = document.getElementById('cl-page-filter').value;
+  list.innerHTML = '<div class="loading-state"><div class="spinner"></div> Loading…</div>';
+  let query = sb.from('chat_logs').select('*').order('created_at', { ascending: false }).limit(200);
+  if (pageFilter) query = query.eq('page', pageFilter);
+  const { data, error } = await query;
+  if (error || !data) { list.innerHTML = '<div style="color:var(--red);padding:1rem;">Error loading logs.</div>'; return; }
+  if (!data.length) { list.innerHTML = '<div style="color:var(--muted2);padding:1rem;font-size:.85rem;">No chat logs yet.</div>'; return; }
+  // Group by session_id
+  const sessions = {};
+  data.forEach(row => {
+    if (!sessions[row.session_id]) sessions[row.session_id] = { page: row.page, msgs: [], latest: row.created_at };
+    sessions[row.session_id].msgs.push(row);
+    if (row.created_at > sessions[row.session_id].latest) sessions[row.session_id].latest = row.created_at;
+  });
+  const sorted = Object.entries(sessions).sort((a,b) => b[1].latest.localeCompare(a[1].latest));
+  list.innerHTML = '';
+  sorted.forEach(([sid, sess]) => {
+    const msgs = [...sess.msgs].sort((a,b) => a.created_at.localeCompare(b.created_at));
+    const firstUser = msgs.find(m => m.role === 'user');
+    const preview = firstUser ? firstUser.content.slice(0,60) + (firstUser.content.length>60?'…':'') : '(no messages)';
+    const date = new Date(sess.latest).toLocaleString();
+    const card = document.createElement('div');
+    card.style.cssText = 'background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-sm);overflow:hidden;';
+    card.innerHTML = `
+      <div class="cl-session-header" style="display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;cursor:pointer;gap:.75rem;" onclick="this.parentElement.querySelector('.cl-msgs').toggleAttribute('hidden')">
+        <div style="min-width:0;">
+          <div style="font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${preview}</div>
+          <div style="font-size:.72rem;color:var(--muted2);">${sess.page || 'Unknown page'} &middot; ${msgs.length} messages &middot; ${date}</div>
+        </div>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;opacity:.5"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="cl-msgs" hidden style="border-top:1px solid var(--glass-border);padding:.75rem 1rem;display:flex;flex-direction:column;gap:.5rem;">
+        ${msgs.map(m => `<div style="display:flex;gap:.5rem;align-items:flex-start;"><span style="font-size:.7rem;font-weight:700;color:${m.role==='user'?'var(--accent)':'var(--muted2)'};flex-shrink:0;padding-top:.1rem;">${m.role==='user'?'USER':'BOT '}</span><span style="font-size:.82rem;color:var(--text);line-height:1.5;">${m.content.replace(/</g,'&lt;')}</span></div>`).join('')}
+      </div>`;
+    list.appendChild(card);
+  });
+}
+document.getElementById('cl-page-filter').addEventListener('change', loadChatLogs);
+document.getElementById('cl-refresh').addEventListener('click', loadChatLogs);
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.sidebar-btn[data-section]').forEach(btn => {
+    if (btn.dataset.section === 'chatlogs') btn.addEventListener('click', loadChatLogs);
+  });
 });
 
 // ── SIDEBAR ──
@@ -1386,6 +1576,174 @@ function subscribeRealtime() {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'bbs_orders' }, () => loadBbsOrders())
     .subscribe((status, err) => console.log('[Realtime]', status, err || ''));
 }
+
+// ══════════════════════════════════════════
+// BLOG POSTS
+// ══════════════════════════════════════════
+let allBlogPosts = [];
+let blogFilter = '';
+
+async function loadBlogPosts() {
+  const list = document.getElementById('blog-list');
+  if (!list) return;
+  list.innerHTML = '<div style="color:var(--muted2);font-size:.85rem;padding:2rem 0;text-align:center;">Loading…</div>';
+  const { data, error } = await sb.from('blog_posts').select('*').order('created_at', { ascending: false });
+  if (error) {
+    list.innerHTML = '<div style="color:#ef4444;font-size:.85rem;padding:1rem;">Error: ' + esc(error.message) + '</div>';
+    return;
+  }
+  allBlogPosts = data || [];
+  renderBlogList();
+  // update badge with draft count
+  const draftCount = allBlogPosts.filter(p => !p.published).length;
+  const badge = document.getElementById('badge-blog');
+  if (badge) { badge.hidden = draftCount === 0; badge.textContent = draftCount; }
+}
+
+function renderBlogList() {
+  const list = document.getElementById('blog-list');
+  let posts = allBlogPosts;
+  if (blogFilter === 'true')  posts = posts.filter(p =>  p.published);
+  if (blogFilter === 'false') posts = posts.filter(p => !p.published);
+  if (!posts.length) {
+    list.innerHTML = '<div style="color:var(--muted2);font-size:.85rem;padding:2rem 0;text-align:center;">' + (blogFilter === 'false' ? 'No drafts.' : blogFilter === 'true' ? 'No published posts.' : 'No posts yet. Click <strong style="color:var(--text)">+ New Post</strong> to create your first one.') + '</div>';
+    return;
+  }
+  list.innerHTML = posts.map(p => {
+    const dateStr = new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const wordCount = (p.content || '').split(/\s+/).filter(Boolean).length;
+    const readMins = Math.max(1, Math.round(wordCount / 200));
+    return '<div class="blog-row" data-blog-id="' + p.id + '">' +
+      '<div class="blog-row-body">' +
+        '<div class="blog-row-title">' + esc(p.title || 'Untitled') + '</div>' +
+        '<div class="blog-row-meta">' +
+          '<span class="blog-pill ' + (p.published ? 'published' : 'draft') + '">' + (p.published ? 'Published' : 'Draft') + '</span>' +
+          (p.pinned ? '<span class="blog-pill pinned">📌 Pinned</span>' : '') +
+          (p.category ? '<span>' + esc(p.category) + '</span>' : '') +
+          '<span>' + dateStr + '</span>' +
+          '<span>' + readMins + ' min read</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="blog-row-actions">' +
+        '<button class="blog-action-btn blog-edit-btn" data-edit="' + p.id + '">Edit</button>' +
+        '<button class="blog-action-btn blog-delete-btn" data-del="' + p.id + '">Delete</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  list.querySelectorAll('[data-edit]').forEach(btn => {
+    btn.addEventListener('click', () => openBlogModal(+btn.dataset.edit));
+  });
+  list.querySelectorAll('[data-del]').forEach(btn => {
+    btn.addEventListener('click', () => deleteBlogPost(+btn.dataset.del));
+  });
+}
+
+function openBlogModal(id) {
+  const modal = document.getElementById('blog-modal');
+  const titleEl = document.getElementById('blog-modal-title');
+  const idEl = document.getElementById('blog-edit-id');
+  const titleInput = document.getElementById('blog-title');
+  const catInput = document.getElementById('blog-category');
+  const pubSelect = document.getElementById('blog-published');
+  const pinnedCheck = document.getElementById('blog-pinned');
+  const contentTA = document.getElementById('blog-content');
+
+  if (id) {
+    const p = allBlogPosts.find(x => x.id === id);
+    if (!p) return;
+    titleEl.textContent = 'Edit Post';
+    idEl.value = p.id;
+    titleInput.value = p.title || '';
+    catInput.value = p.category || '';
+    pubSelect.value = String(p.published);
+    pinnedCheck.checked = !!p.pinned;
+    contentTA.value = p.content || '';
+  } else {
+    titleEl.textContent = 'New Post';
+    idEl.value = '';
+    titleInput.value = '';
+    catInput.value = '';
+    pubSelect.value = 'false';
+    pinnedCheck.checked = false;
+    contentTA.value = '';
+  }
+  modal.hidden = false;
+  titleInput.focus();
+}
+
+function closeBlogModal() {
+  document.getElementById('blog-modal').hidden = true;
+}
+
+async function saveBlogPost() {
+  const saveBtn = document.getElementById('blog-save-btn');
+  const id = document.getElementById('blog-edit-id').value;
+  const title = document.getElementById('blog-title').value.trim();
+  if (!title) { alert('Title is required.'); return; }
+
+  const payload = {
+    title,
+    category: document.getElementById('blog-category').value.trim() || null,
+    published: document.getElementById('blog-published').value === 'true',
+    pinned: document.getElementById('blog-pinned').checked,
+    content: document.getElementById('blog-content').value.trim() || null,
+    updated_at: new Date().toISOString(),
+  };
+
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving…';
+
+  let error;
+  if (id) {
+    ({ error } = await sb.from('blog_posts').update(payload).eq('id', +id));
+  } else {
+    ({ error } = await sb.from('blog_posts').insert(payload));
+  }
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = 'Save Post';
+
+  if (error) { alert('Save failed: ' + error.message); return; }
+  closeBlogModal();
+  await loadBlogPosts();
+}
+
+async function deleteBlogPost(id) {
+  const p = allBlogPosts.find(x => x.id === id);
+  if (!confirm('Delete "' + (p?.title || 'this post') + '"? This cannot be undone.')) return;
+  const { error } = await sb.from('blog_posts').delete().eq('id', id);
+  if (error) { alert('Delete failed: ' + error.message); return; }
+  await loadBlogPosts();
+}
+
+// Blog section switch — load posts when navigating to it
+document.querySelectorAll('.sidebar-btn[data-section]').forEach(btn => {
+  if (btn.dataset.section === 'blog') {
+    btn.addEventListener('click', () => loadBlogPosts());
+  }
+});
+
+// Blog filter buttons
+document.querySelectorAll('.blog-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    blogFilter = btn.dataset.pub;
+    document.querySelectorAll('.blog-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.pub === blogFilter));
+    renderBlogList();
+  });
+});
+
+// Blog modal controls
+document.getElementById('blog-new-btn').addEventListener('click', () => openBlogModal(null));
+document.getElementById('blog-modal-close').addEventListener('click', closeBlogModal);
+document.getElementById('blog-cancel-btn').addEventListener('click', closeBlogModal);
+document.getElementById('blog-save-btn').addEventListener('click', saveBlogPost);
+document.getElementById('blog-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeBlogModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !document.getElementById('blog-modal').hidden) closeBlogModal();
+});
 </script>
 </body>
 </html>
