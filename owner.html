@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FL9SR49RMD"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FL9SR49RMD');
-  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zeropoint &middot; Owner</title>
@@ -706,19 +698,174 @@
       .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
       .admin-main { margin-left: 0; }
       .page-header { padding: 1rem 1.25rem; padding-top: 4rem; }
-      .page-content { padding: 1.5rem 1.25rem 3rem; }
+      .page-content { padding: 1.5rem 1rem 3rem; }
       .kpi-grid { grid-template-columns: 1fr 1fr; }
+      .posts-layout { flex-direction: column; }
+      .posts-list-panel { width: 100%; }
     }
     @media (max-width: 600px) {
       .org-row { grid-template-columns: 1fr; gap: 1rem; }
       .org-branch-line { display: none; }
       .org-sub-grid { grid-template-columns: 1fr; }
+      .order-card { padding: 1rem 1rem 1rem 1.25rem; }
+      .order-top { flex-direction: column; gap: 0.5rem; }
+      .order-meta { margin-top: 0; }
+      .order-actions { flex-direction: column; }
+      .action-btn { width: 100%; text-align: center; padding: 0.6rem 1rem; font-size: 0.78rem; }
+      .page-header-title { font-size: 1.3rem; }
+      .filter-bar { flex-wrap: wrap; gap: 0.4rem; }
+      .kpi-tray { flex-wrap: wrap; }
     }
     @media (max-width: 480px) {
       .kpi-grid { grid-template-columns: 1fr; }
+      .posts-editor-top { padding: 0.75rem; }
     }
 
     canvas { border-radius: 8px; }
+
+    /* ── POSTS SECTION ── */
+    .posts-layout { display: flex; gap: 1.25rem; align-items: flex-start; min-height: 600px; }
+    .posts-list-panel {
+      width: 260px; flex-shrink: 0;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .posts-list-header {
+      padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.07);
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted2);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .posts-new-btn {
+      background: var(--accent); border: none; color: #fff;
+      border-radius: 6px; padding: 0.28rem 0.65rem; font-size: 0.68rem; font-weight: 700;
+      transition: opacity 0.15s;
+    }
+    .posts-new-btn:hover { opacity: 0.85; }
+    .posts-list-inner { display: flex; flex-direction: column; }
+    .posts-list-item {
+      display: flex; flex-direction: column; gap: 0.2rem;
+      padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer; transition: background 0.1s;
+    }
+    .posts-list-item:last-child { border-bottom: none; }
+    .posts-list-item:hover { background: rgba(255,255,255,0.04); }
+    .posts-list-item.active { background: rgba(232,56,122,0.08); border-left: 2px solid var(--accent); padding-left: calc(1rem - 2px); }
+    .posts-list-title { font-size: 0.82rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .posts-list-meta { display: flex; align-items: center; gap: 0.5rem; font-size: 0.65rem; color: var(--muted); }
+    .posts-list-status {
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      padding: 0.1rem 0.4rem; border-radius: 4px;
+    }
+    .posts-list-status.published { background: rgba(34,197,94,0.1); color: var(--green); }
+    .posts-list-status.draft { background: rgba(255,255,255,0.06); color: var(--muted2); }
+    .posts-list-empty { padding: 2rem 1rem; text-align: center; font-size: 0.8rem; color: var(--muted); }
+
+    .posts-editor-panel {
+      flex: 1; min-width: 0;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .posts-editor-top {
+      padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; flex-direction: column; gap: 0.65rem;
+    }
+    .posts-editor-input {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text);
+      border-radius: var(--radius-sm); padding: 0.55rem 0.85rem; font-size: 0.92rem; font-weight: 600;
+      outline: none; width: 100%; font-family: inherit; transition: border-color 0.2s;
+    }
+    .posts-editor-input:focus { border-color: var(--accent); }
+    .posts-editor-input::placeholder { color: var(--muted); font-weight: 400; }
+    .posts-editor-row { display: flex; align-items: center; gap: 0.65rem; }
+    .posts-editor-input-sm {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text);
+      border-radius: var(--radius-sm); padding: 0.4rem 0.75rem; font-size: 0.82rem;
+      outline: none; font-family: inherit; transition: border-color 0.2s; flex: 1;
+    }
+    .posts-editor-input-sm:focus { border-color: var(--accent); }
+    .posts-editor-input-sm::placeholder { color: var(--muted); }
+    .posts-pin-toggle { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--muted2); white-space: nowrap; cursor: pointer; }
+    .posts-pin-toggle input { accent-color: var(--accent); }
+
+    .posts-toolbar {
+      display: flex; align-items: center; gap: 0.25rem; flex-wrap: wrap;
+      padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.02);
+    }
+    .toolbar-btn {
+      background: none; border: 1px solid rgba(255,255,255,0.1); color: var(--muted2);
+      border-radius: 5px; padding: 0.22rem 0.55rem; font-size: 0.72rem; font-weight: 700;
+      transition: color 0.15s, background 0.15s, border-color 0.15s; font-family: 'Courier New', monospace;
+    }
+    .toolbar-btn:hover { color: var(--text); background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.2); }
+    .toolbar-sep { width: 1px; height: 16px; background: rgba(255,255,255,0.1); margin: 0 0.15rem; flex-shrink: 0; }
+
+    .posts-write-tabs { display: flex; gap: 0; }
+    .write-tab-btn {
+      background: none; border: none; border-bottom: 2px solid transparent;
+      color: var(--muted); font-size: 0.78rem; font-weight: 600;
+      padding: 0.55rem 1rem; transition: color 0.15s, border-color 0.15s;
+    }
+    .write-tab-btn.active { color: var(--text); border-bottom-color: var(--accent); }
+    .write-tab-btn:hover:not(.active) { color: var(--muted2); }
+
+    #post-content-area {
+      width: 100%; min-height: 320px; resize: vertical;
+      background: transparent; border: none; color: var(--text);
+      font-size: 0.88rem; line-height: 1.7; padding: 1rem 1.25rem;
+      outline: none; font-family: ui-monospace, 'SF Mono', monospace;
+    }
+    .post-preview-pane {
+      padding: 1rem 1.25rem; min-height: 320px;
+      font-size: 0.9rem; line-height: 1.75; color: var(--muted2);
+    }
+    .post-preview-pane h2 { font-size: 1.05rem; font-weight: 700; color: var(--text); margin: 1.2rem 0 0.4rem; }
+    .post-preview-pane h3 { font-size: 0.95rem; font-weight: 700; color: var(--text); margin: 1rem 0 0.3rem; }
+    .post-preview-pane p { margin-bottom: 0.85rem; }
+    .post-preview-pane strong { color: var(--text); font-weight: 700; }
+    .post-preview-pane em { font-style: italic; }
+    .post-preview-pane a { color: var(--accent2); }
+    .post-preview-pane hr { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0; }
+    .post-preview-pane ul { padding-left: 1.3rem; margin-bottom: 0.85rem; }
+    .post-preview-pane li { margin-bottom: 0.2rem; }
+    .post-preview-pane blockquote { border-left: 3px solid rgba(232,56,122,0.3); padding-left: 0.9rem; margin: 0.85rem 0; font-style: italic; }
+    .post-preview-pane code { background: rgba(255,255,255,0.07); border-radius: 4px; padding: 0.1rem 0.3rem; font-size: 0.83em; font-family: ui-monospace, monospace; }
+
+    .posts-editor-footer {
+      padding: 0.75rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+      background: rgba(255,255,255,0.02); flex-wrap: wrap;
+    }
+    .posts-action-btn {
+      border: none; border-radius: 8px; padding: 0.5rem 1.1rem; font-size: 0.78rem; font-weight: 700;
+      transition: opacity 0.15s; font-family: inherit;
+    }
+    .posts-action-btn:hover { opacity: 0.82; }
+    .posts-action-btn.primary { background: var(--accent); color: #fff; }
+    .posts-action-btn.secondary { background: rgba(255,255,255,0.08); color: var(--text); }
+    .posts-action-btn.danger { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+    .posts-action-btn.unpublish { background: rgba(245,158,11,0.1); color: var(--yellow); border: 1px solid rgba(245,158,11,0.2); }
+    .posts-placeholder-panel {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: 0.85rem; text-align: center;
+      background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1);
+      border-radius: var(--radius); min-height: 300px;
+    }
+    .posts-toast {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999;
+      background: rgba(20,20,35,0.95); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px; padding: 0.75rem 1.1rem; font-size: 0.82rem; font-weight: 600;
+      color: var(--text); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      transform: translateY(8px); opacity: 0; transition: all 0.2s;
+      pointer-events: none;
+    }
+    .posts-toast.show { transform: translateY(0); opacity: 1; }
+    .posts-toast.success { border-color: rgba(34,197,94,0.3); color: var(--green); }
+    .posts-toast.error { border-color: rgba(239,68,68,0.3); color: var(--red); }
+    @media (max-width: 700px) {
+      .posts-layout { flex-direction: column; }
+      .posts-list-panel { width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -819,6 +966,19 @@
             <path d="M1.5 13c0-2.76 2.69-5 6-5s6 2.24 6 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
           </svg>
           Team
+        </button>
+        <button class="sidebar-btn" data-section="posts">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <rect x="2" y="1.5" width="11" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M4.5 5h6M4.5 7.5h6M4.5 10h3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          Posts
+        </button>
+        <button class="sidebar-btn" data-section="chatlogs">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M1.5 2.5A1 1 0 012.5 1.5h10a1 1 0 011 1v8a1 1 0 01-1 1H5l-3.5 3V2.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+          </svg>
+          Chat Logs
         </button>
       </nav>
       <div class="sidebar-footer">
@@ -1226,9 +1386,116 @@
         </div>
       </section>
 
+      <!-- ══ POSTS ══ -->
+      <section id="section-posts" class="admin-section">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Posts</div>
+            <div class="page-sub">Write and publish updates to the public site</div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="posts-layout">
+
+            <!-- List panel -->
+            <div class="posts-list-panel">
+              <div class="posts-list-header">
+                All Posts
+                <button class="posts-new-btn" id="posts-new-btn">+ New</button>
+              </div>
+              <div class="posts-list-inner" id="posts-list-inner">
+                <div class="posts-list-empty">Loading…</div>
+              </div>
+            </div>
+
+            <!-- Editor panel -->
+            <div class="posts-editor-panel" id="posts-editor-panel" hidden>
+              <div class="posts-editor-top">
+                <input class="posts-editor-input" type="text" id="post-title-input" placeholder="Post title…" autocomplete="off">
+                <div class="posts-editor-row">
+                  <input class="posts-editor-input-sm" type="text" id="post-category-input" placeholder="Category (e.g. ARK, Hytale, General)">
+                  <label class="posts-pin-toggle"><input type="checkbox" id="post-pinned-input"> 📌 Pin</label>
+                </div>
+              </div>
+
+              <!-- Toolbar + write/preview tabs -->
+              <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.07);">
+                <div class="posts-toolbar" id="posts-toolbar">
+                  <button class="toolbar-btn" data-fmt="bold"><b>B</b></button>
+                  <button class="toolbar-btn" data-fmt="italic"><i>I</i></button>
+                  <div class="toolbar-sep"></div>
+                  <button class="toolbar-btn" data-fmt="h2">H2</button>
+                  <button class="toolbar-btn" data-fmt="h3">H3</button>
+                  <div class="toolbar-sep"></div>
+                  <button class="toolbar-btn" data-fmt="list">List</button>
+                  <button class="toolbar-btn" data-fmt="quote">Quote</button>
+                  <button class="toolbar-btn" data-fmt="hr">HR</button>
+                  <div class="toolbar-sep"></div>
+                  <button class="toolbar-btn" data-fmt="link">Link</button>
+                </div>
+                <div class="posts-write-tabs" style="padding-right:0.75rem;">
+                  <button class="write-tab-btn active" id="tab-write">Write</button>
+                  <button class="write-tab-btn" id="tab-preview">Preview</button>
+                </div>
+              </div>
+
+              <textarea id="post-content-area" placeholder="Write your update here… (Markdown supported)"></textarea>
+              <div id="post-preview-pane" class="post-preview-pane" hidden></div>
+
+              <div class="posts-editor-footer">
+                <div style="display:flex;gap:0.5rem;">
+                  <button class="posts-action-btn danger" id="post-delete-btn" hidden>Delete</button>
+                  <button class="posts-action-btn unpublish" id="post-unpublish-btn" hidden>Unpublish</button>
+                </div>
+                <div style="display:flex;gap:0.5rem;">
+                  <button class="posts-action-btn secondary" id="post-draft-btn">Save Draft</button>
+                  <button class="posts-action-btn primary" id="post-publish-btn">Publish</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Placeholder when nothing selected -->
+            <div class="posts-placeholder-panel" id="posts-placeholder">
+              <div>
+                <div style="font-size:1.5rem;margin-bottom:0.5rem;">📝</div>
+                Select a post or create a new one
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAT LOGS -->
+      <section id="section-chatlogs" class="admin-section">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Chat Logs</div>
+            <div class="page-sub">ZeroBot conversations from visitors</div>
+          </div>
+          <span class="live-pill"><span class="live-dot"></span>Live</span>
+        </div>
+        <div class="page-content">
+          <div id="cl-filter-bar" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+            <select id="cl-page-filter" style="background:var(--glass);border:1px solid var(--glass-border);color:var(--text);border-radius:8px;padding:.4rem .75rem;font-size:.82rem;font-family:inherit;cursor:pointer;">
+              <option value="">All pages</option>
+              <option value="Home">Home</option>
+              <option value="ARK Donations">ARK Donations</option>
+              <option value="Admin Shop">Admin Shop</option>
+              <option value="Hytale Packages">Hytale Packages</option>
+            </select>
+            <button id="cl-refresh" style="background:var(--glass);border:1px solid var(--glass-border);color:var(--text);border-radius:8px;padding:.4rem .85rem;font-size:.82rem;font-family:inherit;cursor:pointer;">↻ Refresh</button>
+          </div>
+          <div id="cl-list" style="display:flex;flex-direction:column;gap:.6rem;"></div>
+        </div>
+      </section>
+
     </main>
   </div>
 </div>
+
+<!-- Posts toast -->
+<div class="posts-toast" id="posts-toast"></div>
 
 <script>
 const SUPABASE_URL  = 'https://cairclbnutqouejtlhks.supabase.co';
@@ -1337,6 +1604,53 @@ document.getElementById('forgot-submit-btn').addEventListener('click', async () 
   }
   msg.hidden = false;
   btn.disabled = false;
+});
+
+// ── CHAT LOGS ──
+async function loadChatLogs() {
+  const list = document.getElementById('cl-list');
+  const pageFilter = document.getElementById('cl-page-filter').value;
+  list.innerHTML = '<div class="loading-state"><div class="spinner"></div> Loading…</div>';
+  let query = sb.from('chat_logs').select('*').order('created_at', { ascending: false }).limit(200);
+  if (pageFilter) query = query.eq('page', pageFilter);
+  const { data, error } = await query;
+  if (error || !data) { list.innerHTML = '<div style="color:var(--red);padding:1rem;">Error loading logs.</div>'; return; }
+  if (!data.length) { list.innerHTML = '<div style="color:var(--muted2);padding:1rem;font-size:.85rem;">No chat logs yet.</div>'; return; }
+  const sessions = {};
+  data.forEach(row => {
+    if (!sessions[row.session_id]) sessions[row.session_id] = { page: row.page, msgs: [], latest: row.created_at };
+    sessions[row.session_id].msgs.push(row);
+    if (row.created_at > sessions[row.session_id].latest) sessions[row.session_id].latest = row.created_at;
+  });
+  const sorted = Object.entries(sessions).sort((a,b) => b[1].latest.localeCompare(a[1].latest));
+  list.innerHTML = '';
+  sorted.forEach(([sid, sess]) => {
+    const msgs = [...sess.msgs].sort((a,b) => a.created_at.localeCompare(b.created_at));
+    const firstUser = msgs.find(m => m.role === 'user');
+    const preview = firstUser ? firstUser.content.slice(0,60) + (firstUser.content.length>60?'…':'') : '(no messages)';
+    const date = new Date(sess.latest).toLocaleString();
+    const card = document.createElement('div');
+    card.style.cssText = 'background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-sm);overflow:hidden;';
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;cursor:pointer;gap:.75rem;" onclick="this.parentElement.querySelector('.cl-msgs').toggleAttribute('hidden')">
+        <div style="min-width:0;">
+          <div style="font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${preview}</div>
+          <div style="font-size:.72rem;color:var(--muted2);">${sess.page || 'Unknown page'} &middot; ${msgs.length} messages &middot; ${date}</div>
+        </div>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="flex-shrink:0;opacity:.5"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="cl-msgs" hidden style="border-top:1px solid var(--glass-border);padding:.75rem 1rem;display:flex;flex-direction:column;gap:.5rem;">
+        ${msgs.map(m => `<div style="display:flex;gap:.5rem;align-items:flex-start;"><span style="font-size:.7rem;font-weight:700;color:${m.role==='user'?'var(--accent)':'var(--muted2)'};flex-shrink:0;padding-top:.1rem;">${m.role==='user'?'USER':'BOT '}</span><span style="font-size:.82rem;color:var(--text);line-height:1.5;">${m.content.replace(/</g,'&lt;')}</span></div>`).join('')}
+      </div>`;
+    list.appendChild(card);
+  });
+}
+document.getElementById('cl-page-filter').addEventListener('change', loadChatLogs);
+document.getElementById('cl-refresh').addEventListener('click', loadChatLogs);
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.sidebar-btn[data-section]').forEach(btn => {
+    if (btn.dataset.section === 'chatlogs') btn.addEventListener('click', loadChatLogs);
+  });
 });
 
 // ── SIDEBAR ──
@@ -1660,7 +1974,7 @@ function fmt$(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigit
 // ── LIVE PLAYERS ──
 const ARK_SERVERS = [
   '217.114.193.20:10005',
-  '31.214.234.17:10047',
+  '31.214.234.55:10083',
   '217.114.193.39:10038',
 ];
 async function fetchLivePlayers() {
@@ -2199,6 +2513,219 @@ document.querySelectorAll('.chart-toggle-btn').forEach(btn => {
     document.querySelectorAll('.chart-toggle-btn').forEach(b => b.classList.toggle('active', b === btn));
     renderRevenueChart();
   });
+});
+
+// ── POSTS EDITOR ──
+let _posts = [];
+let _editingId = null; // null = new post
+
+function showPostsToast(msg, type = 'success') {
+  const t = document.getElementById('posts-toast');
+  t.textContent = msg;
+  t.className = 'posts-toast show ' + type;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.className = 'posts-toast'; }, 3000);
+}
+
+async function loadPosts() {
+  const { data } = await sb.from('blog_posts').select('*').order('created_at', { ascending: false });
+  _posts = data || [];
+  renderPostsList();
+}
+
+function renderPostsList() {
+  const inner = document.getElementById('posts-list-inner');
+  if (!_posts.length) {
+    inner.innerHTML = '<div class="posts-list-empty">No posts yet</div>';
+    return;
+  }
+  inner.innerHTML = _posts.map(p =>
+    '<div class="posts-list-item' + (_editingId === p.id ? ' active' : '') + '" data-post-id="' + p.id + '">' +
+      '<div class="posts-list-title">' + esc(p.title || 'Untitled') + '</div>' +
+      '<div class="posts-list-meta">' +
+        '<span class="posts-list-status ' + (p.published ? 'published' : 'draft') + '">' + (p.published ? 'Published' : 'Draft') + '</span>' +
+        (p.category ? '<span>' + esc(p.category) + '</span>' : '') +
+      '</div>' +
+    '</div>'
+  ).join('');
+  inner.querySelectorAll('.posts-list-item').forEach(el => {
+    el.addEventListener('click', () => openPost(parseInt(el.dataset.postId)));
+  });
+}
+
+function openPost(id) {
+  const p = _posts.find(x => x.id === id);
+  if (!p) return;
+  _editingId = id;
+  document.getElementById('post-title-input').value = p.title || '';
+  document.getElementById('post-category-input').value = p.category || '';
+  document.getElementById('post-pinned-input').checked = !!p.pinned;
+  document.getElementById('post-content-area').value = p.content || '';
+  document.getElementById('post-delete-btn').hidden = false;
+  document.getElementById('post-unpublish-btn').hidden = !p.published;
+  document.getElementById('post-publish-btn').textContent = p.published ? 'Save' : 'Publish';
+  showEditor();
+  renderPostsList();
+  setWriteTab(true);
+}
+
+function openNewPost() {
+  _editingId = null;
+  document.getElementById('post-title-input').value = '';
+  document.getElementById('post-category-input').value = '';
+  document.getElementById('post-pinned-input').checked = false;
+  document.getElementById('post-content-area').value = '';
+  document.getElementById('post-delete-btn').hidden = true;
+  document.getElementById('post-unpublish-btn').hidden = true;
+  document.getElementById('post-publish-btn').textContent = 'Publish';
+  showEditor();
+  renderPostsList();
+  setWriteTab(true);
+  document.getElementById('post-title-input').focus();
+}
+
+function showEditor() {
+  document.getElementById('posts-editor-panel').hidden = false;
+  document.getElementById('posts-placeholder').hidden = true;
+}
+
+function setWriteTab(write) {
+  document.getElementById('tab-write').classList.toggle('active', write);
+  document.getElementById('tab-preview').classList.toggle('active', !write);
+  document.getElementById('post-content-area').hidden = !write;
+  document.getElementById('post-preview-pane').hidden = write;
+  if (!write) {
+    document.getElementById('post-preview-pane').innerHTML = renderMdAdmin(document.getElementById('post-content-area').value);
+  }
+}
+
+function renderMdAdmin(raw) {
+  if (!raw) return '<p style="color:var(--muted);font-size:0.85rem;">Nothing to preview yet.</p>';
+  let t = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t = t.replace(/^---$/gm,'<hr>');
+  t = t.replace(/^#### (.+)$/gm,'<h4>$1</h4>');
+  t = t.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+  t = t.replace(/^## (.+)$/gm,'<h2>$1</h2>');
+  t = t.replace(/^# (.+)$/gm,'<h2>$1</h2>');
+  t = t.replace(/^&gt; (.+)$/gm,'<blockquote>$1</blockquote>');
+  t = t.replace(/^- (.+)$/gm,'<li>$1</li>');
+  t = t.replace(/(<li>.*<\/li>\n?)+/g, s => '<ul>' + s + '</ul>');
+  t = t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  t = t.replace(/\*(.+?)\*/g,'<em>$1</em>');
+  t = t.replace(/`(.+?)`/g,'<code>$1</code>');
+  t = t.replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  const lines = t.split('\n'); const out = []; let buf = [];
+  for (const line of lines) {
+    if (/^<(h[234]|hr|ul|blockquote)/.test(line) || line === '') {
+      if (buf.length) { out.push('<p>' + buf.join('<br>') + '</p>'); buf = []; }
+      if (line) out.push(line);
+    } else buf.push(line);
+  }
+  if (buf.length) out.push('<p>' + buf.join('<br>') + '</p>');
+  return out.join('\n');
+}
+
+async function savePost(published) {
+  const title   = document.getElementById('post-title-input').value.trim();
+  const content = document.getElementById('post-content-area').value;
+  const category = document.getElementById('post-category-input').value.trim() || null;
+  const pinned  = document.getElementById('post-pinned-input').checked;
+  if (!title) { showPostsToast('Title is required', 'error'); return; }
+
+  const payload = { title, content, category, pinned, published };
+
+  let error;
+  if (_editingId) {
+    ({ error } = await sb.from('blog_posts').update(payload).eq('id', _editingId));
+  } else {
+    const res = await sb.from('blog_posts').insert(payload).select().single();
+    error = res.error;
+    if (!error && res.data) { _editingId = res.data.id; }
+  }
+
+  if (error) { showPostsToast('Error: ' + error.message, 'error'); return; }
+  showPostsToast(published ? 'Published!' : 'Saved as draft');
+  await loadPosts();
+  document.getElementById('post-delete-btn').hidden = false;
+  document.getElementById('post-unpublish-btn').hidden = !published;
+  document.getElementById('post-publish-btn').textContent = published ? 'Save' : 'Publish';
+  renderPostsList();
+}
+
+async function unpublishPost() {
+  if (!_editingId) return;
+  const { error } = await sb.from('blog_posts').update({ published: false }).eq('id', _editingId);
+  if (error) { showPostsToast('Error: ' + error.message, 'error'); return; }
+  showPostsToast('Unpublished');
+  await loadPosts();
+  document.getElementById('post-unpublish-btn').hidden = true;
+  document.getElementById('post-publish-btn').textContent = 'Publish';
+  renderPostsList();
+}
+
+async function deletePost() {
+  if (!_editingId) return;
+  if (!confirm('Delete this post? This cannot be undone.')) return;
+  const { error } = await sb.from('blog_posts').delete().eq('id', _editingId);
+  if (error) { showPostsToast('Error: ' + error.message, 'error'); return; }
+  showPostsToast('Post deleted');
+  _editingId = null;
+  await loadPosts();
+  document.getElementById('posts-editor-panel').hidden = true;
+  document.getElementById('posts-placeholder').hidden = false;
+}
+
+// Toolbar insert
+function insertFormat(fmt) {
+  const ta = document.getElementById('post-content-area');
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const sel = ta.value.slice(start, end);
+  let insert = '';
+  if (fmt === 'bold')  insert = '**' + (sel || 'bold text') + '**';
+  else if (fmt === 'italic') insert = '*' + (sel || 'italic text') + '*';
+  else if (fmt === 'h2')   insert = '\n## ' + (sel || 'Heading');
+  else if (fmt === 'h3')   insert = '\n### ' + (sel || 'Subheading');
+  else if (fmt === 'list') insert = '\n- ' + (sel || 'List item');
+  else if (fmt === 'quote') insert = '\n> ' + (sel || 'Quote');
+  else if (fmt === 'hr')   insert = '\n---\n';
+  else if (fmt === 'link') {
+    const url = prompt('URL:', 'https://');
+    if (!url) return;
+    insert = '[' + (sel || 'link text') + '](' + url + ')';
+  }
+  ta.focus();
+  ta.setRangeText(insert, start, end, 'end');
+}
+
+// Wire up events once authenticated (section-posts is hidden until then)
+document.getElementById('posts-new-btn').addEventListener('click', openNewPost);
+document.getElementById('tab-write').addEventListener('click', () => setWriteTab(true));
+document.getElementById('tab-preview').addEventListener('click', () => setWriteTab(false));
+document.getElementById('post-draft-btn').addEventListener('click', () => savePost(false));
+document.getElementById('post-publish-btn').addEventListener('click', () => {
+  const p = _editingId ? _posts.find(x => x.id === _editingId) : null;
+  savePost(p && p.published ? true : true); // always publish on this button
+});
+document.getElementById('post-unpublish-btn').addEventListener('click', unpublishPost);
+document.getElementById('post-delete-btn').addEventListener('click', deletePost);
+document.querySelectorAll('.toolbar-btn[data-fmt]').forEach(btn => {
+  btn.addEventListener('click', () => insertFormat(btn.dataset.fmt));
+});
+
+// Load posts when that section is first activated
+const _postsOrigSwitch = switchSection;
+const _postsLoaded = { done: false };
+const _origSwitchSection = switchSection;
+window.switchSection = function(name) {
+  _origSwitchSection(name);
+  if (name === 'posts' && !_postsLoaded.done) {
+    _postsLoaded.done = true;
+    loadPosts();
+  }
+};
+// Rebind sidebar buttons to use overridden switchSection
+document.querySelectorAll('.sidebar-btn[data-section]').forEach(btn => {
+  btn.onclick = () => { window.switchSection(btn.dataset.section); closeSidebar(); };
 });
 </script>
 </body>
