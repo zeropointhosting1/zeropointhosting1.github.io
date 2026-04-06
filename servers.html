@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FL9SR49RMD"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FL9SR49RMD');
-  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zeropoint | Servers</title>
+  <title>ARK Survival Evolved Xbox Servers — Free PvE | Zeropoint Gaming</title>
+  <meta name="description" content="Join Zeropoint's free ARK Survival Evolved Xbox PvE servers. Maps include The Island, Ragnarok, and Fjordur. Active admin team, no wipes, custom dino events." />
+  <meta name="keywords" content="ARK Survival Evolved Xbox server, ARK Xbox server IP, free ARK server Xbox, ARK PvE Xbox, ARK Ragnarok server Xbox, ARK Fjordur server, ARK Genesis 2 server, ARK The Island Xbox" />
+  <meta name="author" content="Zeropoint Gaming" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ARK Xbox PvE Servers — Zeropoint Gaming" />
+  <meta property="og:description" content="Free ARK Survival Evolved Xbox PvE servers. Island, Ragnarok, and Fjordur maps. Active admin team, no wipes, custom events." />
+  <meta property="og:url" content="https://zeropointhosting1.github.io/servers.html" />
+  <meta property="og:image" content="https://zeropointhosting1.github.io/zeropoint1.png" />
+  <meta property="og:site_name" content="Zeropoint Gaming" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ARK Xbox PvE Servers — Zeropoint Gaming" />
+  <meta name="twitter:description" content="Free ARK Survival Evolved Xbox PvE servers — Island, Ragnarok, Fjordur. No wipes, active admins." />
+  <meta name="twitter:image" content="https://zeropointhosting1.github.io/zeropoint1.png" />
+  <link rel="canonical" href="https://zeropointhosting1.github.io/servers.html" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
-      --border: #22222e; --accent: #ff4d94;
+      --border: #22222e; --accent: #5865f2;
       --text: #e8e8f0; --muted: #7a7a90; --radius: 10px;
     }
     html { scroll-behavior: smooth; }
@@ -43,7 +49,7 @@
       transition: opacity 0.2s;
     }
     .nav-logo:hover { opacity: 0.8; }
-    .nav-logo span { color: #ff4d94; }
+    .nav-logo span { color: #5865f2; }
     nav > ul {
       display: flex; align-items: center; gap: 0.2rem; list-style: none;
       flex: 1; justify-content: center;
@@ -134,7 +140,7 @@
       transition: background 0.1s, color 0.1s;
     }
     .nav-dd-menu li a:hover { background: rgba(255,255,255,0.07); color: #fff; }
-    .nav-dd-menu li a.active { color: #ff4d94; }
+    .nav-dd-menu li a.active { color: #5865f2; }
     @media (max-width: 680px) {
       .nav-dd { width: 100%; }
       .nav-dd-btn { font-size: 0.95rem; padding: 0.6rem 0.85rem; width: 100%; justify-content: space-between; color: rgba(255,255,255,0.65); }
@@ -157,7 +163,7 @@
     .page-header::before {
       content: '';
       position: absolute; inset: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(255,77,148,0.05) 0%, transparent 70%);
+      background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(88,101,242,0.05) 0%, transparent 70%);
       pointer-events: none;
     }
     .page-eyebrow { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; opacity: 0.85; }
@@ -207,6 +213,19 @@
     .server-game { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
     .server-name { font-size: 1.05rem; font-weight: 700; }
     .server-meta { font-size: 0.82rem; color: var(--muted); }
+    .ip-pills { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.25rem; }
+    .ip-pill {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.25rem 0.65rem; border-radius: 99px;
+      background: rgba(88,101,242,0.08); border: 1px solid rgba(88,101,242,0.2);
+      font-size: 0.75rem; font-weight: 700; color: var(--accent);
+      font-family: ui-monospace, monospace; letter-spacing: 0.02em;
+      cursor: pointer; transition: background 0.15s, border-color 0.15s;
+      width: fit-content; user-select: none;
+    }
+    .ip-pill:hover { background: rgba(88,101,242,0.16); border-color: rgba(88,101,242,0.4); }
+    .ip-pill-label { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: inherit; }
+    .ip-pill svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.8; flex-shrink: 0; opacity: 0.7; }
 
     .server-right { display: flex; align-items: center; gap: 0.65rem; flex-shrink: 0; }
     .status-dot {
@@ -313,28 +332,40 @@
     <a class="nav-logo" href="index.html">Zero<span>point</span></a>
     <ul>
       <li><a href="index.html">Home</a></li>
+      <li><a href="servers.html">Servers</a></li>
       <li class="nav-dd">
         <button class="nav-dd-btn">
           ARK
           <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <ul class="nav-dd-menu">
-          <li><a href="servers.html" class="active">Servers</a></li>
           <li><a href="ark.html">Donations</a></li>
           <li><a href="bbs.html">Admin Shop</a></li>
+          <li><a href="arkrules.html">Rules</a></li>
         </ul>
       </li>
       <li class="nav-dd">
         <button class="nav-dd-btn">
           Hytale
-          <span class="nav-soon">Soon</span>
+          
           <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <ul class="nav-dd-menu">
           <li><a href="hytalepackages.html">Packages</a></li>
         </ul>
       </li>
+      <li class="nav-dd">
+        <button class="nav-dd-btn">
+          Minecraft
+          <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-dd-menu">
+          <li><a href="minecraft.html">Ranks</a></li>
+          <li><a href="minecraft-keys.html">Crate Keys</a></li>
+        </ul>
+      </li>
       <li><a href="aboutus.html">About</a></li>
+      <li><a href="blog.html">Updates</a></li>
     </ul>
     <a class="nav-cta" href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener">
       <svg viewBox="0 0 127.14 96.36" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
@@ -357,21 +388,7 @@
 
     <div class="total-stat">
       <span class="total-stat-dot"></span>
-      <span><strong id="total-cur">—</strong> players online across 4 servers</span>
-    </div>
-
-    <div class="server-card">
-      <div class="server-left">
-        <span class="server-game">ARK: Survival Evolved</span>
-        <span class="server-name">Gen 2 (PvE)</span>
-        <span class="server-meta">Miami &middot; Xbox</span>
-      </div>
-      <div class="server-right">
-        <span class="status-dot"></span>
-        <span class="ping-value dynamic-ping" data-min="18" data-max="25">22 ms</span>
-        <span class="pc-sep">·</span>
-        <span class="player-count" id="pc-crystal">— online</span>
-      </div>
+      <span><strong id="total-cur">—</strong> players online across 3 servers</span>
     </div>
 
     <div class="server-card">
@@ -402,32 +419,49 @@
       </div>
     </div>
 
+    <p class="arkbuddy-credit">Live stats powered by <a href="https://arkbuddy.app" target="_blank" rel="noopener">ArkBuddy</a></p>
+
+    <div class="list-divider"><span>Minecraft</span></div>
+
     <div class="server-card">
       <div class="server-left">
-        <span class="server-game">ARK: Survival Ascended</span>
-        <span class="server-name">PvE · 50x · Modded</span>
-        <span class="server-meta">New York &middot; Xbox</span>
+        <span class="server-game" style="color:#4ade80;">Minecraft: Java &amp; Bedrock</span>
+        <span class="server-name">Survival SMP</span>
+        <div class="ip-pills">
+          <span class="ip-pill" onclick="copyIP(this,'mc.zeropointhosting.com:25462')">
+            <span class="ip-pill-label">Java</span>
+            mc.zeropointhosting.com:25462
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </span>
+          <span class="ip-pill" onclick="copyIP(this,'mc.zeropointhosting.com:25950')">
+            <span class="ip-pill-label">Bedrock</span>
+            mc.zeropointhosting.com:25950
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </span>
+        </div>
       </div>
       <div class="server-right">
-        <span class="status-dot"></span>
-        <span class="ping-value dynamic-ping" data-min="10" data-max="18">14 ms</span>
-        <span class="pc-sep">·</span>
-        <span class="player-count" id="pc-asa">— online</span>
+        <span class="status-dot" id="mc-dot"></span>
+        <span class="player-count" id="pc-mc">— online</span>
       </div>
     </div>
 
-    <p class="arkbuddy-credit">Live stats powered by <a href="https://arkbuddy.app" target="_blank" rel="noopener">ArkBuddy</a></p>
+    <div class="list-divider"><span>Hytale</span></div>
 
-    <div class="list-divider"><span>Coming Soon</span></div>
-
-    <div class="server-card-soon">
+    <div class="server-card">
       <div class="server-left">
-        <span class="server-game-soon">Hytale</span>
+        <span class="server-game" style="color:#a78bfa;">Hytale</span>
         <span class="server-name">Faction Server</span>
-        <span class="server-meta">Location TBD &middot; PC</span>
+        <div class="ip-pills">
+          <span class="ip-pill" style="color:#a78bfa;background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.2);" onmouseenter="this.style.background='rgba(167,139,250,0.16)'" onmouseleave="this.style.background='rgba(167,139,250,0.08)'" onclick="copyIP(this,'play.zeropointhosting.com:25718')">
+            play.zeropointhosting.com:25718
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </span>
+        </div>
       </div>
       <div class="server-right">
-        <span class="badge-soon">Coming Soon</span>
+        <span class="status-dot" id="hytale-dot"></span>
+        <span class="player-count" id="pc-hytale">— online</span>
       </div>
     </div>
 
@@ -460,9 +494,8 @@
   <script>
   const SERVERS = [
     { id: 'crystal',  ip: '217.114.193.33:10062',  platform: 'Xbox' },
-    { id: 'fjordur',  ip: '31.214.234.17:10047',   platform: 'Xbox' },
+    { id: 'fjordur',  ip: '31.214.234.55:10083',   platform: 'Xbox' },
     { id: 'ragnarok', ip: '217.114.193.39:10038',  platform: 'Xbox' },
-    { id: 'asa',      ip: '85.190.136.159:5690',   platform: 'ASA'  },
   ];
 
   async function fetchPlayers(ip, platform) {
@@ -503,6 +536,56 @@
 
   refreshCounts();
   setInterval(refreshCounts, 60000);
+
+  // ── MINECRAFT STATUS (mcsrvstat.us) ──
+  async function refreshMC() {
+    const el = document.getElementById('pc-mc');
+    const dot = document.getElementById('mc-dot');
+    try {
+      const res = await fetch('https://api.mcsrvstat.us/3/mc.zeropointhosting.com:25462');
+      if (!res.ok) throw new Error();
+      const d = await res.json();
+      if (d.online) {
+        const now = d.players?.online ?? 0, max = d.players?.max ?? '?';
+        el.textContent = now + ' / ' + max + ' online';
+        el.className = 'player-count pc-live';
+        if (dot) { dot.style.background = '#4ade80'; dot.style.boxShadow = '0 0 6px rgba(74,222,128,0.6)'; }
+      } else {
+        el.textContent = 'offline';
+        el.className = 'player-count pc-offline';
+        if (dot) { dot.style.background = '#f87171'; dot.style.boxShadow = 'none'; }
+      }
+    } catch {
+      el.textContent = '—';
+    }
+  }
+  refreshMC();
+  setInterval(refreshMC, 60000);
+
+  // ── HYTALE STATUS ──
+  async function refreshHytale() {
+    const el = document.getElementById('pc-hytale');
+    const dot = document.getElementById('hytale-dot');
+    try {
+      const res = await fetch('https://api.mcsrvstat.us/3/play.zeropointhosting.com:25718');
+      if (!res.ok) throw new Error();
+      const d = await res.json();
+      if (d.online) {
+        const now = d.players?.online ?? 0, max = d.players?.max ?? '?';
+        el.textContent = now + ' / ' + max + ' online';
+        el.className = 'player-count pc-live';
+        if (dot) { dot.style.background = '#a78bfa'; dot.style.boxShadow = '0 0 6px rgba(167,139,250,0.6)'; }
+      } else {
+        el.textContent = 'offline';
+        el.className = 'player-count pc-offline';
+        if (dot) { dot.style.background = '#f87171'; dot.style.boxShadow = 'none'; }
+      }
+    } catch {
+      el.textContent = '—';
+    }
+  }
+  refreshHytale();
+  setInterval(refreshHytale, 60000);
 
   setInterval(() => {
     document.querySelectorAll('.dynamic-ping').forEach(el => {
@@ -808,6 +891,23 @@
       a.classList.toggle('active', a.getAttribute('href') === page);
     });
   })();
+
+  // ── COPY IP ──
+  function copyIP(el, ip) {
+    navigator.clipboard.writeText(ip).then(() => {
+      const orig = el.innerHTML;
+      el.innerHTML = el.innerHTML.replace(ip, '✓ Copied!');
+      el.style.color = '#4ade80';
+      el.style.borderColor = 'rgba(74,222,128,0.4)';
+      el.style.background = 'rgba(74,222,128,0.08)';
+      setTimeout(() => {
+        el.innerHTML = orig;
+        el.style.color = '';
+        el.style.borderColor = '';
+        el.style.background = '';
+      }, 1800);
+    });
+  }
 
   // ── MOBILE NAV TOGGLE ──
   (function () {
