@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeropoint | Blog Admin</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24; --surface3: #202030;
+      --border: #22222e; --accent: #5865f2; --accent2: #7289da;
+      --text: #e8e8f0; --muted: #7a7a90; --radius: 10px;
+      --green: #22c55e; --red: #ef4444; --yellow: #f59e0b;
+    }
+    html, body { height: 100%; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; line-height: 1.5; overflow: hidden; }
+    button, input, textarea, select { font-family: inherit; }
+    button { touch-action: manipulation; cursor: pointer; }
+    [hidden] { display: none !important; }
+
+    /* ── PASSWORD GATE ── */
+    .gate { position: fixed; inset: 0; z-index: 999; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .gate[hidden] { display: none !important; }
+    .gate-card { background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--accent); border-radius: 14px; padding: 2.5rem 2rem; width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 1.25rem; }
+    .gate-title { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
+    .gate-sub { font-size: 0.83rem; color: var(--muted); margin-top: -0.5rem; }
+    .gate-input { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 0.65rem 0.9rem; font-size: 0.9rem; width: 100%; outline: none; transition: border-color 0.15s; }
+    .gate-input:focus { border-color: var(--accent); }
+    .gate-btn { background: var(--accent); color: #000; border: none; border-radius: 8px; padding: 0.7rem; font-size: 0.9rem; font-weight: 800; width: 100%; transition: opacity 0.15s; }
+    .gate-btn:hover { opacity: 0.88; }
+    .gate-error { font-size: 0.8rem; color: var(--red); display: none; }
+    .gate-error.show { display: block; }
+
+    /* ── LAYOUT ── */
+    .app { display: flex; height: 100vh; overflow: hidden; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+    .sidebar-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .sidebar-logo { font-size: 0.85rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text); }
+    .sidebar-logo span { color: var(--accent); }
+    .new-post-btn { background: var(--accent); color: #000; border: none; border-radius: 7px; padding: 0.4rem 0.85rem; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.03em; transition: opacity 0.15s; }
+    .new-post-btn:hover { opacity: 0.88; }
+    .sidebar-search { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .sidebar-search input { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 7px; padding: 0.5rem 0.75rem; font-size: 0.8rem; width: 100%; outline: none; transition: border-color 0.15s; }
+    .sidebar-search input:focus { border-color: var(--accent); }
+    .post-list { flex: 1; overflow-y: auto; padding: 0.5rem; }
+    .post-list-item { border-radius: 8px; padding: 0.75rem 0.9rem; cursor: pointer; border: 1px solid transparent; transition: background 0.12s, border-color 0.12s; display: flex; flex-direction: column; gap: 0.25rem; }
+    .post-list-item:hover { background: var(--surface2); }
+    .post-list-item.active { background: rgba(88,101,242,0.08); border-color: rgba(88,101,242,0.25); }
+    .pli-title { font-size: 0.82rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pli-title.untitled { color: var(--muted); font-style: italic; }
+    .pli-meta { display: flex; align-items: center; gap: 0.5rem; }
+    .pli-date { font-size: 0.68rem; color: var(--muted); }
+    .pli-badge { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.1rem 0.4rem; border-radius: 3px; }
+    .pli-badge.published { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+    .pli-badge.draft { background: rgba(245,158,11,0.1); color: var(--yellow); border: 1px solid rgba(245,158,11,0.22); }
+    .sidebar-empty { padding: 2rem 1rem; text-align: center; color: var(--muted); font-size: 0.8rem; }
+
+    /* ── EDITOR AREA ── */
+    .editor-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* Tab bar (Edit / Preview) */
+    .editor-tabs { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 1rem; flex-wrap: wrap; }
+    .tab-group { display: flex; background: var(--surface2); border-radius: 7px; padding: 2px; gap: 2px; }
+    .tab-btn { background: none; border: none; color: var(--muted); border-radius: 5px; padding: 0.35rem 0.85rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.03em; transition: background 0.12s, color 0.12s; }
+    .tab-btn.active { background: var(--surface3); color: var(--text); }
+    .editor-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .action-btn { border: none; border-radius: 7px; padding: 0.4rem 0.85rem; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.02em; transition: opacity 0.15s, transform 0.15s; }
+    .action-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-draft { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-publish { background: var(--green); color: #000; }
+    .btn-unpublish { background: var(--yellow); color: #000; }
+    .btn-delete { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+    .btn-view { background: rgba(88,101,242,0.1); color: var(--accent); border: 1px solid rgba(88,101,242,0.25); text-decoration: none; display: inline-flex; align-items: center; }
+
+    /* Meta bar */
+    .meta-bar { display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0; align-items: center; }
+    .meta-bar input[type=text] { background: transparent; border: none; color: var(--text); font-size: 1.4rem; font-weight: 800; letter-spacing: -0.03em; outline: none; width: 100%; }
+    .meta-bar input[type=text]::placeholder { color: var(--muted); }
+    .cat-input { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 0.4rem 0.7rem; font-size: 0.78rem; outline: none; width: 130px; transition: border-color 0.15s; }
+    .cat-input:focus { border-color: var(--accent); }
+    .cat-input::placeholder { color: var(--muted); }
+
+    /* Toolbar */
+    .toolbar { display: flex; align-items: center; gap: 0.25rem; padding: 0.5rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0; flex-wrap: wrap; }
+    .tb-btn { background: none; border: 1px solid transparent; color: var(--muted); border-radius: 5px; padding: 0.25rem 0.55rem; font-size: 0.78rem; font-weight: 700; transition: background 0.12s, color 0.12s, border-color 0.12s; }
+    .tb-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--border); }
+    .tb-sep { width: 1px; height: 18px; background: var(--border); margin: 0 0.25rem; }
+    .tb-hint { font-size: 0.68rem; color: var(--muted); margin-left: auto; }
+
+    /* Textarea / Preview pane */
+    .editor-pane { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+    .write-pane { flex: 1; overflow: hidden; }
+    .write-pane textarea { width: 100%; height: 100%; background: transparent; border: none; color: var(--text); font-size: 0.93rem; line-height: 1.75; resize: none; outline: none; padding: 1.25rem 1.5rem; font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace; }
+    .write-pane textarea::placeholder { color: var(--muted); }
+    .preview-pane { flex: 1; overflow-y: auto; padding: 1.5rem 2rem; }
+
+    /* Rendered content styles (same as blog.html) */
+    .post-content { font-size: 0.95rem; line-height: 1.75; color: var(--text); max-width: 680px; }
+    .post-content h2 { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; margin: 1.5rem 0 0.5rem; }
+    .post-content h3 { font-size: 1.05rem; font-weight: 700; margin: 1.25rem 0 0.4rem; }
+    .post-content h4 { font-size: 0.95rem; font-weight: 700; margin: 1rem 0 0.3rem; }
+    .post-content p { margin-bottom: 1rem; }
+    .post-content strong { font-weight: 700; color: #fff; }
+    .post-content em { font-style: italic; color: var(--muted); }
+    .post-content a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .post-content hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+    .post-content ul, .post-content ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+    .post-content li { margin-bottom: 0.3rem; }
+    .post-content blockquote { border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--muted); font-style: italic; margin: 1rem 0; }
+    .post-content code { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 0.1rem 0.35rem; font-size: 0.85em; font-family: ui-monospace, monospace; }
+    .preview-title { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+    .preview-meta { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.5rem; font-size: 0.78rem; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+    .preview-cat { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.15rem 0.55rem; border-radius: 4px; background: rgba(88,101,242,0.08); color: var(--accent); border: 1px solid rgba(88,101,242,0.2); }
+
+    /* Empty state */
+    .editor-empty { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.75rem; color: var(--muted); font-size: 0.85rem; }
+    .editor-empty-icon { font-size: 2.5rem; opacity: 0.3; }
+
+    /* ── DONORS PANEL ── */
+    .donors-panel { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .donors-panel[hidden] { display: none !important; }
+    .dp-section-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+    .donor-form { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .df-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    @media (max-width: 600px) { .df-row { grid-template-columns: 1fr; } }
+    .df-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); margin-bottom: 0.2rem; display: block; }
+    .df-input { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 7px; padding: 0.5rem 0.75rem; font-size: 0.85rem; width: 100%; outline: none; transition: border-color 0.15s; font-family: inherit; }
+    .df-input:focus { border-color: var(--accent); }
+    .df-add-btn { background: var(--accent); color: #000; border: none; border-radius: 7px; padding: 0.55rem 1.2rem; font-size: 0.82rem; font-weight: 800; align-self: flex-end; transition: opacity 0.15s; }
+    .df-add-btn:hover { opacity: 0.88; }
+    .donor-table { display: flex; flex-direction: column; gap: 0.4rem; }
+    .dt-row { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.9rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .dt-rank { font-size: 0.7rem; font-weight: 800; color: var(--muted); min-width: 22px; }
+    .dt-name { font-size: 0.85rem; font-weight: 700; flex: 1; }
+    .dt-amount { font-size: 0.82rem; font-weight: 800; color: var(--accent); white-space: nowrap; }
+    .dt-game { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.1rem 0.4rem; border-radius: 4px; background: rgba(88,101,242,0.07); color: var(--muted); border: 1px solid rgba(255,255,255,0.07); }
+    .dt-note { font-size: 0.72rem; color: var(--muted); font-style: italic; flex: 1; }
+    .dt-btns { display: flex; gap: 0.35rem; flex-shrink: 0; }
+    .dt-del { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); color: var(--red); border-radius: 5px; padding: 0.2rem 0.5rem; font-size: 0.7rem; font-weight: 700; transition: background 0.15s; }
+    .dt-del:hover { background: rgba(239,68,68,0.2); }
+    .dt-vis { background: var(--surface); border: 1px solid var(--border); color: var(--muted); border-radius: 5px; padding: 0.2rem 0.5rem; font-size: 0.7rem; font-weight: 700; transition: background 0.15s; }
+    .dt-vis:hover { background: var(--surface3); }
+    .dt-vis.hidden-donor { color: var(--yellow); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.06); }
+    .dt-move { background: var(--surface); border: 1px solid var(--border); color: var(--muted); border-radius: 5px; padding: 0.2rem 0.45rem; font-size: 0.7rem; font-weight: 700; }
+    .dt-move:hover { background: var(--surface3); color: var(--text); }
+    .donors-empty-state { color: var(--muted); font-size: 0.82rem; text-align: center; padding: 1.5rem; }
+
+    /* Status toast */
+    .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 0.7rem 1.1rem; font-size: 0.82rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 8px 32px rgba(0,0,0,0.5); z-index: 500; transition: opacity 0.3s, transform 0.3s; }
+    .toast[hidden] { display: none !important; }
+    .toast.green { border-color: rgba(34,197,94,0.3); color: var(--green); }
+    .toast.red   { border-color: rgba(239,68,68,0.3);  color: var(--red); }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+    @media (max-width: 700px) {
+      .sidebar { width: 220px; }
+      .tb-hint { display: none; }
+    }
+    @media (max-width: 520px) {
+      .app { flex-direction: column; }
+      .sidebar { width: 100%; height: 200px; border-right: none; border-bottom: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PASSWORD GATE -->
+  <div class="gate" id="gate">
+    <div class="gate-card">
+      <div>
+        <div class="gate-title">Blog Admin</div>
+        <div class="gate-sub">Enter your password to manage posts.</div>
+      </div>
+      <input class="gate-input" id="gate-pw" type="password" placeholder="Password" autocomplete="current-password" />
+      <div class="gate-error" id="gate-err">Incorrect password.</div>
+      <button class="gate-btn" id="gate-submit">Enter →</button>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div class="app" id="app" hidden>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-logo">Zero<span>point</span> Admin</span>
+        <button class="new-post-btn" id="new-post-btn">+ New</button>
+      </div>
+      <div class="sidebar-search">
+        <input type="text" id="list-search" placeholder="Search posts…" autocomplete="off" />
+      </div>
+      <div class="post-list" id="post-list"></div>
+    </div>
+
+    <!-- EDITOR -->
+    <div class="editor-area" id="editor-area">
+      <div class="editor-empty" id="editor-empty">
+        <div class="editor-empty-icon">✏️</div>
+        <div>Select a post or create a new one</div>
+      </div>
+
+      <div id="editor-main" hidden style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+        <!-- Tabs + actions -->
+        <div class="editor-tabs">
+          <div class="tab-group">
+            <button class="tab-btn active" id="tab-write">Write</button>
+            <button class="tab-btn" id="tab-preview">Preview</button>
+          </div>
+          <div class="editor-actions">
+            <a class="action-btn btn-view" href="blog.html" target="_blank" rel="noopener">View Blog ↗</a>
+            <button class="action-btn btn-delete" id="btn-delete" hidden>Delete</button>
+            <button class="action-btn btn-unpublish" id="btn-unpublish" hidden>Unpublish</button>
+            <button class="action-btn btn-draft" id="btn-draft">Save Draft</button>
+            <button class="action-btn btn-publish" id="btn-publish">Publish →</button>
+          </div>
+        </div>
+
+        <!-- Title + category -->
+        <div class="meta-bar">
+          <input type="text" id="f-title" placeholder="Post title…" autocomplete="off" />
+          <input type="text" id="f-cat" class="cat-input" placeholder="Category…" autocomplete="off" />
+        </div>
+
+        <!-- Formatting toolbar -->
+        <div class="toolbar">
+          <button class="tb-btn" data-fmt="bold"  title="Bold (Ctrl+B)"><b>B</b></button>
+          <button class="tb-btn" data-fmt="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" data-fmt="h2" title="Heading">H2</button>
+          <button class="tb-btn" data-fmt="h3" title="Sub-heading">H3</button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" data-fmt="ul"  title="Bullet list">• List</button>
+          <button class="tb-btn" data-fmt="bq"  title="Blockquote">" Quote</button>
+          <button class="tb-btn" data-fmt="hr"  title="Divider">— HR</button>
+          <button class="tb-btn" data-fmt="link" title="Link">🔗 Link</button>
+          <div class="tb-sep"></div>
+          <span class="tb-hint">Tip: **bold**, *italic*, # Heading, &gt; quote, - list</span>
+        </div>
+
+        <!-- Write / Preview panes -->
+        <div class="editor-pane">
+          <div class="write-pane" id="write-pane">
+            <textarea id="f-content" placeholder="Write your post here…&#10;&#10;Use **bold**, *italic*, # Heading, ## Sub-heading&#10;- bullet lists&#10;&gt; blockquotes&#10;[link text](https://example.com)"></textarea>
+          </div>
+          <div class="preview-pane" id="preview-pane" hidden>
+            <div class="preview-title" id="preview-title"></div>
+            <div class="preview-meta" id="preview-meta"></div>
+            <div class="post-content" id="preview-content"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script>
+  // ── CHANGE THIS PASSWORD ──
+  const ADMIN_PASSWORD = 'zeropoint2026';
+
+  // ── SUPABASE ──
+  const SB = window.supabase.createClient('https://cairclbnutqouejtlhks.supabase.co', 'sb_publishable_25_ecIfEwCQ1BdXof_ZonQ_Bi2x1CDU');
+
+  // ── PASSWORD GATE ──
+  const gate = document.getElementById('gate');
+  const app  = document.getElementById('app');
+
+  function tryLogin() {
+    const pw = document.getElementById('gate-pw').value;
+    if (pw === ADMIN_PASSWORD) {
+      gate.setAttribute('hidden', '');
+      app.removeAttribute('hidden');
+      loadPosts();
+    } else {
+      document.getElementById('gate-err').classList.add('show');
+    }
+  }
+  document.getElementById('gate-submit').addEventListener('click', tryLogin);
+  document.getElementById('gate-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+  // ── STATE ──
+  let posts = [];
+  let currentId = null; // null = new unsaved post
+  let isNew = false;
+
+  // ── HELPERS ──
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function fmtDate(iso) { return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+  function showToast(msg, type = 'green') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'toast ' + type;
+    t.removeAttribute('hidden');
+    clearTimeout(t._to);
+    t._to = setTimeout(() => t.setAttribute('hidden', ''), 2800);
+  }
+
+  // ── MARKDOWN RENDERER (same logic as blog.html) ──
+  function renderMd(raw) {
+    if (!raw) return '';
+    let t = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    t = t.replace(/^---$/gm, '<hr>');
+    t = t.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+    t = t.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    t = t.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+    t = t.replace(/^# (.+)$/gm, '<h2>$1</h2>');
+    t = t.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+    t = t.replace(/^- (.+)$/gm, '<li>$1</li>');
+    t = t.replace(/(<li>.*<\/li>\n?)+/g, s => '<ul>' + s + '</ul>');
+    t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    t = t.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    t = t.replace(/`(.+?)`/g, '<code>$1</code>');
+    t = t.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    const lines = t.split('\n');
+    const out = []; let buf = [];
+    for (const line of lines) {
+      if (/^<(h[234]|hr|ul|blockquote)/.test(line) || line === '') {
+        if (buf.length) { out.push('<p>' + buf.join('<br>') + '</p>'); buf = []; }
+        if (line) out.push(line);
+      } else { buf.push(line); }
+    }
+    if (buf.length) out.push('<p>' + buf.join('<br>') + '</p>');
+    return out.join('\n');
+  }
+
+  // ── LOAD POSTS ──
+  async function loadPosts() {
+    const { data } = await SB.from('blog_posts').select('*').order('created_at', { ascending: false });
+    posts = data || [];
+    renderList();
+  }
+
+  // ── SIDEBAR LIST ──
+  function renderList() {
+    const q = (document.getElementById('list-search').value || '').toLowerCase().trim();
+    const list = document.getElementById('post-list');
+    const filtered = q ? posts.filter(p => (p.title || '').toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q)) : posts;
+    if (!filtered.length) { list.innerHTML = '<div class="sidebar-empty">No posts yet.</div>'; return; }
+    list.innerHTML = filtered.map(p =>
+      '<div class="post-list-item' + (p.id === currentId ? ' active' : '') + '" data-id="' + p.id + '">' +
+        '<div class="pli-title' + (!p.title ? ' untitled' : '') + '">' + esc(p.title || 'Untitled') + '</div>' +
+        '<div class="pli-meta">' +
+          '<span class="pli-badge ' + (p.published ? 'published' : 'draft') + '">' + (p.published ? 'Published' : 'Draft') + '</span>' +
+          '<span class="pli-date">' + fmtDate(p.created_at) + '</span>' +
+        '</div>' +
+      '</div>'
+    ).join('');
+    list.querySelectorAll('.post-list-item').forEach(item => {
+      item.addEventListener('click', () => openPost(+item.dataset.id));
+    });
+  }
+  document.getElementById('list-search').addEventListener('input', renderList);
+
+  // ── OPEN POST ──
+  function openPost(id) {
+    const p = posts.find(x => x.id === id);
+    if (!p) return;
+    currentId = id;
+    isNew = false;
+    document.getElementById('f-title').value = p.title || '';
+    document.getElementById('f-cat').value = p.category || '';
+    document.getElementById('f-content').value = p.content || '';
+    showEditor(p.published);
+    renderList();
+    setTab('write');
+  }
+
+  // ── NEW POST ──
+  function newPost() {
+    currentId = null;
+    isNew = true;
+    document.getElementById('f-title').value = '';
+    document.getElementById('f-cat').value = '';
+    document.getElementById('f-content').value = '';
+    showEditor(false);
+    renderList();
+    setTab('write');
+    document.getElementById('f-title').focus();
+  }
+  document.getElementById('new-post-btn').addEventListener('click', newPost);
+
+  // ── SHOW/HIDE EDITOR ──
+  function showEditor(isPublished) {
+    document.getElementById('editor-empty').setAttribute('hidden', '');
+    const main = document.getElementById('editor-main');
+    main.removeAttribute('hidden');
+    main.style.display = 'flex';
+    document.getElementById('btn-delete').toggleAttribute('hidden', isNew);
+    document.getElementById('btn-unpublish').toggleAttribute('hidden', !isPublished);
+    document.getElementById('btn-publish').textContent = isPublished ? 'Update →' : 'Publish →';
+  }
+
+  // ── TABS ──
+  function setTab(tab) {
+    document.getElementById('tab-write').classList.toggle('active', tab === 'write');
+    document.getElementById('tab-preview').classList.toggle('active', tab === 'preview');
+    document.getElementById('write-pane').toggleAttribute('hidden', tab !== 'write');
+    document.getElementById('preview-pane').toggleAttribute('hidden', tab !== 'preview');
+    if (tab === 'preview') renderPreview();
+  }
+  document.getElementById('tab-write').addEventListener('click', () => setTab('write'));
+  document.getElementById('tab-preview').addEventListener('click', () => setTab('preview'));
+
+  function renderPreview() {
+    const title = document.getElementById('f-title').value || 'Untitled';
+    const cat   = document.getElementById('f-cat').value;
+    const content = document.getElementById('f-content').value;
+    document.getElementById('preview-title').textContent = title;
+    document.getElementById('preview-meta').innerHTML =
+      (cat ? '<span class="preview-cat">' + esc(cat) + '</span>' : '') +
+      '<span>' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + '</span>';
+    document.getElementById('preview-content').innerHTML = renderMd(content);
+  }
+
+  // ── TOOLBAR ──
+  function wrapSelection(ta, before, after, placeholder) {
+    const start = ta.selectionStart, end = ta.selectionEnd;
+    const sel = ta.value.slice(start, end) || placeholder || '';
+    const newVal = ta.value.slice(0, start) + before + sel + after + ta.value.slice(end);
+    ta.value = newVal;
+    ta.selectionStart = start + before.length;
+    ta.selectionEnd   = start + before.length + sel.length;
+    ta.focus();
+  }
+  function prefixLines(ta, prefix) {
+    const start = ta.selectionStart, end = ta.selectionEnd;
+    const before = ta.value.slice(0, start);
+    const selected = ta.value.slice(start, end) || 'Item';
+    const after = ta.value.slice(end);
+    const prefixed = selected.split('\n').map(l => prefix + l).join('\n');
+    ta.value = before + prefixed + after;
+    ta.selectionStart = start;
+    ta.selectionEnd   = start + prefixed.length;
+    ta.focus();
+  }
+
+  document.querySelectorAll('.tb-btn[data-fmt]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const ta = document.getElementById('f-content');
+      const fmt = btn.dataset.fmt;
+      if (fmt === 'bold')   wrapSelection(ta, '**', '**', 'bold text');
+      if (fmt === 'italic') wrapSelection(ta, '*', '*', 'italic text');
+      if (fmt === 'h2')     prefixLines(ta, '## ');
+      if (fmt === 'h3')     prefixLines(ta, '### ');
+      if (fmt === 'ul')     prefixLines(ta, '- ');
+      if (fmt === 'bq')     prefixLines(ta, '> ');
+      if (fmt === 'hr') {
+        const ta2 = document.getElementById('f-content');
+        const pos = ta2.selectionStart;
+        ta2.value = ta2.value.slice(0, pos) + '\n---\n' + ta2.value.slice(pos);
+        ta2.selectionStart = ta2.selectionEnd = pos + 5;
+        ta2.focus();
+      }
+      if (fmt === 'link') {
+        const url = prompt('Enter the URL:');
+        if (url) wrapSelection(ta, '[', '](' + url + ')', 'link text');
+      }
+    });
+  });
+
+  // Keyboard shortcuts
+  document.getElementById('f-content').addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'b') { e.preventDefault(); wrapSelection(e.target, '**', '**', 'bold text'); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'i') { e.preventDefault(); wrapSelection(e.target, '*', '*', 'italic text'); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveDraft(); }
+  });
+
+  // ── SAVE / PUBLISH ──
+  function getFields() {
+    return {
+      title:   document.getElementById('f-title').value.trim(),
+      category: document.getElementById('f-cat').value.trim() || null,
+      content: document.getElementById('f-content').value,
+    };
+  }
+
+  async function saveDraft() {
+    const fields = getFields();
+    if (!fields.title) { showToast('Add a title first.', 'red'); document.getElementById('f-title').focus(); return; }
+    await save({ ...fields, published: false });
+  }
+
+  async function publish() {
+    const fields = getFields();
+    if (!fields.title) { showToast('Add a title first.', 'red'); document.getElementById('f-title').focus(); return; }
+    await save({ ...fields, published: true });
+  }
+
+  async function unpublish() {
+    if (!currentId) return;
+    const { error } = await SB.from('blog_posts').update({ published: false }).eq('id', currentId);
+    if (error) { showToast('Error: ' + error.message, 'red'); return; }
+    showToast('Post unpublished.');
+    await loadPosts();
+    const p = posts.find(x => x.id === currentId);
+    if (p) showEditor(false);
+  }
+
+  async function save(data) {
+    let error;
+    if (isNew || !currentId) {
+      const res = await SB.from('blog_posts').insert(data).select().single();
+      error = res.error;
+      if (!error) { currentId = res.data.id; isNew = false; }
+    } else {
+      const res = await SB.from('blog_posts').update({ ...data, updated_at: new Date().toISOString() }).eq('id', currentId);
+      error = res.error;
+    }
+    if (error) { showToast('Error: ' + error.message, 'red'); return; }
+    showToast(data.published ? 'Published! ✓' : 'Draft saved. ✓');
+    await loadPosts();
+    showEditor(data.published);
+  }
+
+  async function deletePost() {
+    if (!currentId) return;
+    if (!confirm('Delete this post? This cannot be undone.')) return;
+    const { error } = await SB.from('blog_posts').delete().eq('id', currentId);
+    if (error) { showToast('Error: ' + error.message, 'red'); return; }
+    currentId = null; isNew = false;
+    document.getElementById('editor-empty').removeAttribute('hidden');
+    document.getElementById('editor-main').setAttribute('hidden', '');
+    showToast('Post deleted.');
+    await loadPosts();
+  }
+
+  document.getElementById('btn-draft').addEventListener('click', saveDraft);
+  document.getElementById('btn-publish').addEventListener('click', publish);
+  document.getElementById('btn-unpublish').addEventListener('click', unpublish);
+  document.getElementById('btn-delete').addEventListener('click', deletePost);
+
+  </script>
+</body>
+</html>
