@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARK Server Rules — Zeropoint Gaming</title>
+  <meta name="description" content="Official server rules for Zeropoint Gaming ARK: Survival Evolved Xbox PvE servers. Read before playing." />
+  <meta name="author" content="Zeropoint Gaming" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ARK Server Rules — Zeropoint Gaming" />
+  <meta property="og:description" content="Official server rules for Zeropoint Gaming ARK Xbox PvE servers." />
+  <meta property="og:url" content="https://zeropointhosting1.github.io/arkrules.html" />
+  <meta property="og:image" content="https://zeropointhosting1.github.io/zeropoint1.png" />
+  <meta property="og:site_name" content="Zeropoint Gaming" />
+  <link rel="canonical" href="https://zeropointhosting1.github.io/arkrules.html" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button { touch-action: manipulation; }
+    :root {
+      --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
+      --border: #22222e; --accent: #5865f2;
+      --text: #e8e8f0; --muted: #7a7a90; --muted2: #9898b0; --radius: 10px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6; min-height: 100vh; overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      background: rgba(10,10,15,0.92);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      height: 64px; gap: 1.5rem;
+    }
+    .nav-logo { color: #fff; font-weight: 800; font-size: 0.95rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; flex-shrink: 0; transition: opacity 0.2s; }
+    .nav-logo:hover { opacity: 0.8; }
+    .nav-logo span { color: #5865f2; }
+    nav > ul { display: flex; align-items: center; gap: 0.2rem; list-style: none; flex: 1; justify-content: center; }
+    nav > ul > li > a { display: block; padding: 0.45rem 0.85rem; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.01em; border-radius: 6px; transition: color 0.15s, background 0.15s; }
+    nav > ul > li > a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+    nav > ul > li > a.active { color: #fff; }
+    .nav-cta { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1.1rem; border-radius: 7px; background: #5865f2; color: #fff; text-decoration: none; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.02em; flex-shrink: 0; transition: background 0.18s, box-shadow 0.18s; box-shadow: 0 2px 12px rgba(88,101,242,0.35); }
+    .nav-cta:hover { background: #4752c4; box-shadow: 0 4px 20px rgba(88,101,242,0.5); }
+    .nav-cta svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; }
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; flex-direction: column; justify-content: center; gap: 5px; }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: rgba(255,255,255,0.7); border-radius: 2px; transition: transform 0.22s, opacity 0.22s; }
+    .nav-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.active span:nth-child(2) { opacity: 0; }
+    .nav-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 680px) {
+      nav { padding: 0 1.25rem; }
+      .nav-cta { display: none; }
+      .nav-toggle { display: flex; }
+      nav > ul { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(10,10,15,0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.07); flex-direction: column; align-items: stretch; justify-content: flex-start; padding: 0.75rem 1rem 1.25rem; gap: 0.1rem; z-index: 99; }
+      nav > ul.nav-open { display: flex; }
+      nav > ul > li > a { font-size: 0.95rem; padding: 0.6rem 0.85rem; color: rgba(255,255,255,0.65); }
+    }
+    .nav-dd { position: relative; }
+    .nav-dd-btn { display: flex; align-items: center; gap: 0.3rem; background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.55); font-size: 0.875rem; font-weight: 500; letter-spacing: 0.01em; padding: 0.45rem 0.85rem; border-radius: 6px; transition: color 0.15s, background 0.15s; white-space: nowrap; font-family: inherit; }
+    .nav-dd-btn:hover, .nav-dd.open .nav-dd-btn { color: #fff; background: rgba(255,255,255,0.06); }
+    .nav-dd-chevron { transition: transform 0.2s; flex-shrink: 0; opacity: 0.4; }
+    .nav-dd.open .nav-dd-chevron { transform: rotate(180deg); opacity: 0.8; }
+    .nav-dd-menu { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(-4px); background: #0d0d18; border: 1px solid rgba(255,255,255,0.09); border-radius: 10px; padding: 0.5rem; min-width: 180px; list-style: none; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s; z-index: 200; box-shadow: 0 16px 48px rgba(0,0,0,0.6); display: flex; flex-direction: column; }
+    .nav-dd.open .nav-dd-menu { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+    .nav-dd-menu li a { display: block; padding: 0.55rem 0.75rem; border-radius: 7px; text-decoration: none; font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.55); transition: background 0.1s, color 0.1s; }
+    .nav-dd-menu li a:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .nav-dd-menu li a.active { color: #5865f2; }
+    @media (max-width: 680px) {
+      .nav-dd { width: 100%; }
+      .nav-dd-btn { font-size: 0.95rem; padding: 0.6rem 0.85rem; width: 100%; justify-content: space-between; color: rgba(255,255,255,0.65); }
+      .nav-dd-menu { position: static; transform: none; opacity: 1; visibility: visible; pointer-events: auto; background: rgba(255,255,255,0.03); border: none; border-radius: 8px; margin: 0.1rem 0; display: none; box-shadow: none; padding: 0.35rem; width: 100%; min-width: 0; max-width: 100%; }
+      .nav-dd.open .nav-dd-menu { display: block; transform: none; }
+      .nav-dd-menu li a { font-size: 0.9rem; }
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header { padding: 120px 1.5rem 3rem; text-align: center; position: relative; }
+    .page-header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(88,101,242,0.05) 0%, transparent 70%); pointer-events: none; }
+    .page-eyebrow { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; opacity: 0.85; }
+    .page-header h1 { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; background: linear-gradient(160deg, #ffffff 0%, #a0a0b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.75rem; }
+    .page-header p { font-size: 0.95rem; color: var(--muted); max-width: 520px; margin: 0 auto; }
+
+    /* ── WARNING BANNER ── */
+    .warn-banner { max-width: 760px; margin: 0 auto 2rem; padding: 1rem 1.25rem; background: rgba(88,101,242,0.08); border: 1px solid rgba(88,101,242,0.25); border-radius: var(--radius); display: flex; align-items: flex-start; gap: 0.75rem; }
+    .warn-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+    .warn-text { font-size: 0.875rem; color: var(--muted2); line-height: 1.6; }
+    .warn-text strong { color: var(--text); }
+
+    /* ── RULES CONTENT ── */
+    .rules-wrap { max-width: 760px; margin: 0 auto; padding: 0 1.5rem 5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .rule-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .rule-section-header { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+    .rule-section-title { font-size: 0.88rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent); }
+    .rule-body { padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .rule-item { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.875rem; color: var(--muted2); line-height: 1.55; }
+    .rule-item strong { color: var(--text); }
+    .rule-icon { flex-shrink: 0; font-size: 0.95rem; margin-top: 1px; }
+
+    .rule-item.rule-bad { color: #ff8a8a; }
+    .rule-item.rule-good { color: #86efac; }
+    .rule-item.rule-warn { color: #fcd34d; }
+    .rule-item.rule-info { color: var(--muted2); }
+
+    .rule-divider { height: 1px; background: var(--border); margin: 0.35rem 0; }
+    .rule-sub { font-size: 0.78rem; color: var(--muted); padding-left: 1.55rem; }
+
+    /* ── FINAL RULE ── */
+    .final-rule { background: linear-gradient(135deg, rgba(88,101,242,0.08), rgba(88,101,242,0.03)); border: 1px solid rgba(88,101,242,0.2); border-radius: var(--radius); padding: 1.5rem 1.25rem; text-align: center; }
+    .final-rule p { font-size: 0.95rem; color: var(--text); font-weight: 600; margin-bottom: 0.25rem; }
+    .final-rule span { font-size: 0.85rem; color: var(--muted2); }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 1.5rem; text-align: center; }
+    footer p { color: var(--muted); font-size: 0.82rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">Zero<span>point</span></a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="servers.html">Servers</a></li>
+      <li class="nav-dd">
+        <button class="nav-dd-btn">
+          ARK
+          <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-dd-menu">
+          <li><a href="ark.html">Donations</a></li>
+          <li><a href="bbs.html">Admin Shop</a></li>
+          <li><a href="arkrules.html" class="active">Rules</a></li>
+        </ul>
+      </li>
+      <li class="nav-dd">
+        <button class="nav-dd-btn">
+          Hytale
+          <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-dd-menu">
+          <li><a href="hytalepackages.html">Packages</a></li>
+        </ul>
+      </li>
+      <li class="nav-dd">
+        <button class="nav-dd-btn">
+          Minecraft
+          <svg class="nav-dd-chevron" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="nav-dd-menu">
+          <li><a href="minecraft.html">Ranks</a></li>
+          <li><a href="minecraft-keys.html">Crate Keys</a></li>
+        </ul>
+      </li>
+      <li><a href="aboutus.html">About</a></li>
+      <li><a href="blog.html">Updates</a></li>
+    </ul>
+    <a class="nav-cta" href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener">
+      <svg viewBox="0 0 127.14 96.36" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
+      Join Discord
+    </a>
+    <button class="nav-toggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <p class="page-eyebrow">ARK: Survival Evolved — Xbox PvE</p>
+    <h1>Server Rules</h1>
+    <p>Read and follow these rules to keep your account and base safe. Violations may result in dino wipes, base wipes, or bans.</p>
+  </div>
+
+  <div class="rules-wrap">
+
+    <!-- WARNING -->
+    <div class="warn-banner">
+      <span class="warn-icon">⚠️</span>
+      <div class="warn-text"><strong>These rules are enforced.</strong> Failure to follow them may result in wipes, dino wipes, or a permanent ban. When in doubt, ask an admin in Discord before doing something you're unsure about.</div>
+    </div>
+
+    <!-- PLAYER NAMES & CONDUCT -->
+    <div class="rule-section">
+      <div class="rule-section-header">
+        <span class="rule-section-title">Player Names &amp; Conduct</span>
+      </div>
+      <div class="rule-body">
+        <div class="rule-item rule-bad"><span class="rule-icon">🚫</span><span>Generic names like <strong>Human</strong> or <strong>Bob</strong> are not allowed</span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">🚫</span><span>Symbol-only or gibberish names are not allowed</span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">🚫</span><span>Cussing or profanity in names or chat</span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">🚫</span><span>Bullying or harassment of any player</span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">🚫</span><span>Discussing players' real lives or private information</span></div>
+        <div class="rule-divider"></div>
+        <div class="rule-item"><span class="rule-icon">🔐</span><span><strong>Zero tolerance policy</strong> — player safety comes first.</span></div>
+      </div>
+    </div>
+
+    <!-- TRIBES -->
+    <div class="rule-section">
+      <div class="rule-section-header">
+        <span class="rule-section-title">Tribes</span>
+      </div>
+      <div class="rule-body">
+        <div class="rule-item rule-good"><span class="rule-icon">✅</span><span>Tribes are <strong>required</strong> on every map</span></div>
+        <div class="rule-item rule-warn"><span class="rule-icon">⚠️</span><span>Insiding will <strong>not</strong> be handled by admins — tribe management is your responsibility</span></div>
+      </div>
+    </div>
+
+    <!-- BASE RULES -->
+    <div class="rule-section">
+      <div class="rule-section-header">
+        <span class="rule-section-title">Base Rules</span>
+      </div>
+      <div class="rule-body">
+        <div class="rule-item"><span class="rule-icon">🏠</span><span><strong>1 base per tribe</strong></span></div>
+        <div class="rule-divider"></div>
+        <div class="rule-item rule-good"><span class="rule-icon">✅</span><span>Bases may be on <strong>land</strong>, <strong>water</strong>, or used as a <strong>shop</strong></span></div>
+        <div class="rule-item rule-info"><span class="rule-icon">🌊</span><span>Water bases must be in <strong>open water</strong> and contain <strong>80% water dinos</strong></span></div>
+        <div class="rule-item rule-good"><span class="rule-icon">✅</span><span>Normal caves are <strong>allowed</strong></span></div>
+        <div class="rule-divider"></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">❌</span><span>No building in <strong>artifact caves</strong></span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">❌</span><span>No building in <strong>wyvern scars</strong></span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">❌</span><span>No building near <strong>beaver dams</strong></span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">❌</span><span>No building at <strong>player spawn points</strong></span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">❌</span><span>No blocking <strong>caves or map progression</strong></span></div>
+      </div>
+    </div>
+
+    <!-- MOVING BASES -->
+    <div class="rule-section">
+      <div class="rule-section-header">
+        <span class="rule-section-title">Moving Bases</span>
+      </div>
+      <div class="rule-body">
+        <div class="rule-item"><span class="rule-icon">🪧</span><span>Place a sign outside your base saying <strong>"MOVING BASE"</strong></span></div>
+        <div class="rule-item"><span class="rule-icon">🎟️</span><span>Or open an <strong>admin ticket</strong> in Discord</span></div>
+        <div class="rule-divider"></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">🧨</span><span>Your <strong>old base must be fully demolished</strong> after moving</span></div>
+      </div>
+    </div>
+
+    <!-- BUILDING DISTANCE -->
+    <div class="rule-section">
+      <div class="rule-section-header">
+        <span class="rule-section-title">Building Distance Rules</span>
+      </div>
+      <div class="rule-body">
+        <div class="rule-item rule-bad"><span class="rule-icon">🚫</span><span>Do <strong>not</strong> build outside your own render</span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">🚫</span><span>Do <strong>not</strong> build within another player's render</span></div>
+        <div class="rule-item rule-warn"><span class="rule-icon">❓</span><span>If unsure, <strong>ask an admin first</strong> before placing</span></div>
+      </div>
+    </div>
+
+    <!-- DINO LIMITS -->
+    <div class="rule-section">
+      <div class="rule-section-header">
+        <span class="rule-section-title">Dino Limits</span>
+      </div>
+      <div class="rule-body">
+        <div class="rule-item"><span class="rule-icon">💤</span><span><strong>Offline:</strong> Max 35 dinos out</span></div>
+        <div class="rule-item rule-good"><span class="rule-icon">🟢</span><span><strong>Online:</strong> Max 55 dinos out</span></div>
+        <div class="rule-divider"></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">❌</span><span><strong>Offline breeding</strong> is strictly forbidden</span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">❌</span><span><strong>Mass breeding</strong> is strictly forbidden</span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">❌</span><span>No dinos left on <strong>wandering</strong></span></div>
+      </div>
+    </div>
+
+    <!-- STRUCTURES & SPAM -->
+    <div class="rule-section">
+      <div class="rule-section-header">
+        <span class="rule-section-title">Structures &amp; Spam</span>
+      </div>
+      <div class="rule-body">
+        <div class="rule-item rule-bad"><span class="rule-icon">❌</span><span><strong>Structure spam</strong> is not allowed</span></div>
+        <div class="rule-item rule-warn"><span class="rule-icon">🧹</span><span>Abandoned traps will be <strong>wiped by admins</strong> without warning</span></div>
+      </div>
+    </div>
+
+    <!-- STRUCTURE LIMITS -->
+    <div class="rule-section">
+      <div class="rule-section-header">
+        <span class="rule-section-title">Structure Limits (Per Base)</span>
+      </div>
+      <div class="rule-body">
+        <div class="rule-item"><span class="rule-icon">🧬</span><span>Max <strong>3 Cloners</strong></span></div>
+        <div class="rule-item"><span class="rule-icon">🔧</span><span>Max <strong>3 Replicators</strong> or <strong>Meks</strong></span></div>
+        <div class="rule-item"><span class="rule-icon">🥚</span><span>Max <strong>4 Egg Incubators</strong></span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">⚡</span><span><strong>No Tek Generator pulse</strong></span></div>
+      </div>
+    </div>
+
+    <!-- TELEPORTERS -->
+    <div class="rule-section">
+      <div class="rule-section-header">
+        <span class="rule-section-title">Teleporters</span>
+      </div>
+      <div class="rule-body">
+        <div class="rule-item rule-good"><span class="rule-icon">🌐</span><span>A <strong>public teleporter</strong> at your base is required</span></div>
+        <div class="rule-item rule-good"><span class="rule-icon">🔓</span><span>Public TP must remain <strong>open at all times</strong></span></div>
+        <div class="rule-item rule-bad"><span class="rule-icon">🚫</span><span>Public TP <strong>cannot be enclosed</strong></span></div>
+      </div>
+    </div>
+
+    <!-- ABANDONED WIPE POLICY -->
+    <div class="rule-section">
+      <div class="rule-section-header">
+        <span class="rule-section-title">Abandoned Wipe Policy</span>
+      </div>
+      <div class="rule-body">
+        <div class="rule-item rule-warn"><span class="rule-icon">🦖</span><span>Abandoned dinos will be <strong>wiped</strong></span></div>
+        <div class="rule-item rule-warn"><span class="rule-icon">🏚️</span><span>Bases left inactive for <strong>7+ days</strong> will be wiped</span></div>
+      </div>
+    </div>
+
+    <!-- FINAL RULE -->
+    <div class="final-rule">
+      <p>✨ Be respectful &nbsp;·&nbsp; Play fair &nbsp;·&nbsp; Have fun and enjoy the grind 🦖🔥</p>
+      <span>Questions? Open a ticket in our <a href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-weight:600;">Discord server</a>.</span>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Zeropoint Gaming &mdash; <a href="https://discord.gg/7yhvhPCKcr" target="_blank" rel="noopener">Discord</a></p>
+  </footer>
+
+  <script>
+  // Nav dropdowns
+  document.querySelectorAll('.nav-dd').forEach(dd => {
+    const btn = dd.querySelector('.nav-dd-btn');
+    btn.addEventListener('click', e => { e.stopPropagation(); dd.classList.toggle('open'); });
+  });
+  document.addEventListener('click', () => document.querySelectorAll('.nav-dd.open').forEach(dd => dd.classList.remove('open')));
+
+  // Mobile toggle
+  const navToggle = document.querySelector('.nav-toggle');
+  const navList = document.querySelector('nav > ul');
+  navToggle.addEventListener('click', () => { navToggle.classList.toggle('active'); navList.classList.toggle('nav-open'); });
+  </script>
+
+</body>
+</html>
