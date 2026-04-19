@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zeropoint — Finance</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg: #0a0a0f; --bg2: #111118; --bg3: #18181f;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+    --text: #f0f0f5; --muted: #888896;
+    --accent: #7c6aff; --accent2: #a593ff;
+    --green: #3dd68c; --green2: rgba(61,214,140,0.12);
+    --red: #ff5e5e; --red2: rgba(255,94,94,0.12);
+    --amber: #ffb347; --amber2: rgba(255,179,71,0.12);
+    --font: 'Syne', sans-serif; --mono: 'DM Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+
+  #lock {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999; flex-direction: column; gap: 2rem;
+  }
+  .lock-logo { font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; text-align: center; }
+  .lock-logo span { color: var(--accent); }
+  .lock-sub { color: var(--muted); font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
+  .lock-box {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 16px; padding: 2rem 2.5rem;
+    display: flex; flex-direction: column; gap: 1.2rem; min-width: 320px;
+  }
+  .lock-box label { font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+  .lock-box input[type="password"] {
+    background: var(--bg3); border: 1px solid var(--border2); border-radius: 8px;
+    color: var(--text); font-family: var(--mono); font-size: 1.1rem;
+    padding: 0.7rem 1rem; width: 100%; outline: none; transition: border 0.2s;
+  }
+  .lock-box input:focus { border-color: var(--accent); }
+  .lock-btn {
+    background: var(--accent); color: #fff; border: none; border-radius: 8px;
+    padding: 0.8rem; font-family: var(--font); font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .lock-btn:hover { opacity: 0.85; }
+  .lock-err { color: var(--red); font-size: 0.82rem; text-align: center; display: none; }
+  .lock-hint { color: var(--muted); font-size: 0.72rem; text-align: center; }
+
+  #app { display: none; }
+
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 2rem; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; background: rgba(10,10,15,0.94);
+    backdrop-filter: blur(12px); z-index: 100;
+  }
+  .nav-logo { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; }
+  .nav-logo span { color: var(--accent); }
+  .nav-tabs { display: flex; gap: 0.3rem; }
+  .tab-btn {
+    background: transparent; border: 1px solid transparent; color: var(--muted);
+    font-family: var(--font); font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase; padding: 0.4rem 0.9rem;
+    border-radius: 6px; cursor: pointer; transition: all 0.2s;
+  }
+  .tab-btn:hover { color: var(--text); border-color: var(--border2); }
+  .tab-btn.active { background: var(--bg3); color: var(--accent2); border-color: var(--border2); }
+  .nav-right { display: flex; align-items: center; gap: 0.8rem; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; transition: background 0.3s; }
+  .sync-dot.syncing { background: var(--amber); animation: pulse 1s infinite; }
+  .sync-dot.error { background: var(--red); }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+  .month-label { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+  .logout-btn {
+    background: transparent; border: 1px solid var(--border2); color: var(--muted);
+    font-family: var(--font); font-size: 0.72rem; padding: 0.35rem 0.75rem;
+    border-radius: 6px; cursor: pointer; transition: all 0.2s;
+  }
+  .logout-btn:hover { color: var(--red); border-color: var(--red); }
+
+  .view { display: none; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+  .view.active { display: block; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.3rem 1.5rem; }
+  .s-label { font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+  .s-val { font-size: 1.85rem; font-weight: 700; letter-spacing: -1px; }
+  .s-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+  .col-green { color: var(--green); } .col-red { color: var(--red); }
+
+  .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; margin-top: 1.5rem; }
+  .section-head h2 { font-size: 0.95rem; font-weight: 700; }
+  .add-btn {
+    background: var(--accent); color: #fff; border: none; border-radius: 8px;
+    font-family: var(--font); font-size: 0.78rem; font-weight: 700;
+    padding: 0.45rem 1rem; cursor: pointer; transition: opacity 0.2s;
+  }
+  .add-btn:hover { opacity: 0.85; }
+
+  .budget-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem 1.6rem; margin-bottom: 2rem; }
+  .progress-bar { background: var(--bg3); border-radius: 99px; height: 5px; overflow: hidden; margin-top: 0.7rem; }
+  .progress-fill { height: 100%; border-radius: 99px; transition: width 0.5s, background 0.3s; }
+
+  .table-wrap { overflow-x: auto; background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+  thead tr { border-bottom: 1px solid var(--border2); }
+  th { text-align: left; padding: 0.7rem 1rem; font-size: 0.68rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  td { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tbody tr { transition: background 0.15s; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  tr.row-overdue td { background: rgba(255,94,94,0.03); }
+  tr.row-soon td { background: rgba(255,179,71,0.03); }
+
+  .badge { display: inline-block; padding: 0.18rem 0.55rem; border-radius: 5px; font-size: 0.7rem; font-weight: 600; }
+  .b-paid { background: var(--green2); color: var(--green); }
+  .b-due { background: var(--red2); color: var(--red); }
+  .b-soon { background: var(--amber2); color: var(--amber); }
+  .b-unpaid { background: rgba(255,255,255,0.06); color: var(--muted); }
+  .b-monthly { background: rgba(124,106,255,0.12); color: var(--accent2); }
+  .b-quarterly { background: var(--green2); color: var(--green); }
+  .b-annual { background: rgba(255,255,255,0.05); color: var(--muted); }
+  .b-one-time { background: rgba(255,255,255,0.04); color: var(--muted); }
+
+  .act-btn {
+    background: transparent; border: 1px solid var(--border2); color: var(--muted);
+    font-family: var(--mono); font-size: 0.7rem; padding: 0.22rem 0.55rem;
+    border-radius: 5px; cursor: pointer; margin-right: 3px; transition: all 0.15s;
+  }
+  .act-btn:hover { color: var(--text); border-color: var(--text); }
+  .act-btn.del:hover { color: var(--red); border-color: var(--red); }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 1000; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; min-width: 380px; max-width: 460px; width: 90%; }
+  .modal h3 { font-size: 1.05rem; margin-bottom: 1.3rem; }
+  .form-row { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.9rem; }
+  .form-row label { font-size: 0.68rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+  .form-row input, .form-row select {
+    background: var(--bg3); border: 1px solid var(--border2); border-radius: 8px;
+    color: var(--text); font-family: var(--font); font-size: 0.88rem;
+    padding: 0.6rem 0.85rem; outline: none; transition: border 0.2s; width: 100%;
+  }
+  .form-row input:focus, .form-row select:focus { border-color: var(--accent); }
+  .form-row select option { background: var(--bg2); }
+  .form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-btns { display: flex; gap: 0.8rem; margin-top: 1.3rem; justify-content: flex-end; }
+  .btn-cancel { background: transparent; border: 1px solid var(--border2); color: var(--muted); font-family: var(--font); font-size: 0.82rem; padding: 0.55rem 1.1rem; border-radius: 8px; cursor: pointer; }
+  .btn-cancel:hover { color: var(--text); }
+  .btn-save { background: var(--accent); color: #fff; border: none; font-family: var(--font); font-size: 0.82rem; font-weight: 700; padding: 0.55rem 1.3rem; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; }
+  .btn-save:hover { opacity: 0.85; }
+  .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .settings-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.2rem; }
+  .settings-card h3 { font-size: 0.78rem; font-weight: 700; margin-bottom: 1.1rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .inline-form { display: flex; gap: 0.8rem; align-items: flex-end; max-width: 340px; }
+  .inline-form .form-row { flex: 1; margin-bottom: 0; }
+
+  .empty-state { color: var(--muted); font-size: 0.85rem; padding: 2.5rem 1rem; text-align: center; }
+
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; background: var(--bg2);
+    border: 1px solid var(--border2); border-radius: 10px; padding: 0.75rem 1.2rem;
+    font-size: 0.82rem; z-index: 9999; transform: translateY(80px); opacity: 0;
+    transition: all 0.28s; pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-color: var(--green); color: var(--green); }
+  .toast.error { border-color: var(--red); color: var(--red); }
+
+  @media (max-width: 640px) {
+    nav { padding: 0.9rem 1rem; }
+    .nav-tabs { display: none; }
+    .view { padding: 1rem; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .modal { min-width: unset; padding: 1.4rem; }
+    .form-2col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <div>
+    <div class="lock-logo">Zero<span>point</span></div>
+    <div class="lock-sub" style="margin-top:0.3rem;">Finance Dashboard</div>
+  </div>
+  <div class="lock-box">
+    <label>Password</label>
+    <input type="password" id="pw-input" placeholder="••••••••" autocomplete="current-password" />
+    <button class="lock-btn" onclick="tryUnlock()">Enter</button>
+    <div class="lock-err" id="pw-err">Incorrect password</div>
+    <div class="lock-hint">Backed by Supabase · Change password in Settings</div>
+  </div>
+</div>
+
+<div id="app">
+  <nav>
+    <div class="nav-logo">Zero<span>point</span></div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="showView('dashboard',this)">Dashboard</button>
+      <button class="tab-btn" onclick="showView('servers',this)">Servers</button>
+      <button class="tab-btn" onclick="showView('income',this)">Income</button>
+      <button class="tab-btn" onclick="showView('settings',this)">Settings</button>
+    </div>
+    <div class="nav-right">
+      <span class="sync-dot" id="sync-dot" title="Connected"></span>
+      <span class="month-label" id="month-label"></span>
+      <button class="logout-btn" onclick="logout()">Lock</button>
+    </div>
+  </nav>
+
+  <div id="view-dashboard" class="view active">
+    <div class="stat-grid" id="stat-grid">
+      <div class="stat-card"><div class="s-label">Monthly Expenses</div><div style="height:32px;background:var(--bg3);border-radius:6px;margin-top:4px;animation:sk 1.4s infinite;"></div></div>
+      <div class="stat-card"><div class="s-label">Monthly Income</div><div style="height:32px;background:var(--bg3);border-radius:6px;margin-top:4px;animation:sk 1.4s infinite;"></div></div>
+      <div class="stat-card"><div class="s-label">Net This Month</div><div style="height:32px;background:var(--bg3);border-radius:6px;margin-top:4px;animation:sk 1.4s infinite;"></div></div>
+      <div class="stat-card"><div class="s-label">All-Time Income</div><div style="height:32px;background:var(--bg3);border-radius:6px;margin-top:4px;animation:sk 1.4s infinite;"></div></div>
+    </div>
+    <style>@keyframes sk{0%,100%{opacity:.4}50%{opacity:.8}}</style>
+    <div class="budget-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Monthly Budget Usage</span>
+        <span id="budget-pct" style="font-family:var(--mono);font-size:0.82rem;color:var(--muted);"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="budget-bar" style="background:var(--accent);width:0%;"></div></div>
+      <div id="budget-sub" style="font-size:0.73rem;color:var(--muted);margin-top:0.45rem;"></div>
+    </div>
+    <div class="section-head"><h2>Upcoming Payments — next 30 days</h2></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Service</th><th>Due Date</th><th>Amount</th><th>Frequency</th><th>Status</th></tr></thead>
+      <tbody id="upcoming-tbody"><tr><td colspan="5" class="empty-state">Loading...</td></tr></tbody>
+    </table></div>
+    <div class="section-head" style="margin-top:2rem;"><h2>Recent Income</h2></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Source</th><th>Date</th><th>Amount</th><th>Category</th></tr></thead>
+      <tbody id="recent-income-tbody"><tr><td colspan="4" class="empty-state">Loading...</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <div id="view-servers" class="view">
+    <div class="section-head">
+      <h2>Server Payments</h2>
+      <button class="add-btn" onclick="openModal('server')">+ Add Payment</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Service</th><th>Provider</th><th>Amount</th><th>Due Date</th><th>Frequency</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="server-tbody"><tr><td colspan="7" class="empty-state">Loading...</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <div id="view-income" class="view">
+    <div class="section-head">
+      <h2>Income Log</h2>
+      <button class="add-btn" onclick="openModal('income')">+ Add Income</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Source</th><th>Date</th><th>Amount</th><th>Category</th><th>Notes</th><th>Actions</th></tr></thead>
+      <tbody id="income-tbody"><tr><td colspan="6" class="empty-state">Loading...</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <div id="view-settings" class="view">
+    <div class="settings-card">
+      <h3>Change App Password</h3>
+      <div style="display:flex;flex-direction:column;gap:0.9rem;max-width:340px;">
+        <div class="form-row"><label>New Password</label><input type="password" id="new-pw1" placeholder="New password" /></div>
+        <div class="form-row"><label>Confirm</label><input type="password" id="new-pw2" placeholder="Confirm" /></div>
+        <button class="btn-save" onclick="changePassword()" style="align-self:flex-start;">Update Password</button>
+        <div id="pw-change-msg" style="font-size:0.8rem;display:none;"></div>
+      </div>
+    </div>
+    <div class="settings-card">
+      <h3>Monthly Budget Cap</h3>
+      <div class="inline-form">
+        <div class="form-row"><label>Budget ($)</label><input type="number" id="budget-input" placeholder="e.g. 500" /></div>
+        <button class="btn-save" onclick="saveBudget()" style="height:38px;margin-bottom:0;">Save</button>
+      </div>
+      <div id="budget-msg" style="font-size:0.8rem;margin-top:0.6rem;display:none;"></div>
+    </div>
+    <div class="settings-card">
+      <h3>Export Backup</h3>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">Download all Supabase data as a JSON file.</p>
+      <button class="btn-save" onclick="exportData()">Download JSON</button>
+    </div>
+    <div class="settings-card">
+      <h3>Danger Zone</h3>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">Permanently wipe all records from Supabase. Cannot be undone.</p>
+      <button style="background:var(--red2);color:var(--red);border:1px solid rgba(255,94,94,0.2);font-family:var(--font);font-size:0.82rem;font-weight:700;padding:0.55rem 1.1rem;border-radius:8px;cursor:pointer;" onclick="clearAll()">Wipe All Data</button>
+    </div>
+  </div>
+</div>
+
+<!-- SERVER MODAL -->
+<div class="modal-overlay" id="modal-server">
+  <div class="modal">
+    <h3 id="server-modal-title">Add Server Payment</h3>
+    <input type="hidden" id="edit-server-id" />
+    <div class="form-row"><label>Service Name *</label><input type="text" id="s-name" placeholder="e.g. Lilypad Hosting" /></div>
+    <div class="form-row"><label>Provider</label><input type="text" id="s-provider" placeholder="e.g. Lilypad, OVH, Cloudflare" /></div>
+    <div class="form-2col">
+      <div class="form-row"><label>Amount ($) *</label><input type="number" id="s-amount" placeholder="0.00" step="0.01" /></div>
+      <div class="form-row"><label>Frequency *</label>
+        <select id="s-freq">
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="annual">Annual</option>
+          <option value="one-time">One-time</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row"><label>Next Due Date *</label><input type="date" id="s-due" /></div>
+    <div class="form-row"><label>Notes</label><input type="text" id="s-notes" placeholder="Optional" /></div>
+    <div class="form-btns">
+      <button class="btn-cancel" onclick="closeModal('server')">Cancel</button>
+      <button class="btn-save" id="save-server-btn" onclick="saveServer()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- INCOME MODAL -->
+<div class="modal-overlay" id="modal-income">
+  <div class="modal">
+    <h3 id="income-modal-title">Add Income</h3>
+    <input type="hidden" id="edit-income-id" />
+    <div class="form-row"><label>Source *</label><input type="text" id="i-source" placeholder="e.g. Tebex Sales, Donation" /></div>
+    <div class="form-2col">
+      <div class="form-row"><label>Amount ($) *</label><input type="number" id="i-amount" placeholder="0.00" step="0.01" /></div>
+      <div class="form-row"><label>Category</label>
+        <select id="i-cat">
+          <option value="donations">Donations</option>
+          <option value="store">Store / Tebex</option>
+          <option value="subscriptions">Subscriptions</option>
+          <option value="hosting-clients">Hosting Clients</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row"><label>Date *</label><input type="date" id="i-date" /></div>
+    <div class="form-row"><label>Notes</label><input type="text" id="i-notes" placeholder="Optional" /></div>
+    <div class="form-btns">
+      <button class="btn-cancel" onclick="closeModal('income')">Cancel</button>
+      <button class="btn-save" id="save-income-btn" onclick="saveIncome()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://cairclbnutqouejtlhks.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_25_ecIfEwCQ1BdXof_ZonQ_Bi2x1CDU';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const PW_KEY = 'zp_pw';
+const DEFAULT_PW = 'zeropoint2024';
+
+function getPass() { return localStorage.getItem(PW_KEY) || DEFAULT_PW; }
+function fmt(n) { return '$' + parseFloat(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function fmtDate(s) {
+  if (!s) return '—';
+  const [y,m,d] = s.split('-');
+  return new Date(+y,+m-1,+d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+function today() { return new Date().toISOString().slice(0,10); }
+function daysUntil(ds) {
+  const n = new Date(); n.setHours(0,0,0,0);
+  return Math.round((new Date(ds+'T00:00:00') - n) / 864e5);
+}
+function sync(state) {
+  const d = document.getElementById('sync-dot');
+  d.className = 'sync-dot' + (state==='syncing'?' syncing':state==='error'?' error':'');
+  d.title = state==='syncing'?'Syncing…':state==='error'?'Connection error':'Connected';
+}
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show '+type;
+  setTimeout(() => t.className='toast', 2800);
+}
+function showMsg(el, txt, ok) {
+  el.style.display='block'; el.style.color=ok?'var(--green)':'var(--red)'; el.textContent=txt;
+  setTimeout(()=>el.style.display='none',3000);
+}
+
+// AUTH
+document.getElementById('pw-input').addEventListener('keydown', e => { if(e.key==='Enter') tryUnlock(); });
+function tryUnlock() {
+  if (document.getElementById('pw-input').value === getPass()) {
+    document.getElementById('lock').style.display='none';
+    document.getElementById('app').style.display='block';
+    initApp();
+  } else {
+    const e = document.getElementById('pw-err'); e.style.display='block';
+    setTimeout(()=>e.style.display='none',2500);
+    document.getElementById('pw-input').value='';
+  }
+}
+function logout() {
+  document.getElementById('lock').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('pw-input').value='';
+}
+function changePassword() {
+  const p1=document.getElementById('new-pw1').value, p2=document.getElementById('new-pw2').value;
+  const msg=document.getElementById('pw-change-msg');
+  if (!p1||p1.length<4) { showMsg(msg,'Min 4 characters.',false); return; }
+  if (p1!==p2) { showMsg(msg,'Passwords do not match.',false); return; }
+  localStorage.setItem(PW_KEY,p1);
+  showMsg(msg,'Password updated!',true);
+  document.getElementById('new-pw1').value=''; document.getElementById('new-pw2').value='';
+}
+
+// INIT
+async function initApp() {
+  document.getElementById('month-label').textContent = new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  sync('syncing');
+  try { await renderDashboard(); sync('ok'); } catch(e) { sync('error'); }
+  const { data } = await sb.from('settings').select('value').eq('key','budget').maybeSingle();
+  if (data?.value) document.getElementById('budget-input').value = data.value;
+}
+
+function showView(name, btn) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name==='dashboard') renderDashboard();
+  if (name==='servers') renderServers();
+  if (name==='income') renderIncome();
+  if (name==='settings') initSettings();
+}
+
+async function initSettings() {
+  const { data } = await sb.from('settings').select('value').eq('key','budget').maybeSingle();
+  if (data?.value) document.getElementById('budget-input').value = data.value;
+}
+
+async function saveBudget() {
+  const v = document.getElementById('budget-input').value||'0';
+  sync('syncing');
+  const { error } = await sb.from('settings').upsert({key:'budget',value:v},{onConflict:'key'});
+  sync(error?'error':'ok');
+  if (error) { toast('Failed to save budget','error'); return; }
+  toast('Budget saved!'); renderDashboard();
+}
+
+// DASHBOARD
+async function renderDashboard() {
+  sync('syncing');
+  const [{ data: servers, error: e1 }, { data: income, error: e2 }, { data: budgetRow }] = await Promise.all([
+    sb.from('server_payments').select('*').order('due_date'),
+    sb.from('income_entries').select('*').order('entry_date',{ascending:false}),
+    sb.from('settings').select('value').eq('key','budget').maybeSingle()
+  ]);
+  if (e1||e2) { sync('error'); return; }
+  sync('ok');
+
+  const now=new Date(); now.setHours(0,0,0,0);
+  const ms=new Date(now.getFullYear(),now.getMonth(),1);
+  const me=new Date(now.getFullYear(),now.getMonth()+1,0);
+
+  let monthSpend=0;
+  (servers||[]).forEach(s=>{
+    const due=new Date(s.due_date+'T00:00:00');
+    if (s.freq==='monthly') monthSpend+=+s.amount;
+    else if (s.freq==='quarterly') monthSpend+=+s.amount/3;
+    else if (s.freq==='annual') monthSpend+=+s.amount/12;
+    else if (s.freq==='one-time'&&due>=ms&&due<=me) monthSpend+=+s.amount;
+  });
+
+  let monthIncome=0, totalIncome=0;
+  (income||[]).forEach(i=>{
+    totalIncome+=+i.amount;
+    const d=new Date(i.entry_date+'T00:00:00');
+    if (d>=ms&&d<=me) monthIncome+=+i.amount;
+  });
+
+  const net=monthIncome-monthSpend;
+  const budget=parseFloat(budgetRow?.value||'0');
+
+  document.getElementById('stat-grid').innerHTML=`
+    <div class="stat-card"><div class="s-label">Monthly Expenses</div><div class="s-val col-red">${fmt(monthSpend)}</div><div class="s-sub">recurring this month</div></div>
+    <div class="stat-card"><div class="s-label">Monthly Income</div><div class="s-val col-green">${fmt(monthIncome)}</div><div class="s-sub">logged this month</div></div>
+    <div class="stat-card"><div class="s-label">Net This Month</div><div class="s-val ${net>=0?'col-green':'col-red'}">${fmt(net)}</div><div class="s-sub">${net>=0?'in the green':'in the red'}</div></div>
+    <div class="stat-card"><div class="s-label">All-Time Income</div><div class="s-val">${fmt(totalIncome)}</div><div class="s-sub">${(income||[]).length} entries</div></div>
+  `;
+
+  if (budget>0) {
+    const pct=Math.min((monthSpend/budget)*100,100);
+    const col=pct>90?'var(--red)':pct>70?'var(--amber)':'var(--accent)';
+    document.getElementById('budget-bar').style.width=pct.toFixed(1)+'%';
+    document.getElementById('budget-bar').style.background=col;
+    document.getElementById('budget-pct').textContent=pct.toFixed(1)+'%';
+    document.getElementById('budget-sub').textContent=`${fmt(monthSpend)} of ${fmt(budget)} budget used`;
+  } else {
+    document.getElementById('budget-pct').textContent='';
+    document.getElementById('budget-bar').style.width='0%';
+    document.getElementById('budget-sub').textContent='Set a monthly budget cap in Settings';
+  }
+
+  const upcoming=(servers||[]).filter(s=>{ const d=daysUntil(s.due_date); return d>=0&&d<=30; });
+  document.getElementById('upcoming-tbody').innerHTML=upcoming.length
+    ? upcoming.map(s=>sRow(s,true)).join('')
+    : `<tr><td colspan="5" class="empty-state">No payments due in the next 30 days.</td></tr>`;
+
+  const ri=(income||[]).slice(0,5);
+  document.getElementById('recent-income-tbody').innerHTML=ri.length
+    ? ri.map(i=>`<tr><td><strong>${i.source}</strong></td><td style="font-family:var(--mono);font-size:0.8rem;">${fmtDate(i.entry_date)}</td><td style="font-family:var(--mono);color:var(--green);">${fmt(i.amount)}</td><td><span class="badge b-monthly">${i.category||'other'}</span></td></tr>`).join('')
+    : `<tr><td colspan="4" class="empty-state">No income logged yet.</td></tr>`;
+}
+
+function sRow(s,mini=false) {
+  const days=daysUntil(s.due_date);
+  const rc=!s.paid&&days<0?'row-overdue':!s.paid&&days<=3?'row-soon':'';
+  const sb_b=s.paid?'<span class="badge b-paid">Paid</span>':days<0?'<span class="badge b-due">Overdue</span>':days<=3?'<span class="badge b-soon">Due Soon</span>':'<span class="badge b-unpaid">Unpaid</span>';
+  const fr=`<span class="badge b-${s.freq}">${s.freq}</span>`;
+  const dl=days===0?'Today':days>0?`in ${days}d`:`${Math.abs(days)}d overdue`;
+  if (mini) return `<tr class="${rc}"><td><strong>${s.name}</strong></td><td style="font-family:var(--mono);font-size:0.8rem;">${fmtDate(s.due_date)}<br><span style="color:var(--muted);font-size:0.7rem;">${dl}</span></td><td style="font-family:var(--mono);color:var(--red);">${fmt(s.amount)}</td><td>${fr}</td><td>${sb_b}</td></tr>`;
+  return `<tr class="${rc}"><td><strong>${s.name}</strong>${s.notes?`<br><span style="font-size:0.73rem;color:var(--muted);">${s.notes}</span>`:''}</td><td style="color:var(--muted);font-size:0.82rem;">${s.provider||'—'}</td><td style="font-family:var(--mono);color:var(--red);">${fmt(s.amount)}</td><td style="font-family:var(--mono);font-size:0.8rem;">${fmtDate(s.due_date)}<br><span style="color:var(--muted);font-size:0.7rem;">${dl}</span></td><td>${fr}</td><td>${sb_b}</td><td><button class="act-btn" onclick="togglePaid('${s.id}',${s.paid})">${s.paid?'Unpaid':'Paid'}</button><button class="act-btn" onclick="editServer('${s.id}')">Edit</button><button class="act-btn del" onclick="deleteServer('${s.id}')">Del</button></td></tr>`;
+}
+
+// SERVERS
+async function renderServers() {
+  document.getElementById('server-tbody').innerHTML=`<tr><td colspan="7" class="empty-state">Loading...</td></tr>`;
+  sync('syncing');
+  const { data, error } = await sb.from('server_payments').select('*').order('due_date');
+  sync(error?'error':'ok');
+  document.getElementById('server-tbody').innerHTML=!error&&data.length
+    ? data.map(s=>sRow(s)).join('')
+    : `<tr><td colspan="7" class="empty-state">${error?'Failed to load.':'No server payments added yet.'}</td></tr>`;
+}
+
+function openModal(type) {
+  if (type==='server') {
+    document.getElementById('server-modal-title').textContent='Add Server Payment';
+    document.getElementById('edit-server-id').value='';
+    ['s-name','s-provider','s-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('s-amount').value=''; document.getElementById('s-freq').value='monthly'; document.getElementById('s-due').value=today();
+    document.getElementById('modal-server').classList.add('open');
+  } else {
+    document.getElementById('income-modal-title').textContent='Add Income';
+    document.getElementById('edit-income-id').value='';
+    ['i-source','i-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('i-amount').value=''; document.getElementById('i-cat').value='store'; document.getElementById('i-date').value=today();
+    document.getElementById('modal-income').classList.add('open');
+  }
+}
+function closeModal(type) { document.getElementById('modal-'+type).classList.remove('open'); }
+document.getElementById('modal-server').addEventListener('click',e=>{ if(e.target===e.currentTarget)closeModal('server'); });
+document.getElementById('modal-income').addEventListener('click',e=>{ if(e.target===e.currentTarget)closeModal('income'); });
+
+async function saveServer() {
+  const name=document.getElementById('s-name').value.trim(), amount=document.getElementById('s-amount').value, due=document.getElementById('s-due').value;
+  if (!name||!amount||!due) { toast('Fill in Name, Amount, and Due Date.','error'); return; }
+  const btn=document.getElementById('save-server-btn'); btn.disabled=true; btn.textContent='Saving…';
+  sync('syncing');
+  const editId=document.getElementById('edit-server-id').value;
+  const payload={name,provider:document.getElementById('s-provider').value.trim(),amount:parseFloat(amount),freq:document.getElementById('s-freq').value,due_date:due,notes:document.getElementById('s-notes').value.trim()};
+  const { error }=editId ? await sb.from('server_payments').update(payload).eq('id',editId) : await sb.from('server_payments').insert(payload);
+  btn.disabled=false; btn.textContent='Save'; sync(error?'error':'ok');
+  if (error) { toast('Save failed: '+error.message,'error'); return; }
+  toast(editId?'Payment updated!':'Payment added!');
+  closeModal('server'); renderServers(); renderDashboard();
+}
+
+async function editServer(id) {
+  const { data }=await sb.from('server_payments').select('*').eq('id',id).single(); if (!data) return;
+  document.getElementById('server-modal-title').textContent='Edit Server Payment';
+  document.getElementById('edit-server-id').value=data.id;
+  document.getElementById('s-name').value=data.name; document.getElementById('s-provider').value=data.provider||'';
+  document.getElementById('s-amount').value=data.amount; document.getElementById('s-freq').value=data.freq;
+  document.getElementById('s-due').value=data.due_date; document.getElementById('s-notes').value=data.notes||'';
+  document.getElementById('modal-server').classList.add('open');
+}
+
+async function deleteServer(id) {
+  if (!confirm('Delete this payment?')) return;
+  sync('syncing');
+  const { error }=await sb.from('server_payments').delete().eq('id',id);
+  sync(error?'error':'ok');
+  if (error) { toast('Delete failed','error'); return; }
+  toast('Payment deleted.'); renderServers(); renderDashboard();
+}
+
+async function togglePaid(id, current) {
+  sync('syncing');
+  const { error }=await sb.from('server_payments').update({paid:!current}).eq('id',id);
+  sync(error?'error':'ok');
+  if (error) { toast('Update failed','error'); return; }
+  renderServers(); renderDashboard();
+}
+
+// INCOME
+async function renderIncome() {
+  document.getElementById('income-tbody').innerHTML=`<tr><td colspan="6" class="empty-state">Loading...</td></tr>`;
+  sync('syncing');
+  const { data, error }=await sb.from('income_entries').select('*').order('entry_date',{ascending:false});
+  sync(error?'error':'ok');
+  document.getElementById('income-tbody').innerHTML=!error&&data.length
+    ? data.map(i=>`<tr><td><strong>${i.source}</strong></td><td style="font-family:var(--mono);font-size:0.8rem;">${fmtDate(i.entry_date)}</td><td style="font-family:var(--mono);color:var(--green);">${fmt(i.amount)}</td><td><span class="badge b-monthly">${i.category||'other'}</span></td><td style="color:var(--muted);font-size:0.8rem;">${i.notes||'—'}</td><td><button class="act-btn" onclick="editIncome('${i.id}')">Edit</button><button class="act-btn del" onclick="deleteIncome('${i.id}')">Del</button></td></tr>`).join('')
+    : `<tr><td colspan="6" class="empty-state">${error?'Failed to load.':'No income logged yet.'}</td></tr>`;
+}
+
+async function saveIncome() {
+  const source=document.getElementById('i-source').value.trim(), amount=document.getElementById('i-amount').value, date=document.getElementById('i-date').value;
+  if (!source||!amount||!date) { toast('Fill in Source, Amount, and Date.','error'); return; }
+  const btn=document.getElementById('save-income-btn'); btn.disabled=true; btn.textContent='Saving…';
+  sync('syncing');
+  const editId=document.getElementById('edit-income-id').value;
+  const payload={source,amount:parseFloat(amount),category:document.getElementById('i-cat').value,entry_date:date,notes:document.getElementById('i-notes').value.trim()};
+  const { error }=editId ? await sb.from('income_entries').update(payload).eq('id',editId) : await sb.from('income_entries').insert(payload);
+  btn.disabled=false; btn.textContent='Save'; sync(error?'error':'ok');
+  if (error) { toast('Save failed: '+error.message,'error'); return; }
+  toast(editId?'Income updated!':'Income added!');
+  closeModal('income'); renderIncome(); renderDashboard();
+}
+
+async function editIncome(id) {
+  const { data }=await sb.from('income_entries').select('*').eq('id',id).single(); if (!data) return;
+  document.getElementById('income-modal-title').textContent='Edit Income';
+  document.getElementById('edit-income-id').value=data.id;
+  document.getElementById('i-source').value=data.source; document.getElementById('i-amount').value=data.amount;
+  document.getElementById('i-cat').value=data.category||'other'; document.getElementById('i-date').value=data.entry_date;
+  document.getElementById('i-notes').value=data.notes||'';
+  document.getElementById('modal-income').classList.add('open');
+}
+
+async function deleteIncome(id) {
+  if (!confirm('Delete this income entry?')) return;
+  sync('syncing');
+  const { error }=await sb.from('income_entries').delete().eq('id',id);
+  sync(error?'error':'ok');
+  if (error) { toast('Delete failed','error'); return; }
+  toast('Income deleted.'); renderIncome(); renderDashboard();
+}
+
+async function exportData() {
+  const [{ data: servers },{ data: income }]=await Promise.all([sb.from('server_payments').select('*'),sb.from('income_entries').select('*')]);
+  const blob=new Blob([JSON.stringify({servers,income,exported:new Date().toISOString()},null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='zeropoint-finance-backup.json'; a.click();
+  toast('Export downloaded!');
+}
+
+async function clearAll() {
+  if (!confirm('Delete ALL data from Supabase? Cannot be undone.')) return;
+  if (!confirm('Are you absolutely sure?')) return;
+  sync('syncing');
+  await Promise.all([
+    sb.from('server_payments').delete().neq('id','00000000-0000-0000-0000-000000000000'),
+    sb.from('income_entries').delete().neq('id','00000000-0000-0000-0000-000000000000')
+  ]);
+  sync('ok'); toast('All data cleared.');
+  renderDashboard(); renderServers(); renderIncome();
+}
+</script>
+</body>
+</html>
