@@ -229,6 +229,34 @@
       <div class="progress-bar"><div class="progress-fill" id="budget-bar" style="background:var(--accent);width:0%;"></div></div>
       <div id="budget-sub" style="font-size:0.73rem;color:var(--muted);margin-top:0.45rem;"></div>
     </div>
+    <!-- RUNWAY CARD -->
+    <div id="runway-card" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.4rem 1.6rem;margin-bottom:2rem;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+        <div style="flex:1;min-width:160px;">
+          <div style="font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Bank Balance</div>
+          <div id="runway-balance" style="font-size:1.85rem;font-weight:700;letter-spacing:-1px;font-family:var(--font);"></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:0.25rem;">current funds on hand</div>
+        </div>
+        <div style="flex:1;min-width:160px;">
+          <div style="font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Estimated Runway</div>
+          <div id="runway-months" style="font-size:1.85rem;font-weight:700;letter-spacing:-1px;font-family:var(--font);"></div>
+          <div id="runway-sub" style="font-size:0.73rem;color:var(--muted);margin-top:0.25rem;"></div>
+        </div>
+        <div style="flex:1;min-width:160px;">
+          <div style="font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Zero Date</div>
+          <div id="runway-date" style="font-size:1.3rem;font-weight:700;letter-spacing:-0.5px;font-family:var(--font);"></div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-top:0.25rem;">estimated out of funds</div>
+        </div>
+      </div>
+      <div style="margin-top:1.2rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+          <span style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Runway Health</span>
+          <span id="runway-health-label" style="font-size:0.72rem;font-family:var(--mono);"></span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="runway-bar" style="width:0%;"></div></div>
+        <div id="runway-note" style="font-size:0.72rem;color:var(--muted);margin-top:0.4rem;"></div>
+      </div>
+    </div>
     <div class="section-head"><h2>Upcoming Payments — next 30 days</h2></div>
     <div class="table-wrap"><table>
       <thead><tr><th>Service</th><th>Due Date</th><th>Amount</th><th>Frequency</th><th>Status</th></tr></thead>
@@ -272,6 +300,15 @@
         <button class="btn-save" onclick="changePassword()" style="align-self:flex-start;">Update Password</button>
         <div id="pw-change-msg" style="font-size:0.8rem;display:none;"></div>
       </div>
+    </div>
+    <div class="settings-card">
+      <h3>Bank Balance</h3>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">Enter your current bank balance to calculate estimated runway on the dashboard.</p>
+      <div class="inline-form">
+        <div class="form-row"><label>Balance ($)</label><input type="number" id="balance-input" placeholder="e.g. 1200.00" step="0.01" /></div>
+        <button class="btn-save" onclick="saveBalance()" style="height:38px;margin-bottom:0;">Save</button>
+      </div>
+      <div id="balance-msg" style="font-size:0.8rem;margin-top:0.6rem;display:none;"></div>
     </div>
     <div class="settings-card">
       <h3>Monthly Budget Cap</h3>
@@ -418,8 +455,12 @@ async function initApp() {
   document.getElementById('month-label').textContent = new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'});
   sync('syncing');
   try { await renderDashboard(); sync('ok'); } catch(e) { sync('error'); }
-  const { data } = await sb.from('settings').select('value').eq('key','budget').maybeSingle();
-  if (data?.value) document.getElementById('budget-input').value = data.value;
+  const [{ data: bd }, { data: bal }] = await Promise.all([
+    sb.from('settings').select('value').eq('key','budget').maybeSingle(),
+    sb.from('settings').select('value').eq('key','balance').maybeSingle()
+  ]);
+  if (bd?.value) document.getElementById('budget-input').value = bd.value;
+  if (bal?.value) document.getElementById('balance-input').value = bal.value;
 }
 
 function showView(name, btn) {
@@ -434,8 +475,23 @@ function showView(name, btn) {
 }
 
 async function initSettings() {
-  const { data } = await sb.from('settings').select('value').eq('key','budget').maybeSingle();
-  if (data?.value) document.getElementById('budget-input').value = data.value;
+  const [{ data: bd }, { data: bal }] = await Promise.all([
+    sb.from('settings').select('value').eq('key','budget').maybeSingle(),
+    sb.from('settings').select('value').eq('key','balance').maybeSingle()
+  ]);
+  if (bd?.value) document.getElementById('budget-input').value = bd.value;
+  if (bal?.value) document.getElementById('balance-input').value = bal.value;
+}
+
+async function saveBalance() {
+  const v = document.getElementById('balance-input').value||'0';
+  sync('syncing');
+  const { error } = await sb.from('settings').upsert({key:'balance',value:v},{onConflict:'key'});
+  sync(error?'error':'ok');
+  const msg = document.getElementById('balance-msg');
+  if (error) { showMsg(msg,'Failed to save balance.',false); return; }
+  showMsg(msg,'Balance saved!',true);
+  renderDashboard();
 }
 
 async function saveBudget() {
@@ -450,10 +506,11 @@ async function saveBudget() {
 // DASHBOARD
 async function renderDashboard() {
   sync('syncing');
-  const [{ data: servers, error: e1 }, { data: income, error: e2 }, { data: budgetRow }] = await Promise.all([
+  const [{ data: servers, error: e1 }, { data: income, error: e2 }, { data: budgetRow }, { data: balanceRow }] = await Promise.all([
     sb.from('server_payments').select('*').order('due_date'),
     sb.from('income_entries').select('*').order('entry_date',{ascending:false}),
-    sb.from('settings').select('value').eq('key','budget').maybeSingle()
+    sb.from('settings').select('value').eq('key','budget').maybeSingle(),
+    sb.from('settings').select('value').eq('key','balance').maybeSingle()
   ]);
   if (e1||e2) { sync('error'); return; }
   sync('ok');
@@ -499,6 +556,45 @@ async function renderDashboard() {
     document.getElementById('budget-pct').textContent='';
     document.getElementById('budget-bar').style.width='0%';
     document.getElementById('budget-sub').textContent='Set a monthly budget cap in Settings';
+  }
+
+  // RUNWAY CARD
+  const balance = parseFloat(balanceRow?.value||'0');
+  const rc = document.getElementById('runway-card');
+  if (balance > 0 && monthSpend > 0) {
+    rc.style.display = 'block';
+    const months = balance / monthSpend;
+    const zeroDate = new Date(); zeroDate.setDate(1);
+    zeroDate.setMonth(zeroDate.getMonth() + Math.floor(months));
+    const runColor = months < 2 ? 'var(--red)' : months < 4 ? 'var(--amber)' : 'var(--green)';
+    const healthPct = Math.min((months / 12) * 100, 100);
+    const healthLabel = months < 2 ? 'Critical' : months < 4 ? 'Low' : months < 6 ? 'Moderate' : 'Healthy';
+    document.getElementById('runway-balance').textContent = fmt(balance);
+    document.getElementById('runway-balance').style.color = 'var(--text)';
+    document.getElementById('runway-months').textContent = months.toFixed(1) + ' mo';
+    document.getElementById('runway-months').style.color = runColor;
+    document.getElementById('runway-sub').textContent = `at ${fmt(monthSpend)}/mo burn rate`;
+    document.getElementById('runway-date').textContent = zeroDate.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+    document.getElementById('runway-date').style.color = runColor;
+    document.getElementById('runway-bar').style.width = healthPct.toFixed(1) + '%';
+    document.getElementById('runway-bar').style.background = runColor;
+    document.getElementById('runway-health-label').textContent = healthLabel;
+    document.getElementById('runway-health-label').style.color = runColor;
+    document.getElementById('runway-note').textContent = months < 2 ? '⚠ Less than 2 months left — act now.' : months < 4 ? 'Under 4 months — consider reducing costs or increasing income.' : months >= 12 ? 'Over 12 months of runway — great position.' : `About ${Math.floor(months)} months before funds run out at current burn.`;
+  } else if (balance > 0 && monthSpend === 0) {
+    rc.style.display = 'block';
+    document.getElementById('runway-balance').textContent = fmt(balance);
+    document.getElementById('runway-balance').style.color = 'var(--text)';
+    document.getElementById('runway-months').textContent = '∞';
+    document.getElementById('runway-months').style.color = 'var(--green)';
+    document.getElementById('runway-sub').textContent = 'no monthly expenses logged yet';
+    document.getElementById('runway-date').textContent = '—';
+    document.getElementById('runway-bar').style.width = '100%';
+    document.getElementById('runway-bar').style.background = 'var(--green)';
+    document.getElementById('runway-health-label').textContent = 'No burn';
+    document.getElementById('runway-note').textContent = 'Add server payments to calculate runway.';
+  } else {
+    rc.style.display = 'none';
   }
 
   const upcoming=(servers||[]).filter(s=>{ const d=daysUntil(s.due_date); return d>=0&&d<=30; });
